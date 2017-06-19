@@ -102,6 +102,8 @@ ENV/
 
 #Project specific ignores
 floodviz/static/bower_components/
+node_modules/
 
 #IDE specific ignores
 .idea/
+
