@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#Project specific ignores
+floodviz/static/bower_components/
+
+#IDE specific ignores
+.idea/
