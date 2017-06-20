@@ -1,0 +1,8 @@
+html, body, .main-content {
+	height: 100%;
+	margin: 0;
+}
+#hydrograph {
+	height: 60%;
+	width: 45%;
+}
