@@ -5,6 +5,7 @@ import json
 import time
 from datetime import datetime
 import requests
+import operator
 # # # # # # # # # # # # # # # # # #
 
 from . import app
@@ -13,26 +14,35 @@ from . import app
 def home():
   	## new data store ##
 	newd = []
-	
-	# TODO: Figure out a better way to do this parameter(site, start, end) collection
-	sites = ['05463500', '05471050', '05420680']#, '05479000', '05484000', '05481000', '05486000', '05421000', '05485500', '05455100', '05470500', '05451500']
-	start_date = '2008-05-20'
-	end_date = '2008-07-05'
-	# # Do this betta  ^ # #
-	
+	sites_value_maxs = {}
+	sites = app.config['SITE_IDS'] 
+	start_date = app.config['START_DT']
+	end_date = app.config['END_DT']
+	n_show_series = app.config['N_SERIES']
 
 	## Set up to retrieve all site ids from url? ##
 	for idx, site in enumerate(sites):
 		url = 'https://nwis.waterservices.usgs.gov/nwis/iv/?site=' + site + '&startDT=' + start_date + '&endDT=' + end_date + '&parameterCD=00060&format=json'
-		#print(url)
-		r = requests.get(url)
+
+		try:
+			r = requests.get(url)
+		except:
+			print('Unable to retrieve URL ' + url)
+			continue
+		
 		if r.status_code is 200:
 			j = r.json()
 			key = site # Key for this series
-			newd.append({'key': key, 'values': []})
+			newd.append({'key': key, 'values': [], 'max': 0})
 			# Fill new data
+			max_val = 0
 			for idx2, obj in enumerate(j['value']['timeSeries'][0]['values'][0]['value']):
 				value = obj['value']
+				# For filtering series #
+				if max_val < float(value):
+					max_val = float(value)
+				#sum_values += int(value)
+				#num_values += 1
 				dt = obj['dateTime']
 				date = dt.split('T')[0]
 				t = dt.split('T')[1].split('.')[0]
@@ -40,10 +50,26 @@ def home():
 				dt = datetime.strptime(date + ' ' + t, '%Y-%m-%d %H:%M:%S')
 				# Conver to miliseconds for use with d3 axis format
 				dt_ms = time.mktime(dt.timetuple()) * 1000
-				newd[idx]['values'].append({'date':date, "time": t, "time_mili": dt_ms, 'value': value})
+				# create dummy value for nvd3 issue at https://github.com/novus/nvd3/issues/695 #
+				if idx2 is 0:
+					newd[idx]['values'].append({'date':start_date, "time": 0, "time_mili": dt_ms, 'value': 0, 'max': max_val})
+				# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+				newd[idx]['values'].append({'date':date, "time": t, "time_mili": dt_ms, 'value': value, 'max': max_val})
 
-	
-	with open('floodviz\static\data\hydrograph_data.json', 'w') as fout:		# TODO: More dynamic file path
+			sites_value_maxs[key] = max_val
+			#sites_value_avg[key] = sum_values / num_values
+
+	# Filter out the sites to plot ## TODO: I can make this faster with one pass HASH
+	sorted_avg = sorted(sites_value_maxs.items(), key=operator.itemgetter(1), reverse=True)
+	remove = sorted_avg[n_show_series:]	# remove all but top x series
+	for item in remove:
+		key = item[0]
+		for site in newd:
+			if key is site['key']:
+				newd.remove(site)
+
+	# Save Data #
+	with open('floodviz\static\data\hydrograph_data.json', 'w') as fout: # TODO: More dynamic file path
 		json.dump(newd, fout, indent=1)
 
 	return render_template('index.html')

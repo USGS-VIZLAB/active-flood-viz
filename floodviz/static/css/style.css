@@ -5,4 +5,8 @@ html, body, .main-content {
 #hydrograph {
 	height: 60%;
 	width: 45%;
+	margin-top: 50px;
+}
+.nv-indexLine {
+	display: none;
 }
