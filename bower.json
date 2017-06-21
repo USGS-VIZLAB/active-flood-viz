@@ -1,0 +1,22 @@
+{
+  "name": "active-flood-viz",
+  "description": "Active Flood Visualization",
+  "main": "index.js",
+  "authors": [
+    "''"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/USGS-VIZLAB/active-flood-viz",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "3.2.1",
+    "bootstrap": "3.3.7"
+  }
+}

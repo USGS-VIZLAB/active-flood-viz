@@ -1,0 +1,22 @@
+{
+  "name": "active-flood-viz",
+  "version": "1.0.0",
+  "description": "Active Flood Visualization",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/USGS-VIZLAB/active-flood-viz.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/USGS-VIZLAB/active-flood-viz/issues"
+  },
+  "homepage": "https://github.com/USGS-VIZLAB/active-flood-viz#readme",
+  "devDependencies": {
+    "bower": "1.8.0"
+  }
+}
