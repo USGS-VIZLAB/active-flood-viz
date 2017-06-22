@@ -107,3 +107,6 @@ node_modules/
 #IDE specific ignores
 .idea/
 
+# Data files #
+.json
+
