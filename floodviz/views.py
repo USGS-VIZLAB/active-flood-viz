@@ -6,9 +6,11 @@ import os
 
 from . import app
 
+
 @app.route('/home/')
 def home():
     return render_template('index.html')
+
 
 # This program requires svgis to be installed (which in turn requires Fiona and GDAL)
 # Takes a list of site ids in the form of "site_ids.csv"
@@ -87,6 +89,8 @@ with open("floodviz/static/data/gages.json", "w") as f:
 #     bounds_file = yaml.load(stream)
 #
 # bounds = bounds_file['boundingBox']
+
+#set bounds
 bound1 = bounds[0]
 bound2 = bounds[1]
 bound3 = bounds[2]
@@ -101,7 +105,8 @@ bound4 = bounds[3]
 # -i [geodata field to use as id]
 # -c [css file]
 # -b [bounds]
-command = "svgis draw floodviz/static/data/gages.json floodviz/static/data/cities.json -o floodviz/static/data/sitemap.svg -f 500 -j epsg:2794 " \
-          "-i \"name\" -c floodviz/static/css/site_style.css -b " + str(
-    bound1) + " " + str(bound2) + " " + str(bound3) + " " + str(bound4)
+command = "svgis draw floodviz/static/data/gages.json floodviz/static/data/cities.json -o " \
+          "floodviz/static/data/sitemap.svg -f 500 -j epsg:2794 " \
+          "-i \"name\" -c floodviz/static/css/site_style.css -b " + \
+          str(bound1) + " " + str(bound2) + " " + str(bound3) + " " + str(bound4)
 os.system(command)
