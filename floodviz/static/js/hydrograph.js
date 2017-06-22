@@ -20,20 +20,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			var max = d3.max(data, function(d) { return d3.max(d.values, getMax)})
 			
 			var chart = nv.models.cumulativeLineChart()
-										.x( getX )  // this value is stored in milliseconds since epoch (converted in data_format.py with datetime)
-										.y( getY ) 
-										.color(d3.scale.category10().range())
-										.useInteractiveGuideline(true)
-										.yDomain([min, max])
-										.margin({left: 120, top: 60})
-										.showControls(false);
+					.x( getX )  // this value is stored in milliseconds since epoch (converted in data_format.py with datetime)
+					.y( getY ) 
+					.color(d3.scale.category10().range())
+					.useInteractiveGuideline(true)
+					.yDomain([min, max])
+					.margin({left: 120, top: 60})
+					.showControls(false);
 
 			chart.xAxis
 					.axisLabel(" Date (M-D-Y)")
 					.axisLabelDistance(10)
 					.ticks(5)
-					.tickFormat(function(d) {
-							return d3.time.format('%m-%d-%y')(new Date(d)) });
+					.tickFormat(function(d){return d3.time.format('%m-%d-%y')(new Date(d))});
 
 			chart.yAxis
 					.axisLabel('Discharge (cubic feet per second)')
