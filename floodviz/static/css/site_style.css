@@ -1,11 +1,7 @@
-#sites {
+#gages {
     fill: red;
 }
 
 #cities {
     fill: blue;
-}
-
-#sites:hover {
-    content: "hi"
 }
