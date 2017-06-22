@@ -1,8 +1,9 @@
-from flask import request, render_template, abort
-import csv
-import requests
-import yaml
+import json
 import os
+
+from flask import request, render_template, abort
+import requests
+from svgis import svgis
 
 from . import app
 
@@ -23,6 +24,8 @@ siteList = app.config['SITE_IDS']
 
 bounds = app.config['BOUNDS']
 
+cities = app.config['CITIES']
+
 # put each site number from the csv into a list
 # with open('static/data/site_ids.csv', newline='') as csvfile:
 #     siteReader = csv.reader(csvfile)
@@ -35,7 +38,8 @@ bounds = app.config['BOUNDS']
 idInputString = ",".join(siteList)
 # print(idInputString)
 
-url = "https://waterservices.usgs.gov/nwis/site/?format=rdb&sites=" + idInputString + "&siteStatus=all"
+url = app.config['NWIS_SITE_SERVICE_ENDPOINT'] + "/?format=rdb&sites=" + idInputString + "&siteStatus=all"
+print(url)
 
 # get data from url
 req = requests.get(url)
@@ -84,6 +88,10 @@ with open("floodviz/static/data/gages.json", "w") as f:
         f.write("\n")
     f.write(" ] }")
 
+# write data to cities.json
+with open("floodviz/static/data/cities.json", "w") as f:
+    json.dump(cities, f)
+
 # get bounds from site_configs.yaml
 # with open("site_configs.yaml", "r") as stream:
 #     bounds_file = yaml.load(stream)
@@ -91,10 +99,10 @@ with open("floodviz/static/data/gages.json", "w") as f:
 # bounds = bounds_file['boundingBox']
 
 # set bounds
-bound1 = bounds[0]
-bound2 = bounds[1]
-bound3 = bounds[2]
-bound4 = bounds[3]
+# bound1 = bounds[0]
+# bound2 = bounds[1]
+# bound3 = bounds[2]
+# bound4 = bounds[3]
 
 # create command string and run svgis from command line
 # svgis usage:
@@ -105,8 +113,13 @@ bound4 = bounds[3]
 # -i [geodata field to use as id]
 # -c [css file]
 # -b [bounds]
-command = "svgis draw floodviz/static/data/gages.json floodviz/static/data/cities.json -o " \
-          "floodviz/static/data/sitemap.svg -f 500 -j epsg:2794 " \
-          "-i \"name\" -c floodviz/static/css/site_style.css -b " + \
-          str(bound1) + " " + str(bound2) + " " + str(bound3) + " " + str(bound4)
-os.system(command)
+# command = "svgis draw floodviz/static/data/gages.json floodviz/static/data/cities.json -o " \
+#           "floodviz/static/data/sitemap.svg -f 500 -j epsg:2794 " \
+#           "-i \"name\" -c floodviz/static/css/site_style.css -b " + \
+#           str(bound1) + " " + str(bound2) + " " + str(bound3) + " " + str(bound4)
+# os.system(command)
+
+x = svgis.map("floodviz/static/data/gages.json", scale=300, crs="epsg:2794", bounds=bounds)
+
+with open("floodviz/static/data/mapout.svg", "w") as f:
+    f.write(x)
