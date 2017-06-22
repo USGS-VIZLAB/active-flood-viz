@@ -5,7 +5,7 @@ var hydrograph = document.getElementById('hydrograph');
 hydrograph.style.height = hydrometa['height'];
 hydrograph.style.width = hydrometa['width'];
 
-d3.json('../static/data/hydrograph_data.json', function(data) {  // open more dynamic file path
+d3.json('../static/data/hydrograph_data.json', function(data) {
 
   nv.addGraph( function() {
     
@@ -17,7 +17,7 @@ d3.json('../static/data/hydrograph_data.json', function(data) {  // open more dy
     var max = d3.max(data, function(d) { return d3.max(d.values, getMax)})
     
     var chart = nv.models.cumulativeLineChart()
-                  .x( getX )  // this value is stored in miliseconds since epoch (converted in data_format.py with datetime)
+                  .x( getX )  // this value is stored in milliseconds since epoch (converted in data_format.py with datetime)
                   .y( getY ) 
                   .color(d3.scale.category10().range())
                   .useInteractiveGuideline(true)
