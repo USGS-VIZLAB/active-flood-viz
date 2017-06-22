@@ -3,10 +3,10 @@ html, body, .main-content {
 	margin: 0;
 }
 #hydrograph {
-	height: 60%;
-	width: 45%;
+/*	height: 60%;
+	width: 45%;*/
 	margin-top: 50px;
 }
 .nv-indexLine {
-	display: none;
+/*	display: none;*/
 }

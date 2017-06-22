@@ -19,6 +19,7 @@ def home():
 	start_date = app.config['START_DT']
 	end_date = app.config['END_DT']
 	n_show_series = app.config['N_SERIES']
+	hydro_meta = app.config['HYDRO_META']
 
 	## Set up to retrieve all site ids from url? ##
 	for idx, site in enumerate(sites):
@@ -27,12 +28,14 @@ def home():
 		try:
 			r = requests.get(url)
 		except:
-			print('Unable to retrieve URL ' + url)
+			print('Unable to retrieve URL: ' + url)
 			continue
 		
+
 		if r.status_code is 200:
 			j = r.json()
-			key = site # Key for this series
+			siteName = j['value']['timeSeries'][0]['sourceInfo']['siteName']
+			key = siteName # Key for this series
 			newd.append({'key': key, 'values': [], 'max': 0})
 			# Fill new data
 			max_val = 0
@@ -48,7 +51,7 @@ def home():
 				t = dt.split('T')[1].split('.')[0]
 			 	# reformat datetime for python datetime
 				dt = datetime.strptime(date + ' ' + t, '%Y-%m-%d %H:%M:%S')
-				# Conver to miliseconds for use with d3 axis format
+				# Conver to miliseconds for use with d3 x axis format
 				dt_ms = time.mktime(dt.timetuple()) * 1000
 				# create dummy value for nvd3 issue at https://github.com/novus/nvd3/issues/695 #
 				if idx2 is 0:
@@ -69,9 +72,8 @@ def home():
 				newd.remove(site)
 
 	# Save Data #
-	with open('floodviz\static\data\hydrograph_data.json', 'w') as fout: # TODO: More dynamic file path
+	with open('floodviz/static/data/hydrograph_data.json', 'w') as fout: # Relative path so it's chill
 		json.dump(newd, fout, indent=1)
 
-	return render_template('index.html')
-	# return render_template('index.html', datahydro=json.dumps(newd))
+	return render_template('index.html', hydrometa=json.dumps(hydro_meta))
 	######## For passing json as object to client javascript. (d3 needs a json file though)

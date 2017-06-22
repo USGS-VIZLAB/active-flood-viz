@@ -1,5 +1,11 @@
+"use strict";
 
-d3.json('..\\static\\data\\hydrograph_data.json', function(data) {  // open more dynamic file path
+var hydrometa = JSON.parse(hydrometa);
+var hydrograph = document.getElementById('hydrograph');
+hydrograph.style.height = hydrometa['height'];
+hydrograph.style.width = hydrometa['width'];
+
+d3.json('../static/data/hydrograph_data.json', function(data) {  // open more dynamic file path
 
   nv.addGraph( function() {
     
@@ -21,11 +27,11 @@ d3.json('..\\static\\data\\hydrograph_data.json', function(data) {  // open more
                   ;
 
     chart.xAxis
-        .axisLabel(" Date (Y-D-M)")
+        .axisLabel(" Date (M-D-Y)")
         .axisLabelDistance(10)
         .ticks(5)
         .tickFormat(function(d) {
-            return d3.time.format('%y-%d-%m')(new Date(d))
+            return d3.time.format('%m-%d-%y')(new Date(d))
         });
 
     chart.yAxis
