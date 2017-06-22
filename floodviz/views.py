@@ -13,8 +13,8 @@ def home():
 
 
 # This program requires svgis to be installed (which in turn requires Fiona and GDAL)
-# Takes a list of site ids in the form of "site_ids.csv"
-# Takes config data in the form of "site_configs.yaml"
+# Takes a list of site ids in the form of "site_ids.csv" (IDs now given in config file)
+# Takes config data in the form of "site_configs.yaml" (also now given in config file)
 # Takes style in the form of "site_styles.css"
 # Adds a city layer in the form of "cities.json"
 # outputs an SVG with ids for each site
