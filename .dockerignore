@@ -1,0 +1,19 @@
+# python virtual environments
+ENV
+env
+venv
+.venv
+
+# node packages
+node_modules*
+
+# IDE files
+.idea
+
+# OS-specific
+.DS_Store
+
+# git-related
+.git
+.gitignore
+
