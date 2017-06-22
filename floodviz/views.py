@@ -90,7 +90,7 @@ with open("floodviz/static/data/gages.json", "w") as f:
 #
 # bounds = bounds_file['boundingBox']
 
-#set bounds
+# set bounds
 bound1 = bounds[0]
 bound2 = bounds[1]
 bound3 = bounds[2]
