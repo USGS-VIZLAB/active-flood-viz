@@ -1,6 +1,3 @@
-import json
-import os
-
 from flask import request, render_template, abort
 import requests
 from svgis import svgis
