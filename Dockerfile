@@ -4,7 +4,8 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     nginx-light \
     curl \
-    apt-transport-https
+    apt-transport-https \
+    git
 
 COPY . /app
 WORKDIR /app
@@ -18,9 +19,9 @@ RUN rm -f /etc/apt/sources.list.d/chris-lea-node_js-jessie.list \
 && apt-get update \
 && apt-get install -y nodejs
 
-RUN pip3 install -r requirements.txt
+RUN pip3 --cert /app/DOIRootCA2.cer install -r requirements.txt
 
-RUN npm config set cafile "/etc/ssl/certs/DOIRootCA2.pem" \
+RUN npm config set cafile "/app/DOIRootCA2.cer" \
 && npm update
 
 RUN node_modules/bower/bin/bower install --allow-root
