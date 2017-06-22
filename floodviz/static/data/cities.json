@@ -1,0 +1,32 @@
+
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-91.67, 41.97]
+      },
+      "properties": {
+        "name": "Cedar Rapids IA",
+        "country.etc": "IA",
+        "pop": "123243",
+        "capital": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-93.62, 41.58]
+      },
+      "properties": {
+        "name": "Des Moines IA",
+        "country.etc": "IA",
+        "pop": "192050",
+        "capital": "2"
+      }
+    }
+  ]
+}
