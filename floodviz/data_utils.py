@@ -1,6 +1,7 @@
+from datetime import datetime
 import operator
 import time
-from datetime import datetime
+
 
 def parse_hydrodata(jdata, newd, idx, sites_value_maxes):
     siteName = jdata['value']['timeSeries'][0]['sourceInfo']['siteName']
