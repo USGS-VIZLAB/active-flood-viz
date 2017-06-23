@@ -26,7 +26,8 @@ def home():
     maputils.write_geojson("floodviz/static/data/gages.json", data_nice)
 
     # write map and store in x
-    x = svgis.map("floodviz/static/data/gages.json", scale=300, crs="epsg:2794", bounds=bounds)
+    x = svgis.map(("floodviz/static/data/counties.json", "floodviz/static/data/gages.json",
+                   "floodviz/static/data/cities.json"), bounds=bounds, crs="epsg:2794", scale=300)
 
     # write map to mapout.svg
     # with open("floodviz/static/data/mapout.svg", "w") as f:
