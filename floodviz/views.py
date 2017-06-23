@@ -9,13 +9,13 @@ from . import hydrograph_utils
 @app.route('/home/')
 def home():
     # new data store #
-    newd = []
     sites = app.config['SITE_IDS']
     start_date = app.config['START_DT']
     end_date = app.config['END_DT']
     n_show_series = app.config['N_SERIES']
     hydro_meta = app.config['HYDRO_META']
     url_top = app.config['NWIS_SITE_SERVICE_ENDPOINT']
+    tempd = []
     sites_value_maxes = {}
 
     # Set up to retrieve all site ids from url? #
@@ -26,11 +26,14 @@ def home():
         r = requests.get(url)
 
         if r.status_code is 200:
-            j = r.json()
+            j = r.json()['value']['timeSeries'][0]
             # custom data parsing utility. See hydrograph_utils.py
-            hydrograph_utils.parse_hydrodata(j, newd, idx, sites_value_maxes)
+            series_data = hydrograph_utils.parse_hydrodata(j)
+            tempd.append(series_data)
+            sites_value_maxes[series_data['key']] = series_data['max_val']
+    
     # custom filtering logic for hydrodata and hydrograph series. See hydrograph_utils.py
-    newd = hydrograph_utils.filter_hydrodata(newd, sites_value_maxes, n_show_series)
+    newd = hydrograph_utils.filter_hydrodata(tempd, sites_value_maxes, n_show_series)
 
     # Save Data #
     with open('floodviz/static/data/hydrograph_data.json', 'w') as fout:  # Relative path so it's chill

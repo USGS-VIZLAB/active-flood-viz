@@ -16,8 +16,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			var getY = function(d) { return d.value };
 			var getMax = function(d) { return d.max };
 
-			var min = d3.min(data, function(d) { return d3.min(d.values, getY)})
-			var max = d3.max(data, function(d) { return d3.max(d.values, getMax)})
+			var min = d3.min(data, function(d) { return d3.min(d.values)})
+			var max = d3.max(data, function(d) { return d3.max(d.values)})
 			
 			var chart = nv.models.cumulativeLineChart()
 					.x( getX )  // this value is stored in milliseconds since epoch (converted in data_format.py with datetime)

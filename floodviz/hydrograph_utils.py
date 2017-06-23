@@ -3,17 +3,18 @@ import operator
 import time
 
 
-def parse_hydrodata(jdata, newd, idx, sites_value_maxes):
-    siteName = jdata['value']['timeSeries'][0]['sourceInfo']['siteName']
+def parse_hydrodata(jdata):
+    siteName = jdata['sourceInfo']['siteName']
     key = siteName  # Key for this series
-    newd.append({'key': key, 'values': [], 'max': 0})
-    # Fill new data
+    tempd = {'key': key, 'values': [], 'max_val': 0}
+
+    # Fill new data for this series
     max_val = 0
-    for idx2, obj in enumerate(jdata['value']['timeSeries'][0]['values'][0]['value']):
+    for idx2, obj in enumerate(jdata['values'][0]['value']):
         value = obj['value']
         # For filtering series #
         if max_val < float(value):
-            max_val = float(value)
+            tempd['max_val'] = float(value)
 
         dt = obj['dateTime']
         date = dt.split('T')[0]
@@ -24,20 +25,21 @@ def parse_hydrodata(jdata, newd, idx, sites_value_maxes):
         dt_ms = time.mktime(dt.timetuple()) * 1000
         # (for below if statment) create dummy value for nvd3 issue at https://github.com/novus/nvd3/issues/695 #
         if idx2 is 0: # First datapoint of this site
-            newd[idx]['values'].append({'date': date, "time": 0, "time_mili": dt_ms, 'value': 0, 'max': max_val})
+            tempd['values'].append({'date': date, "time": 0, "time_mili": dt_ms, 'value': 0})
    
-        newd[idx]['values'].append({'date': date, "time": t, "time_mili": dt_ms, 'value': value, 'max': max_val})
+        tempd['values'].append({'date': date, "time": t, "time_mili": dt_ms, 'value': value})
 
-    sites_value_maxes[key] = max_val
+    return tempd
+
 
     
-def filter_hydrodata(newd, sites_value_maxes, n_show_series):
+def filter_hydrodata(tempd, sites_value_maxes, n_show_series):
     # Filter out the sites to plot
     sorted_avg = sorted(sites_value_maxes.items(), key=operator.itemgetter(1), reverse=True)
     rm = sorted_avg[n_show_series:]  # remove all but top x series
     rm = dict(rm)
     ret = []
-    for item in newd:
+    for item in tempd:
         siteN = item['key']
         if rm.get(siteN) is None:
             ret.append(item)
