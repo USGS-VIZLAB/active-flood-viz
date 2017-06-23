@@ -78,8 +78,8 @@ def home():
     x = svgis.map("floodviz/static/data/gages.json", scale=300, crs="epsg:2794", bounds=bounds)
 
     # write map to mapout.svg
-    with open("floodviz/static/data/mapout.svg", "w") as f:
-        f.write(x)
+    # with open("floodviz/static/data/mapout.svg", "w") as f:
+    #     f.write(x)
 
     return render_template('index.html', x=x)
 
