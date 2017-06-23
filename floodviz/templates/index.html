@@ -8,26 +8,25 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
 	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/d3/d3.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/nvd3/build/nv.d3.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/hydrograph.js')}}"></script>
 
 	<title>Flood Viz</title>
 
 </head>
 
 <body>
+
+	<div class="main-content container-fluid">
+		<div id="hydrograph"><svg></svg></div>
+	</div>
 	
 	<script type="text/javascript">
 		// Global Namespace for project - FV
 		var FV = FV || {};
 		FV.hydrometa = {{ config.HYDRO_META|safe }};
 	</script> 
-
-	<div class="main-content container-fluid">
-		<div id="hydrograph"><svg></svg></div>
-	</div>
-
-	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/d3/d3.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/nvd3/build/nv.d3.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/hydrograph.js')}}"></script>
 
 </body>
 
