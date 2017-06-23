@@ -29,4 +29,4 @@ RUN node_modules/bower/bin/bower install --allow-root
 EXPOSE 5050
 
 ENTRYPOINT ["python3"]
-CMD ["run.py" ,"--host", "0.0.0.0"]
+CMD ["run.py" ,"--host", "0.0.0.0", "--freeze"]
