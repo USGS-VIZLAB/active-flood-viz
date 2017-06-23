@@ -27,11 +27,10 @@ def home():
 
         if r.status_code is 200:
             j = r.json()
-            # custom data parsing utility. See data_utils.py
-            data_utils.parse_hydrodata(j, newd, idx, sites_value_maxes)
-    # custom filtering logic for hydrodata and hydrograph series. See data_utils.py
-    data_utils.filter_hydrodata(newd, sites_value_maxes, n_show_series)
-    
+            # custom data parsing utility. See hydrograph_utils.py
+            hydrograph_utils.parse_hydrodata(j, newd, idx, sites_value_maxes)
+    # custom filtering logic for hydrodata and hydrograph series. See hydrograph_utils.py
+    newd = hydrograph_utils.filter_hydrodata(newd, sites_value_maxes, n_show_series)
 
     # Save Data #
     with open('floodviz/static/data/hydrograph_data.json', 'w') as fout:  # Relative path so it's chill

@@ -32,11 +32,13 @@ def parse_hydrodata(jdata, newd, idx, sites_value_maxes):
 
     
 def filter_hydrodata(newd, sites_value_maxes, n_show_series):
-    # Filter out the sites to plot # TODO: I can make this faster with one pass HASH
+    # Filter out the sites to plot
     sorted_avg = sorted(sites_value_maxes.items(), key=operator.itemgetter(1), reverse=True)
-    remove = sorted_avg[n_show_series:]  # remove all but top x series
-    for item in remove:
-        key = item[0]
-        for site in newd:
-            if key is site['key']:
-                newd.remove(site)
+    rm = sorted_avg[n_show_series:]  # remove all but top x series
+    rm = dict(rm)
+    ret = []
+    for item in newd:
+        siteN = item['key']
+        if rm.get(siteN) is None:
+            ret.append(item)
+    return ret
