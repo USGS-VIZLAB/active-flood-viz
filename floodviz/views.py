@@ -81,7 +81,7 @@ def home():
     with open("floodviz/static/data/mapout.svg", "w") as f:
         f.write(x)
 
-    return render_template('index.html')
+    return render_template('index.html', x=x)
 
 
 
