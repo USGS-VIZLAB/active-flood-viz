@@ -108,7 +108,7 @@ node_modules/
 .idea/
 
 # Data files
-floodviz/static/data/gages.json
+floodviz/static/data/
 
 
 

@@ -1,6 +1,7 @@
 import requests
 
 # function to generate a dictionary of site data after querying NWIS
+
 def site_dict(site_list, url_prefix):
     # generate the string of site ids for the url
     id_input_string = ",".join(site_list)
