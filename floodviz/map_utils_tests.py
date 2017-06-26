@@ -1,4 +1,4 @@
-from floodviz.maputils import site_dict, write_geojson
+from floodviz.map_utils import site_dict, write_geojson
 
 import unittest
 
