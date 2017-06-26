@@ -107,6 +107,11 @@ node_modules/
 #IDE specific ignores
 .idea/
 
+# certificates
+*.cer
+*.pem
+*.crt
+
 # Data files #
 *floodviz/static/data/
 
