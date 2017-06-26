@@ -5,6 +5,9 @@ html, body, .main-content {
 #hydrograph {
 	margin-top: 50px;
 }
+#peakflow_bar {
+	margin: 0 auto;
+}
 .nv-indexLine {
 	display: none;
 }

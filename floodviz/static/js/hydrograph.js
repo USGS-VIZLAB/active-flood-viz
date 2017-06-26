@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 			chart.yAxis.axisLabel('Discharge (cubic feet per second)')
 					.axisLabelDistance(40)
-					//.ticks(5)
 					.tickValues([10, 100, 1000, 10000, 100000])
 					.tickFormat(function(d) { return d3.format(",")(d) + " cfps"});
 			

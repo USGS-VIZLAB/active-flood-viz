@@ -1,7 +1,5 @@
 import requests
 
-
-
 def req_peak_data(site, start_date, end_date, url_peak):
     """ 
     Requests water peak flow data in rdb format from NWIS water data
@@ -36,12 +34,15 @@ def parse_peak_data(content, site_no):
     """
     peak_data = {'key': site_no, 'values': []}
 
+
+    # TODO: duplicate data clean
+
     for line in content:
-        if line.startswith('#'):
+        if not line.startswith('USGS'):
             continue
         line = line.split('\t')
         year = line[2].split('-')[0]
-        peak_val = line[4]
+        peak_val = int(line[4])
         peak_data['values'].append({'label': year, 'value': peak_val})
 
-    return peak_data
+    return [peak_data]

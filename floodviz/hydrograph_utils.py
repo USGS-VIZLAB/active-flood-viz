@@ -64,5 +64,9 @@ def req_hydrodata(sites, start_date, end_date, url_hydro):
     url =  url_hydro +'iv/?site=' + sites_string + '&startDT=' + \
               start_date + '&endDT=' + end_date + '&parameterCD=00060&format=json'
     r = requests.get(url)
+    
+
+    # TODO : HANDLE bad status! 
+
     if r.status_code is 200:
         return r.json()['value']['timeSeries']
