@@ -53,7 +53,7 @@ class TestSiteDict(unittest.TestCase):
 
 class TestWriteGeojson(unittest.TestCase):
 
-    def test_filename_is_alpha(self):
+    def test_filename_is_string(self):
         self.assertEqual(write_geojson(1, mock_data), None)
 
     def test_data_is_none(self):
@@ -64,7 +64,6 @@ class TestWriteGeojson(unittest.TestCase):
 
     def test_bad_filename_suffix(self):
         self.assertEqual(write_geojson("out.x", mock_data), None)
-
 
 
 if __name__ == '__main__':
