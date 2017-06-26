@@ -17,7 +17,7 @@ def site_dict(site_list, url_prefix):
     id_input_string = ",".join(site_list)
 
     # create the url
-    url = url_prefix + "/?format=rdb&sites=" + id_input_string + "&siteStatus=all"
+    url = url_prefix + "site/?format=rdb&sites=" + id_input_string + "&siteStatus=all"
 
     # get data from url
     req = requests.get(url)
