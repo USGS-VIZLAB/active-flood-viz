@@ -112,3 +112,5 @@ node_modules/
 *.pem
 *.crt
 
+# Data files #
+*floodviz/static/data/
