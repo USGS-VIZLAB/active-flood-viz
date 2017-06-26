@@ -1,8 +1,16 @@
 import requests
 
-# function to generate a dictionary of site data after querying NWIS
-
 def site_dict(site_list, url_prefix):
+    """Puts site data into a dictionary
+
+    Args:
+        site_list: A list of site ids to be queried on NWIS
+        url_prefix: The beginning of the NWIS url
+
+    Returns:
+        A dict containing various site information in a usable format.
+    """
+
     # generate the string of site ids for the url
     id_input_string = ",".join(site_list)
 
@@ -32,8 +40,14 @@ def site_dict(site_list, url_prefix):
     return dnice
 
 
-# function to write data from NWIS to a geojson file
 def write_geojson(filename, data):
+    """Writes site data to a .json file so it can be mapped
+
+       Args:
+           filename: the file to be written to
+           data: the data to be written to the file
+    """
+
     with open(filename, "w") as f:
         f.write("{ \"type\": \"FeatureCollection\", \"features\": [ \n")
 
