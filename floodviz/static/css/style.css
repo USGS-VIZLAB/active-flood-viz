@@ -1,0 +1,10 @@
+html, body, .main-content {
+	height: 100%;
+	margin: 0;
+}
+#hydrograph {
+	margin-top: 50px;
+}
+.nv-indexLine {
+	display: none;
+}
