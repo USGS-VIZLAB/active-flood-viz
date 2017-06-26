@@ -1,4 +1,6 @@
 import requests
+import json
+from string import Template
 
 def site_dict(site_list, url_prefix):
     """Puts site data into a dictionary
@@ -41,18 +43,51 @@ def write_geojson(filename, data):
            filename: the file to be written to
            data: the data to be written to the file
     """
+    data = create_geojson(data)
+    with open(filename, "w+") as f:
+        json.dump(data, f, indent=True)
 
-    with open(filename, "w") as f:
-        f.write("{ \"type\": \"FeatureCollection\", \"features\": [ \n")
 
-        for i, datum in enumerate(data):
-            f.write("{ \"type\": \"Feature\",\n \"geometry\": {\n \"type\": \"Point\",\n \"coordinates\" : "
-                    "[" + datum.get('dec_long_va') + ", " + datum.get('dec_lat_va') + "]\n },\n")
-            f.write(" \"properties\": {\n \"name\": \"" + datum.get('station_nm') + "\",\n \"id\": \""
-                    + datum.get('site_no') + "\",\n \"huc\": \"" +
-                    datum['huc_cd'] + "\" \n } \n }")
-            # add a comma unless at end of list
-            if data[i] != data[len(data) - 1]:
-                f.write(",")
-            f.write("\n")
-        f.write(" ] }")
+def create_geojson(data):
+    """
+    :param data: a dictionary of sites to be transformed into geojson
+    :return: a geojson string representing the sites
+    """
+
+    new_data = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+    for original in data:
+        item = {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [
+                    original['dec_long_va'],
+                    original['dec_lat_va']
+                ]
+            },
+            'properties': {
+                'name': original['station_nm'],
+                'id': original['site_no'],
+                'huc': original['huc_cd']
+            }
+        }
+        new_data['features'].append(item)
+    return new_data
+
+
+def projection_info(code, url):
+    """
+    :param code: the EPSG code of the projection we wish to use
+
+    :param url: A python string TEMPLATE in which ${epsg_code} will be replaced with `code`
+        this should found under SPATIAL_REFERENCE_ENDPOINT in `config.py`
+
+    :return: the proj4 projection definition string of the desired projection
+    """
+    url = Template(url)
+    url = url.substitute(epsg_code=str(code))
+    req = requests.get(url)
+    return req.text
