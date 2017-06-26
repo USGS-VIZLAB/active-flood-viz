@@ -1,5 +1,6 @@
 from datetime import datetime
 import time
+import requests
 
 
 def parse_hydrodata(jdata):
@@ -18,7 +19,7 @@ def parse_hydrodata(jdata):
         corresponds to a different site.   
 
     """
-    
+
     all_series_data = []
 
     for idx, site in enumerate(jdata):
@@ -43,3 +44,28 @@ def parse_hydrodata(jdata):
 
     return all_series_data
 
+
+def req_hydrodata(sites, start_date, end_date, url_top):
+
+    """ 
+    Requests hydrodata from nwis web service based on passed in parameters. 
+
+    ARGS: 
+        sites - List of site IDs to request
+        start_date - start date for the time series data
+        end_date - end date for the time series data
+        url_top - URL endpoint for the nwis web service
+    
+    RETURNS:
+        returns a dictonary with the requested data from the nwis service 
+    
+    """
+
+
+    # Set up to retrieve all site ids for hydrograph from url #
+    sites_string = ','.join(sites)
+    url =  url_top +'iv/?site=' + sites_string + '&startDT=' + \
+              start_date + '&endDT=' + end_date + '&parameterCD=00060&format=json'
+    r = requests.get(url)
+    if r.status_code is 200:
+        return r.json()['value']['timeSeries']

@@ -17,22 +17,10 @@ def home():
     hydro_meta = app.config['HYDRO_META']
     url_top = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 
-    # Set up to retrieve all site ids from url #
-    site_string = ','.join(sites)
-
-    url =  url_top +'iv/?site=' + site_string + '&startDT=' + \
-              start_date + '&endDT=' + end_date + '&parameterCD=00060&format=json'
-
-    r = requests.get(url)
-
-    if r.status_code is 200:
-        j = r.json()['value']['timeSeries']
-        # custom data parsing utility. See hydrograph_utils.py
-        all_series_data = hydrograph_utils.parse_hydrodata(j)
-
-    # Save Data #
-    with open('floodviz/static/data/hydrograph_data.json', 'w') as fout:  # Relative path so it's chill
+    j = hydrograph_utils.req_hydrodata(sites, start_date, end_date, url_top)
+    all_series_data = hydrograph_utils.parse_hydrodata(j)
+    
+    with open('floodviz/static/data/hydrograph_data.json', 'w') as fout: 
         json.dump(all_series_data, fout, indent=1)
 
-    # For passing json as object to client javascript. (d3 needs a json file though)
     return render_template('index.html')
