@@ -2,9 +2,11 @@ import requests
 
 def site_dict(site_list, url_prefix):
     """Puts site data into a dictionary
+
     Args:
         site_list: A list of site ids to be queried on NWIS
         url_prefix: The beginning of the NWIS url
+
     Returns:
         A dict containing various site information in a usable format.
     """
@@ -34,6 +36,7 @@ def site_dict(site_list, url_prefix):
 
 def write_geojson(filename, data):
     """Writes site data to a .json file so it can be mapped
+    
        Args:
            filename: the file to be written to
            data: the data to be written to the file
