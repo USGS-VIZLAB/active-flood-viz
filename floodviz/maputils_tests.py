@@ -65,6 +65,9 @@ class TestWriteGeojson(unittest.TestCase):
     def test_bad_filename_suffix(self):
         self.assertEqual(write_geojson("out.x", mock_data), None)
 
+    def test_data_not_list(self):
+        self.assertEqual(write_geojson("out.json", "string"), None)
+
 
 if __name__ == '__main__':
     unittest.main()

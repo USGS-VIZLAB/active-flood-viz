@@ -88,6 +88,10 @@ def write_geojson(filename, data):
         print("Error: data is None")
         return
 
+    if not isinstance(data, list):
+        print("Error: data is not a list")
+        return
+
     with open(filename, "w") as f:
         f.write("{ \"type\": \"FeatureCollection\", \"features\": [ \n")
 
