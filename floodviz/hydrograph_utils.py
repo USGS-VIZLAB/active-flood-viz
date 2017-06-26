@@ -45,7 +45,7 @@ def parse_hydrodata(jdata):
     return all_series_data
 
 
-def req_hydrodata(sites, start_date, end_date, url_top):
+def req_hydrodata(sites, start_date, end_date, url_hydro):
 
     """ 
     Requests hydrodata from nwis web service based on passed in parameters. 
@@ -54,14 +54,14 @@ def req_hydrodata(sites, start_date, end_date, url_top):
         sites - List of site IDs to request
         start_date - start date for the time series data
         end_date - end date for the time series data
-        url_top - URL endpoint for the nwis web service
+        url_hydro - URL endpoint for the nwis web service
     
     RETURNS:
         returns a dictonary with the requested data from the nwis service 
     
     """
     sites_string = ','.join(sites)
-    url =  url_top +'iv/?site=' + sites_string + '&startDT=' + \
+    url =  url_hydro +'iv/?site=' + sites_string + '&startDT=' + \
               start_date + '&endDT=' + end_date + '&parameterCD=00060&format=json'
     r = requests.get(url)
     if r.status_code is 200:

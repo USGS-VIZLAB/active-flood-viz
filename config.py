@@ -2,6 +2,7 @@
 DEBUG = False
 
 NWIS_SITE_SERVICE_ENDPOINT = 'https://waterservices.usgs.gov/nwis/'
+NWIS_WATERPEAK_SITE_SERVICE_ENDPOINT = 'https://nwis.waterdata.usgs.gov/nwis/peak'
 
 # Site IDs available for charting. Expects a list of valid site IDs. 
 SITE_IDS = []
