@@ -45,16 +45,14 @@ def write_geojson(filename, data):
     with open(filename, "w") as f:
         f.write("{ \"type\": \"FeatureCollection\", \"features\": [ \n")
 
-        count = -1
-        for datum in data:
-            count += 1
+        for i, datum in enumerate(data):
             f.write("{ \"type\": \"Feature\",\n \"geometry\": {\n \"type\": \"Point\",\n \"coordinates\" : "
                     "[" + datum.get('dec_long_va') + ", " + datum.get('dec_lat_va') + "]\n },\n")
             f.write(" \"properties\": {\n \"name\": \"" + datum.get('station_nm') + "\",\n \"id\": \""
                     + datum.get('site_no') + "\",\n \"huc\": \"" +
                     datum['huc_cd'] + "\" \n } \n }")
             # add a comma unless at end of list
-            if data[count] != data[len(data) - 1]:
+            if data[i] != data[len(data) - 1]:
                 f.write(",")
             f.write("\n")
         f.write(" ] }")
