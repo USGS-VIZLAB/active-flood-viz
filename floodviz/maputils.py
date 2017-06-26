@@ -5,10 +5,10 @@ def site_dict(site_list, url_prefix):
 
     Args:
         site_list: A list of site ids to be queried on NWIS
-        url_prefix: The beginning of the NWIS url
+        url_prefix: A string containing the beginning of the NWIS site url
 
     Returns:
-        A dict containing various site information in a usable format.
+        An array of dicts containing various site information in a usable format.
     """
 
     # generate the string of site ids for the url
@@ -38,8 +38,8 @@ def write_geojson(filename, data):
     """Writes site data to a .json file so it can be mapped
 
        Args:
-           filename: the file to be written to
-           data: the data to be written to the file
+           filename: A string naming the file to be written to
+           data: A list of dicts with data to be written to the file
     """
 
     with open(filename, "w") as f:
@@ -50,7 +50,7 @@ def write_geojson(filename, data):
                     "[" + datum.get('dec_long_va') + ", " + datum.get('dec_lat_va') + "]\n },\n")
             f.write(" \"properties\": {\n \"name\": \"" + datum.get('station_nm') + "\",\n \"id\": \""
                     + datum.get('site_no') + "\",\n \"huc\": \"" +
-                    datum['huc_cd'] + "\" \n } \n }")
+                    datum.get('huc_cd') + "\" \n } \n }")
             # add a comma unless at end of list
             if data[i] != data[len(data) - 1]:
                 f.write(",")
