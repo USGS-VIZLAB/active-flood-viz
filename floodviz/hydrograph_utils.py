@@ -60,9 +60,6 @@ def req_hydrodata(sites, start_date, end_date, url_top):
         returns a dictonary with the requested data from the nwis service 
     
     """
-
-
-    # Set up to retrieve all site ids for hydrograph from url #
     sites_string = ','.join(sites)
     url =  url_top +'iv/?site=' + sites_string + '&startDT=' + \
               start_date + '&endDT=' + end_date + '&parameterCD=00060&format=json'
