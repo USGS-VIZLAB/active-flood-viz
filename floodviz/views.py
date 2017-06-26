@@ -18,14 +18,7 @@ def home():
     url_top = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 
     # Set up to retrieve all site ids from url #
-    site_string = ''
-    for idx, site in enumerate(sites):
-        site = site +  ','
-        site_string += site
-        # Remove last comma
-        if idx is len(sites) - 1:
-            site_string = site_string[:-1]
-
+    site_string = ','.join(sites)
 
     url =  url_top +'iv/?site=' + site_string + '&startDT=' + \
               start_date + '&endDT=' + end_date + '&parameterCD=00060&format=json'

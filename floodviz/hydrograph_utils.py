@@ -9,10 +9,13 @@ def parse_hydrodata(jdata):
     and formats for NVD3 charting library.
 
     ARGS: 
-        jdata - json containing time series data for all sites listed in config.py SITE_IDs
+        jdata (list of dictonaries) - json objects in a list which contains 
+        time series data for all sites listed in config.py SITE_IDs.
     
     RETURNS:
-        all series data correctly formated for NVD3 charting library. 
+        All series data correctly formated for NVD3 charting library. 
+        This is also a list of python dictonaries where each dictionary 
+        corresponds to a different site.   
 
     """
     
