@@ -18,16 +18,12 @@ def site_dict(site_list, url_prefix):
     url = url_prefix + "/?format=rdb&sites=" + id_input_string + "&siteStatus=all"
 
     # get data from url
-    data = ""
     req = requests.get(url)
-    for line in req.text.splitlines():
-        if not line.startswith("#"):
-            data += line + '\n'
 
-    # create array by splitting lines
-    data = data.split('\n')
+    # put data into list
+    data = req.text.splitlines()[29:]
 
-    # make a list of dicts  from data
+    # make a list of dicts from data
     fields = data[0].split('\t')
     dnice = []
     for line in data[2:]:
@@ -35,8 +31,6 @@ def site_dict(site_list, url_prefix):
         line_dict = dict(zip(fields, line))
         dnice.append(line_dict)
 
-    # remove bad element from end of list
-    dnice = dnice[:-1]
     return dnice
 
 
