@@ -36,7 +36,7 @@ def site_dict(site_list, url_prefix):
 
 def write_geojson(filename, data):
     """Writes site data to a .json file so it can be mapped
-    
+
        Args:
            filename: the file to be written to
            data: the data to be written to the file
