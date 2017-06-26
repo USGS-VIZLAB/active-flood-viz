@@ -11,6 +11,26 @@ def site_dict(site_list, url_prefix):
         An array of dicts containing various site information in a usable format.
     """
 
+    if not site_list:
+        print("Error: site_list is empty")
+        return
+
+    if not url_prefix:
+        print("Error: url_prefix is empty")
+        return
+
+    for site in site_list:
+        if not site.isdigit():
+            print("Error: list contains a non-numeric element")
+            return
+        if len(site) != 8:
+            print("Error: all site ids must be 8 digits")
+            return
+
+    if not url_prefix == 'https://waterservices.usgs.gov/nwis/site':
+        print("Error: incorrect url prefix provided")
+        return
+
     # generate the string of site ids for the url
     id_input_string = ",".join(site_list)
 
@@ -20,8 +40,19 @@ def site_dict(site_list, url_prefix):
     # get data from url
     req = requests.get(url)
 
+    if not req.text.startswith('#'):
+        print("Error: request returns invalid data")
+        return
+
     # put data into list
-    data = req.text.splitlines()[29:]
+    data = []
+    for line in req.text.splitlines():
+        if not line.startswith('#'):
+            data.append(line)
+
+    if not data:
+        print("Error: webpage contains no usable data")
+        return
 
     # make a list of dicts from data
     fields = data[0].split('\t')
@@ -41,6 +72,21 @@ def write_geojson(filename, data):
            filename: A string naming the file to be written to
            data: A list of dicts with data to be written to the file
     """
+    if not type(filename) == str:
+        print("Error: filename must be string")
+        return;
+
+    if not filename.endswith(".json"):
+        print("Error: outfile must be .json")
+        return
+
+    if not data:
+        print("Error: data is empty list")
+        return
+
+    if data is None:
+        print("Error: data is None")
+        return
 
     with open(filename, "w") as f:
         f.write("{ \"type\": \"FeatureCollection\", \"features\": [ \n")
@@ -56,3 +102,4 @@ def write_geojson(filename, data):
                 f.write(",")
             f.write("\n")
         f.write(" ] }")
+
