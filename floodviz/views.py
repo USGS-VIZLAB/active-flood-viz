@@ -8,6 +8,7 @@ from . import map_utils
 
 @app.route('/home/')
 def home():
+
     # new data store #
     sites = app.config['SITE_IDS']
     start_date = app.config['START_DT']
