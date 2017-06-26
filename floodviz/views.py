@@ -1,5 +1,4 @@
 import json
-import requests
 from flask import render_template
 
 from . import app
