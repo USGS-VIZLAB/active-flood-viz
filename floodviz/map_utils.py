@@ -9,25 +9,25 @@ def site_dict(site_list, url_prefix):
         An array of dicts containing various site information in a usable format.
     """
 
-    if not site_list:
-        print("Error: site_list is empty")
-        return
+    # if not site_list:
+    #     print("Error: site_list is empty")
+    #     return
 
-    if not url_prefix:
-        print("Error: url_prefix is empty")
-        return
+    # if not url_prefix:
+    #     print("Error: url_prefix is empty")
+    #     return
 
-    for site in site_list:
-        if not site.isdigit():
-            print("Error: list contains a non-numeric element")
-            return
-        if len(site) != 8:
-            print("Error: all site ids must be 8 digits")
-            return
+    # for site in site_list:
+    #     if not site.isdigit():
+    #         print("Error: list contains a non-numeric element")
+    #         return
+    #     if len(site) != 8:
+    #         print("Error: all site ids must be 8 digits")
+    #         return
 
-    if not url_prefix == 'https://waterservices.usgs.gov/nwis/site':
-        print("Error: incorrect url prefix provided")
-        return
+    # if not url_prefix == 'https://waterservices.usgs.gov/nwis/site':
+    #     print("Error: incorrect url prefix provided")
+    #     return
 
     # generate the string of site ids for the url
     id_input_string = ",".join(site_list)

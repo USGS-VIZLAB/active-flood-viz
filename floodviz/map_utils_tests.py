@@ -2,7 +2,6 @@ from floodviz.map_utils import site_dict, write_geojson
 
 import unittest
 
-import requests
 import requests_mock
 
 sites = ['05463500', '05471050', '05420680', '05479000', '05484000', '05481000', '05486000', '05421000', '05485500',
@@ -69,6 +68,6 @@ class TestWriteGeojson(unittest.TestCase):
         self.assertEqual(write_geojson("out.json", "string"), None)
 
 
-if __name__ == '__main__':
-    unittest.main()
+# if __name__ == '__main__':
+#     unittest.main()
 
