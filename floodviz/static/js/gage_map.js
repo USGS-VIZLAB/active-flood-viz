@@ -1,8 +1,7 @@
 document.addEventListener("DOMContentLoaded", function (event) {
     "use strict";
-    var proj4string = FV.mapinfo.proj4string;
-    var proj = proj4(proj4string);
 
+    // Define helper functions
     function degreesToRadians(degrees) {
         return degrees * Math.PI / 180;
     }
@@ -10,6 +9,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     function radiansToDegrees(radians) {
         return radians * 180 / Math.PI;
     }
+
+    // read in projection information
+    var proj = proj4(FV.mapinfo.proj4string);
 
     var project = function (lambda, phi) {
         return proj.forward([lambda, phi].map(radiansToDegrees));
@@ -21,13 +23,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     //Define map projection
     var projection = d3.geoProjection(project);
-    projection.scale(1)
+
+    // Give projection initial rotation and scale
+    projection
+        .scale(1)
         .translate([0, 0]);
 
 
     //Define path generator
     var path = d3.geoPath().projection(projection);
 
+    // Read in height and width
     var height = FV.mapinfo.height;
     var width = FV.mapinfo.width;
 
@@ -37,13 +43,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .attr("width", width)
         .attr("height", height);
 
-
-    var bg = svg.append("g"),
-        sites = svg.append("g");
-
-
+    // read in geojson for sites
     var site_data = FV.mapinfo.site_data;
-    // Calculate bounding box transforms for entire collection
+
+    // Calculate bounding box transforms for the sites, we don't care about cutting off the background
     var b = path.bounds(site_data);
     var s = .95 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height);
     var t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
@@ -53,18 +56,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .scale(s)
         .translate(t);
 
-    var bg_data = FV.mapinfo.bg_data;
-    bg.selectAll("path")
-        .data(bg_data.features)
-        .enter()
-        .append("path")
-        .attr("d", path)
-        .style("stroke", "black")
-        .style("fill", "#ffffff");
+    // Define order in which layers should be added
+    var bg = svg.append("g"),
+        sites = svg.append("g");
 
-
-
-    //Bind data and create one path per GeoJSON feature
+    // Bind data and create one path per GeoJSON feature
+    // Add sites to the map
     sites.selectAll("path")
         .data(site_data.features)
         .enter()
@@ -72,6 +69,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .attr("d", path)
         .style("fill", "blue");
 
+    // Read in background geojson
+    var bg_data = FV.mapinfo.bg_data;
+
+    // Add geojson to map
+    bg.selectAll("path")
+        .data(bg_data.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .style("stroke", "black")
+        .style("fill", "#ffffff");
 
 
 
