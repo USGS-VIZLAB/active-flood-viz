@@ -2,6 +2,7 @@ import requests
 import json
 from string import Template
 
+
 def site_dict(site_list, url_prefix):
     """Puts site data into a dictionary
 
@@ -37,15 +38,17 @@ def site_dict(site_list, url_prefix):
 
 
 def write_geojson(filename, data):
-    """Writes site data to a .json file so it can be mapped
+    """
+    Writes site data to a .json file so it can be mapped
+    This version will create the file if it does not exist and overwrite it if it does. You have been warned.
 
        Args:
-           filename: the file to be written to
-           data: the data to be written to the file
+         :param  filename: the file to be written to
+         :param  data: the data to be written to the file
     """
     data = create_geojson(data)
-    with open(filename, "w+") as f:
-        json.dump(data, f, indent=True)
+    with open(filename, "w+") as file:
+        json.dump(data, file, indent=True)
 
 
 def create_geojson(data):
