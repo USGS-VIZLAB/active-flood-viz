@@ -15,6 +15,5 @@ node_modules*
 
 # git-related
 .git
-!.gitkeep
 .gitignore
 
