@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     };
 
     //Define map projection
-    var projection = d3.geoProjection(project);
+    var projection = d3.geo.projection(project);
 
     // Give projection initial rotation and scale
     projection
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 
     //Define path generator
-    var path = d3.geoPath().projection(projection);
+    var path = d3.geo.path().projection(projection);
 
     // Read in height and width
     var height = FV.mapinfo.height;
