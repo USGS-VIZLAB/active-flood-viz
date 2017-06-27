@@ -1,12 +1,17 @@
 DEBUG = False
 
-NWIS_SITE_SERVICE_ENDPOINT = 'https://waterservices.usgs.gov/nwis/site'
+NWIS_SITE_SERVICE_ENDPOINT = 'https://waterservices.usgs.gov/nwis/'
 
-# a list of stream gage ids to be included in the map
+# Site IDs available for charting. Expects a list of valid site IDs. 
 SITE_IDS = []
 
-# coordinates for the map's bounding box
-BOUNDS = ()
+# Start and end of time series data #
+START_DT = ''
+END_DT = ''
 
-# cities to be included on the map
-CITIES = {}
+# Max amout of series to show on hydrograph after series filtering
+N_SERIES = 5
+
+# This dict holds aspect ratio data for hydrograph rendered in static/js/hydrograph.js. Keys are 'height' and 'width'
+HYDRO_META = {}
+
