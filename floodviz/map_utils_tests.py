@@ -68,6 +68,6 @@ class TestWriteGeojson(unittest.TestCase):
         self.assertEqual(write_geojson("out.json", "string"), None)
 
 
-# if __name__ == '__main__':
-#     unittest.main()
+if __name__ == '__main__':
+    unittest.main()
 
