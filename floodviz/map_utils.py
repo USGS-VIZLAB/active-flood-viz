@@ -93,4 +93,6 @@ def projection_info(code, url):
     url = Template(url)
     url = url.substitute(epsg_code=str(code))
     req = requests.get(url)
+    assert (req.status_code == 200),\
+        '{} does not seem to be a valid EPSG code'.format(code)
     return req.text

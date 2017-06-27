@@ -35,10 +35,12 @@ def sitemap():
         bg_data = json.load(bg_file)
     # End hack
 
+
     mapinfo = {
         'proj4string': projection,
         'width': 1000,
         'height': 600,
+        'scale': .90,  # larger than .97 cuts off data
         'site_data': site_data,
         'bg_data': bg_data,
     }
