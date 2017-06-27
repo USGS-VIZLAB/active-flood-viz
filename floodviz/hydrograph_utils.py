@@ -1,8 +1,6 @@
 from datetime import datetime
 import time
 import requests
-import json
-
 
 def parse_hydrodata(jdata):
     
@@ -78,8 +76,6 @@ def req_hydrodata(sites, start_date, end_date, url_top):
             print('\nBad Request - Malformed URL \n')
             return []
         if r.status_code is 200:
-            with open('../static/data/temp.json', 'w') as fout: 
-                json.dump(r.json()['value']['timeSeries'], fout, indent=1)
             return r.json()['value']['timeSeries']
         else:
             print('\nBad Request\n')
