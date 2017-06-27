@@ -26,6 +26,8 @@ RUN npm config set cafile "/app/DOIRootCA2.cer" \
 
 RUN node_modules/bower/bin/bower install --allow-root
 
+RUN nosetests --all-modules --exe
+
 EXPOSE 5050
 
 ENTRYPOINT ["python3"]
