@@ -1,6 +1,7 @@
 from datetime import datetime
 import time
 import requests
+import json
 
 
 def parse_hydrodata(jdata):
@@ -19,10 +20,16 @@ def parse_hydrodata(jdata):
         corresponds to a different site.   
 
     """
-
     all_series_data = []
-
+    
+    if not isinstance(jdata, list):
+        return all_series_data
+    
     for idx, site in enumerate(jdata):
+        # Check that list elements are dicts
+        if not isinstance(site, dict):
+            return all_series_data
+
         site_name = site['sourceInfo']['siteName']
         all_series_data.append({'key': site_name, 'values': [], 'max_val': 0})
 
@@ -60,9 +67,23 @@ def req_hydrodata(sites, start_date, end_date, url_top):
         returns a dictonary with the requested data from the nwis service 
     
     """
-    sites_string = ','.join(sites)
-    url =  url_top +'iv/?site=' + sites_string + '&startDT=' + \
+    if len(sites) is not 0 and start_date and end_date and url_top:
+        sites = [str(site) for site in sites]
+        sites_string = ','.join(sites)
+        url =  url_top +'iv/?site=' + sites_string + '&startDT=' + \
               start_date + '&endDT=' + end_date + '&parameterCD=00060&format=json'
-    r = requests.get(url)
-    if r.status_code is 200:
-        return r.json()['value']['timeSeries']
+        try:
+            r = requests.get(url)
+        except (requests.exceptions.MissingSchema) as e:
+            print('\nBad Request - Malformed URL \n')
+            return []
+        if r.status_code is 200:
+            with open('../static/data/temp.json', 'w') as fout: 
+                json.dump(r.json()['value']['timeSeries'], fout, indent=1)
+            return r.json()['value']['timeSeries']
+        else:
+            print('\nBad Request\n')
+            return []
+    else:
+        print('\nConfig Varibles Empty\n')
+        return []
