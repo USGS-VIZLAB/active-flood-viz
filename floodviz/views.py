@@ -1,15 +1,9 @@
 import json
-import os
 
-from flask import request, render_template, abort
-import requests
-from svgis import svgis
 from flask import render_template
 
 from . import app
 from . import hydrograph_utils
-from . import map_utils
-
 
 
 @app.route('/home/')
