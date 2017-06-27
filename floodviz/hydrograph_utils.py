@@ -6,7 +6,8 @@ def parse_hydrodata(jdata):
     
     """ 
     Parses json Hydrodata from NWIS webservice
-    and formats for NVD3 charting library.
+    and formats for NVD3 charting library. Upon failure, this will
+    return empty data list.
 
     ARGS: 
         jdata (list of dictonaries) - json objects in a list which contains 
@@ -53,7 +54,8 @@ def parse_hydrodata(jdata):
 def req_hydrodata(sites, start_date, end_date, url_top):
 
     """ 
-    Requests hydrodata from nwis web service based on passed in parameters. 
+    Requests hydrodata from nwis web service based on passed in parameters.
+    Upon request failure, this will return an empty data list. 
 
     ARGS: 
         sites - List of site IDs to request

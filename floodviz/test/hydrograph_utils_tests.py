@@ -1,5 +1,4 @@
 import unittest
-import requests
 
 class TestReqHydroData(unittest.TestCase):
 
@@ -10,20 +9,16 @@ class TestReqHydroData(unittest.TestCase):
     self.sites = ['05463500', '05471050', '05420680', '05479000', '05484000', '05481000', '05486000', '05421000', '05485500',
               '05455100', '05470500', '05451500', '05458000', '05471000', '05462000', '05457700', '05458500', '05470000',
               '05484500', '05481300', '05464220', '05458900', '05485605', '05463000', '05471200', '05476750', '05411850',
-              '05454220', '05481950', '05416900', '05464500', '05487470']
-   
-  def test_empty_list(self):
-    self.assertEqual(req_hydrodata([], self.H_START_DT, self.H_END_DT, self.prefix), [])
+              '05454220', '05481950', '05416900', '05464500', '05487470']   
 
   def test_bad_list(self):
     self.assertEqual(req_hydrodata(['x'], self.H_START_DT, self.H_END_DT, self.prefix), [])
     self.assertEqual(req_hydrodata([123456, 100], self.H_START_DT, self.H_END_DT, self.prefix), [])
-
-  def test_empty_url(self):
-    self.assertEqual(req_hydrodata(self.sites, self.H_START_DT, self.H_END_DT, ''), [])
+    self.assertEqual(req_hydrodata([], self.H_START_DT, self.H_END_DT, self.prefix), [])
 
   def test_bad_url(self):
     self.assertEqual(req_hydrodata(self.sites, self.H_START_DT, self.H_END_DT, 'badurl.noob' ), [])
+    self.assertEqual(req_hydrodata(self.sites, self.H_START_DT, self.H_END_DT, ''), [])
 
   def test_valid_data(self):
     self.assertTrue(req_hydrodata(self.sites, self.H_START_DT, self.H_END_DT, self.prefix))
@@ -49,12 +44,10 @@ class TestParseHydroData(unittest.TestCase):
       "value": "446","qualifiers": ["A"],"dateTime": "2008-05-20T01:00:00.000-05:00"},{
       "value": "446","qualifiers": ["A"],"dateTime": "2008-05-20T01:15:00.000-05:00"}]}]}]
 
-
-  def test_data_is_none(self):
-    self.assertEqual(parse_hydrodata(None), [])
-
   def test_empty_data(self):
     self.assertEqual(parse_hydrodata([]), [])
+    self.assertEqual(parse_hydrodata(None), [])
+
 
   def test_data_not_list(self):
     self.assertEqual(parse_hydrodata("Not a REAL list"), [])
