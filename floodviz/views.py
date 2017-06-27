@@ -29,5 +29,18 @@ def sitemap():
     site_data = map_utils.site_dict(app.config['SITE_IDS'], app.config['NWIS_SITE_SERVICE_ENDPOINT'])
     site_data = map_utils.create_geojson(site_data)
     projection = map_utils.projection_info(app.config['PROJECTION_EPSG_CODE'], app.config['SPATIAL_REFERENCE_ENDPOINT'])
-    return render_template('sitemap.html', site_data=site_data, proj4string=projection)
+
+    # TODO: the following is a hack:
+    with open('instance/counties.json', 'r') as bg_file:
+        bg_data = json.load(bg_file)
+    # End hack
+
+    mapinfo = {
+        'proj4string': projection,
+        'width': 1000,
+        'height': 600,
+        'site_data': site_data,
+        'bg_data': bg_data,
+    }
+    return render_template('sitemap.html', mapinfo=mapinfo)
 
