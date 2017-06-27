@@ -66,5 +66,3 @@ def req_hydrodata(sites, start_date, end_date, url_top):
     r = requests.get(url)
     if r.status_code is 200:
         return r.json()['value']['timeSeries']
-    else:
-        print('BAD REQUEST')

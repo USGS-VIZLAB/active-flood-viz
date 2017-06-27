@@ -24,21 +24,6 @@ mock_data = [{'agency_cd': 'USGS', 'site_no': '05411850', 'station_nm': 'Turkey 
 
 class TestSiteDict(unittest.TestCase):
 
-    def test_empty_list(self):
-        self.assertEqual(site_dict([], prefix), None)
-
-    def test_empty_url(self):
-        self.assertEqual(site_dict(sites, ""), None)
-
-    def test_bad_list(self):
-        self.assertEqual(site_dict(['x'], prefix), None)
-
-    def test_bad_list2(self):
-        self.assertEqual(site_dict(['1234'], prefix), None)
-
-    def test_bad_url(self):
-        self.assertEqual(site_dict(sites, "x"), None)
-
     def test_bad_request_data(self):
         with requests_mock.Mocker() as m:
             m.get(url, text='resp')
