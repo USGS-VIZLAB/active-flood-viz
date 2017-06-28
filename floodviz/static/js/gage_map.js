@@ -46,8 +46,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     // read in geojson for sites
     var site_data = FV.mapinfo.site_data;
 
-    // Calculate bounding box transforms for the sites, we don't care about cutting off the background
-    var b = path.bounds(site_data);
+    // set bounding box to values provided
+    var b = FV.mapinfo.bounds;
+
     var s = FV.mapinfo.scale / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height);
     var t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
 
@@ -57,8 +58,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .translate(t);
 
     // Define order in which layers should be added
-    var bg = svg.append("g"),
-        sites = svg.append("g");
+    var bg = svg.append("g");
+    var ref = svg.append("g");
+    var sites = svg.append("g");
 
     // Bind data and create one path per GeoJSON feature
     // Add sites to the map
@@ -67,7 +69,19 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .enter()
         .append("path")
         .attr("d", path)
-        .style("fill", "blue");
+        .style("stroke", "blue")
+        .style("fill-opacity", "0");
+
+     // Read in background geojson
+    var ref_data = FV.mapinfo.ref_data;
+
+    // Add geojson to map
+    ref.selectAll("path")
+        .data(ref_data.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .style("fill", "red");
 
     // Read in background geojson
     var bg_data = FV.mapinfo.bg_data;
@@ -80,6 +94,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .attr("d", path)
         .style("stroke", "black")
         .style("fill", "#ffffff");
+
+
 
 
 

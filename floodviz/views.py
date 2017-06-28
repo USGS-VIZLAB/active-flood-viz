@@ -1,5 +1,7 @@
-from flask import render_template
 import json
+
+from flask import render_template
+
 from . import app
 from . import hydrograph_utils
 from . import map_utils
@@ -30,19 +32,19 @@ def sitemap():
     site_data = map_utils.create_geojson(site_data)
     projection = map_utils.projection_info(app.config['PROJECTION_EPSG_CODE'], app.config['SPATIAL_REFERENCE_ENDPOINT'])
 
-    # TODO: the following is a hack:
-    with open('instance/counties.json', 'r') as bg_file:
+    with open(app.config['BACKGROUND_FILE'], 'r') as bg_file:
         bg_data = json.load(bg_file)
-    # End hack
 
+    with open(app.config['REFERENCE_FILE'], 'r') as ref_file:
+        ref_data = json.load(ref_file)
 
-    mapinfo = {
+    mapinfo = app.config['MAP_CONFIG']
+    mapinfo.update({
         'proj4string': projection,
-        'width': 1000,
-        'height': 600,
-        'scale': .90,  # larger than .97 cuts off data
         'site_data': site_data,
         'bg_data': bg_data,
-    }
+        'ref_data': ref_data
+    })
+
     return render_template('sitemap.html', mapinfo=mapinfo)
 
