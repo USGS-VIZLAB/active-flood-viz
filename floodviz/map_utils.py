@@ -5,32 +5,39 @@ def site_dict(site_list, url_prefix):
     Args:
         site_list: A list of site ids to be queried on NWIS
         url_prefix: A string containing the beginning of the NWIS site url
-    Returns:gi
+    Returns:
         An array of dicts containing various site information in a usable format.
+        If service call fails, function will return None
     """
+
+    if not site_list:
+        print("Site list empty, returning empty list")
+        return []
 
     # generate the string of site ids for the url
     id_input_string = ",".join(site_list)
 
     # create the url
-    url = url_prefix + "/?format=rdb&sites=" + id_input_string + "&siteStatus=all"
+    url = url_prefix + "site/?format=rdb&sites=" + id_input_string + "&siteStatus=all"
 
     # get data from url
     req = requests.get(url)
 
-    if not req.text.startswith('#'):
-        print("Error: request returns invalid data")
+    if req.status_code != 200:
+        print("Error: service call failed")
         return
 
-    # put data into list
-    data = []
+    if req.text == "":
+        print("Service call returned no data")
+        return []
+
+    # data begins on first line that doesn't start with '#'
+    data = req.text.splitlines()
     for line in req.text.splitlines():
-        if not line.startswith('#'):
-            data.append(line)
-
-    if not data:
-        print("Error: webpage contains no usable data")
-        return
+        if line.startswith('#'):
+            data.remove(line)
+        else:
+            break
 
     # make a list of dicts from data
     fields = data[0].split('\t')
@@ -49,25 +56,6 @@ def write_geojson(filename, data):
            filename: A string naming the file to be written to
            data: A list of dicts with data to be written to the file
     """
-    if not type(filename) == str:
-        print("Error: filename must be string")
-        return;
-
-    if not filename.endswith(".json"):
-        print("Error: outfile must be .json")
-        return
-
-    if not data:
-        print("Error: data is empty list")
-        return
-
-    if data is None:
-        print("Error: data is None")
-        return
-
-    if not isinstance(data, list):
-        print("Error: data is not a list")
-        return
 
     with open(filename, "w") as f:
         f.write("{ \"type\": \"FeatureCollection\", \"features\": [ \n")
