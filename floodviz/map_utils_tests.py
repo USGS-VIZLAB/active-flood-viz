@@ -83,6 +83,11 @@ class TestSiteDict(unittest.TestCase):
             m.get(self.url, text=self.mock_missing_huc)
             self.assertEqual(site_dict(self.sites, self.prefix), self.missing_huc_return)
 
+    def test_bad_status_code(self):
+        with requests_mock.Mocker() as m:
+            m.get(self.url, status_code=201)
+            self.assertEqual(site_dict(self.sites, self.prefix), None)
+
 
 class TestWriteGeojson(unittest.TestCase):
 
