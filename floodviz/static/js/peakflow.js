@@ -23,15 +23,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 			chart.yAxis.axisLabel(" Peak Annual Flow (cfps)")
 				.axisLabelDistance(20);
-
-			// TODO: custom D3 for lollipop!
-			var bars = d3.selectAll("#peakflow_bar rect");
-			console.log(bars);
-
-			
-
-
+		
 			d3.select('#peakflow_bar svg').datum(data).call(chart);
+
+			// TODO: custom D3 for lollipop! -- figure out how to make cx and cy dynamic. CY is close... -> https://developer.mozilla.org/en-US/docs/Web/API/SVGLength#Example
+			var bars = d3.select('#peakflow_bar svg').selectAll('.nv-bar')[0];
+			var lolli = bars[bars.length-1];
+			lolli.setAttribute("id", "lollipop");
+			var cy = lolli.y.baseVal;
+			var cx = lolli.x;
+			cy.convertToSpecifiedUnits(7);
+			console.log(cx);
+			var group = d3.select('#peakflow_bar .nv-series-0');
+			group.append("circle").attr('r', "10").attr('cx', "86.4%").attr('cy', cy.valueInSpecifiedUnits);
+
+
 			nv.utils.windowResize(chart.update);
 			return chart;
 		});

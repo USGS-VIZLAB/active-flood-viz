@@ -8,6 +8,10 @@ html, body, .main-content {
 #peakflow_bar {
 	margin: 0 auto;
 }
+#lollipop {
+	width: .3%;
+	fill: green !important;
+}
 .nv-indexLine {
 	display: none;
 }

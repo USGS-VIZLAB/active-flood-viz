@@ -42,8 +42,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			return chart;
 	
 		});
-	
 	});
-
 });
 
