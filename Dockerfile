@@ -28,8 +28,6 @@ RUN node_modules/bower/bin/bower install --allow-root
 
 RUN nosetests --all-modules --exe
 
-RUN ls *
-
 EXPOSE 5050
 
 ENTRYPOINT ["python3"]
