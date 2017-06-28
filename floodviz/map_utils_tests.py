@@ -83,10 +83,20 @@ class TestSiteDict(unittest.TestCase):
             m.get(self.url, text=self.mock_missing_huc)
             self.assertEqual(site_dict(self.sites, self.prefix), self.missing_huc_return)
 
+
 class TestWriteGeojson(unittest.TestCase):
 
     def setUp(self):
-        self.missing_huc_return = [{'agency_cd': 'USGS', 'site_no': '05420680',
+        self.good_data = [{'agency_cd': 'USGS', 'site_no': '05420680',
+                             'station_nm': 'Wapsipinicon River near Tripoli, IA', 'site_tp_cd': 'ST',
+                             'dec_lat_va': '42.83609117', 'dec_long_va': '-92.2574003', 'coord_acy_cd': 'F',
+                             'dec_coord_datum_cd': 'NAD83', 'alt_va': ' 986.42', 'alt_acy_va': '.01',
+                             'alt_datum_cd': 'NGVD29', 'huc_cd': '07080102'},
+                          {'agency_cd': 'USGS', 'site_no': '05463500', 'station_nm': 'Black Hawk Creek at Hudson, IA',
+                             'site_tp_cd': 'ST', 'dec_lat_va': '42.4077639', 'dec_long_va': '-92.4632451',
+                             'coord_acy_cd': 'F', 'dec_coord_datum_cd': 'NAD83', 'alt_va': ' 865.03',
+                             'alt_acy_va': '.01', 'alt_datum_cd': 'NGVD29', 'huc_cd': '07080205'}]
+        self.missing_huc_data = [{'agency_cd': 'USGS', 'site_no': '05420680',
                                     'station_nm': 'Wapsipinicon River near Tripoli, IA', 'site_tp_cd': 'ST',
                                     'dec_lat_va': '42.83609117', 'dec_long_va': '-92.2574003', 'coord_acy_cd': 'F',
                                     'dec_coord_datum_cd': 'NAD83', 'alt_va': ' 986.42', 'alt_acy_va': '.01',
@@ -96,6 +106,60 @@ class TestWriteGeojson(unittest.TestCase):
                                     'site_tp_cd': 'ST', 'dec_lat_va': '42.4077639', 'dec_long_va': '-92.4632451',
                                     'coord_acy_cd': 'F', 'dec_coord_datum_cd': 'NAD83', 'alt_va': ' 865.03',
                                     'alt_acy_va': '.01', 'alt_datum_cd': 'NGVD29'}]
+        self.good_return = ("{ \"type\": \"FeatureCollection\", \"features\": [ \n"
+                            "{ \"type\": \"Feature\",\n"
+                            " \"geometry\": {\n"
+                            " \"type\": \"Point\",\n"
+                            " \"coordinates\" : [-92.2574003, 42.83609117]\n"
+                            " },\n"
+                            " \"properties\": {\n"
+                            " \"name\": \"Wapsipinicon River near Tripoli, IA\",\n"
+                            " \"id\": \"05420680\",\n"
+                            " \"huc\": \"07080102\" \n"
+                            " } \n"
+                            " },\n"
+                            "{ \"type\": \"Feature\",\n"
+                            " \"geometry\": {\n"
+                            " \"type\": \"Point\",\n"
+                            " \"coordinates\" : [-92.4632451, 42.4077639]\n"
+                            " },\n"
+                            " \"properties\": {\n"
+                            " \"name\": \"Black Hawk Creek at Hudson, IA\",\n"
+                            " \"id\": \"05463500\",\n"
+                            " \"huc\": \"07080205\" \n"
+                            " } \n"
+                            " }\n"
+                            " ] }")
+        self.missing_huc_return = ("{ \"type\": \"FeatureCollection\", \"features\": [ \n"
+                                   "{ \"type\": \"Feature\",\n"
+                                   " \"geometry\": {\n"
+                                   " \"type\": \"Point\",\n"
+                                   " \"coordinates\" : [-92.2574003, 42.83609117]\n"
+                                   " },\n"
+                                   " \"properties\": {\n"
+                                   " \"name\": \"Wapsipinicon River near Tripoli, IA\",\n"
+                                   " \"id\": \"05420680\",\n"
+                                   " \"huc\": \"07080102\" \n"
+                                   " } \n"
+                                   " },\n"
+                                   "{ \"type\": \"Feature\",\n"
+                                   " \"geometry\": {\n"
+                                   " \"type\": \"Point\",\n"
+                                   " \"coordinates\" : [-92.4632451, 42.4077639]\n"
+                                   " },\n"
+                                   " \"properties\": {\n"
+                                   " \"name\": \"Black Hawk Creek at Hudson, IA\",\n"
+                                   " \"id\": \"05463500\",\n"
+                                   " \"huc\": \"n/a\" \n"
+                                   " } \n"
+                                   " }\n"
+                                   " ] }")
+
+    def test_good_data(self):
+        self.assertEqual(get_sites_geojson(self.good_data), self.good_return)
+
+    def test_missing_huc(self):
+        self.assertEqual(get_sites_geojson(self.missing_huc_data), self.missing_huc_return)
 
 
 if __name__ == '__main__':
