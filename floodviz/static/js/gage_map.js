@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var width = FV.mapinfo.width;
 
     //Create SVG element
-    var svg = d3.select("body")
+    var svg = d3.select("#map")
         .append("svg")
         .attr("width", width)
         .attr("height", height);
