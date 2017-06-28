@@ -50,24 +50,26 @@ def site_dict(site_list, url_prefix):
     return dnice
 
 
-def write_geojson(filename, data):
+def get_sites_geojson(data):
     """Writes site data to a .json file so it can be mapped
        Args:
-           filename: A string naming the file to be written to
            data: A list of dicts with data to be written to the file
+        Returns:
+            A string containing geojson data
     """
 
-    with open(filename, "w") as f:
-        f.write("{ \"type\": \"FeatureCollection\", \"features\": [ \n")
+    geojson = "{ \"type\": \"FeatureCollection\", \"features\": [ \n"
 
-        for i, datum in enumerate(data):
-            f.write("{ \"type\": \"Feature\",\n \"geometry\": {\n \"type\": \"Point\",\n \"coordinates\" : "
-                    "[" + datum.get('dec_long_va') + ", " + datum.get('dec_lat_va') + "]\n },\n")
-            f.write(" \"properties\": {\n \"name\": \"" + datum.get('station_nm') + "\",\n \"id\": \""
-                    + datum.get('site_no') + "\",\n \"huc\": \"" +
-                    datum.get('huc_cd') + "\" \n } \n }")
-            # add a comma unless at end of list
-            if data[i] != data[len(data) - 1]:
-                f.write(",")
-            f.write("\n")
-        f.write(" ] }")
+    for i, datum in enumerate(data):
+        geojson += "{ \"type\": \"Feature\",\n \"geometry\": {\n \"type\": \"Point\",\n \"coordinates\" : " \
+                       "[" + datum.get('dec_long_va', 'n/a') + ", " + datum.get('dec_lat_va', 'n/a') \
+                   + "]\n },\n \"properties\": {\n \"name\": \"" + datum.get('station_nm', 'n/a') \
+                   + "\",\n \"id\": \"" + datum.get('site_no', 'n/a') + "\",\n \"huc\": \"" \
+                   + datum.get('huc_cd', 'n/a') + "\" \n } \n }"
+        # add a comma unless at end of list
+        if data[i] != data[len(data) - 1]:
+            geojson += ","
+        geojson += "\n"
+    geojson += " ] }"
+
+    return geojson
