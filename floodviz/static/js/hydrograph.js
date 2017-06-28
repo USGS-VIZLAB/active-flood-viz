@@ -20,16 +20,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					.x( getX )  // this value is stored in milliseconds since epoch (converted in data_format.py with datetime)
 					.y( getY ) 
 					.color(d3.scale.category10().range())
-					.useInteractiveGuideline(true)
+					.useInteractiveGuideline(false)
 					.yScale(d3.scale.log())	// Logarithmic Y axis. (GM - I think this make the flood event less decipherable in the visual but it probably scales better)
 					.margin({left: 120, top: 60})
 					.showLegend(false)
-					.showControls(false);
-
+					.showControls(false)
+					.useVoronoi(true);
+			
 			chart.xAxis.axisLabel(" Date (M-D-Y)")
 					.axisLabelDistance(10)
 					.ticks(5)
-					.tickFormat(function(d){return d3.time.format('%m-%d-%y')(new Date(d))});
+					.tickFormat(function(d){return d3.time.format('%m-%d-%y %H:%M:%S')(new Date(d))});
 
 			chart.yAxis.axisLabel('Discharge (cubic feet per second)')
 					.axisLabelDistance(40)
