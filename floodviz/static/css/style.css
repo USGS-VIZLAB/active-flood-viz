@@ -2,6 +2,30 @@ html, body, .main-content {
 	height: 100%;
 	margin: 0;
 }
+
+.bar{
+	fill: steelblue;
+}
+
+.bar:hover {
+	fill: #7FFF00;
+}
+.cir:hover {
+	fill: #7FFF00;
+}
+
+.axis {
+	font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+
+
 #hydrograph {
 	margin-top: 50px;
 }
@@ -9,9 +33,13 @@ html, body, .main-content {
 	margin: 0 auto;
 }
 #lollipop {
-	width: .3%;
-	fill: green !important;
+	width: .6%;
+	fill: #7FFF00 !important;
+}
+.cir {
+	fill: steelblue;
 }
 .nv-indexLine {
 	display: none;
 }
+
