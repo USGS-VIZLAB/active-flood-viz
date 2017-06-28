@@ -1,4 +1,6 @@
 import requests
+from flask import json
+
 
 def site_dict(site_list, url_prefix):
     """Puts site data into a dictionary

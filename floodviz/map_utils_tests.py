@@ -166,7 +166,6 @@ class TestWriteGeojson(unittest.TestCase):
     def test_missing_huc(self):
         self.assertEqual(get_sites_geojson(self.missing_huc_data), self.missing_huc_return)
 
-
 if __name__ == '__main__':
     unittest.main()
 
