@@ -1,18 +1,23 @@
-import requests
 import json
 from string import Template
 
+import requests
+
 
 def site_dict(site_list, url_prefix):
-    """Puts site data into a dictionary
-
-    Args:
-        site_list: A list of site ids to be queried on NWIS
-        url_prefix: The beginning of the NWIS url
-
-    Returns:
-        A dict containing various site information in a usable format.
     """
+    Puts site data into a dictionary
+
+    :param site_list: A list of site ids to be queried on NWIS
+    :param url_prefix: A string containing the beginning of the NWIS site url
+
+    :returns An array of dicts containing various site information in a usable format.
+        If service call fails, function will return None
+    """
+
+    if not site_list:
+        print("Site list empty, returning empty list")
+        return []
 
     # generate the string of site ids for the url
     id_input_string = ",".join(site_list)
@@ -23,8 +28,21 @@ def site_dict(site_list, url_prefix):
     # get data from url
     req = requests.get(url)
 
-    # put data into list
-    data = req.text.splitlines()[29:]
+    if req.status_code != 200:
+        print("Error: service call failed")
+        return
+
+    if req.text == "":
+        print("Service call returned no data")
+        return []
+
+    # data begins on first line that doesn't start with '#'
+    data = req.text.splitlines()
+    for line in req.text.splitlines():
+        if line.startswith('#'):
+            data.remove(line)
+        else:
+            break
 
     # make a list of dicts from data
     fields = data[0].split('\t')
@@ -42,9 +60,8 @@ def write_geojson(filename, data):
     Writes site data to a .json file so it can be mapped
     This version will create the file if it does not exist and overwrite it if it does. You have been warned.
 
-       Args:
-         :param  filename: the file to be written to
-         :param  data: the data to be written to the file
+    :param  filename: the file to be written to
+    :param  data: the data to be written to the file
     """
     data = create_geojson(data)
     with open(filename, "w+") as file:
@@ -86,13 +103,13 @@ def projection_info(code, url):
     :param code: the EPSG code of the projection we wish to use
 
     :param url: A python string TEMPLATE in which ${epsg_code} will be replaced with `code`
-        this should found under SPATIAL_REFERENCE_ENDPOINT in `config.py`
+        A valid example is SPATIAL_REFERENCE_ENDPOINT in `config.py`
 
-    :return: the proj4 projection definition string of the desired projection
+    :return: the proj4 projection definition string of the desired projection, or None if no such projection is found
     """
     url = Template(url)
     url = url.substitute(epsg_code=str(code))
     req = requests.get(url)
-    assert (req.status_code == 200),\
-        '{} does not seem to be a valid EPSG code'.format(code)
+    if req.status_code == '404':
+        return None
     return req.text
