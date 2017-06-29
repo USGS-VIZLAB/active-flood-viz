@@ -4,6 +4,7 @@ from string import Template
 
 import requests
 
+
 def create_geojson(data):
     """
     :param data: a dictionary of sites to be transformed into geojson
