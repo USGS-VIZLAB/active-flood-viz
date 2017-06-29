@@ -14,20 +14,23 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			
 			var getX = function(d) { return d.time_mili };
 			var getY = function(d) { return d.value };
+			// var timezone = function(d) { return d.time_zone } ;
+			// alert(data.time_zone)
 			
 			// might want to switch to lineChart(). When cumulative line chart is clicked, the Y axis freaks out and reverts back to issue at https://github.com/novus/nvd3/issues/695 # 
 			var chart = nv.models.cumulativeLineChart()
 					.x( getX )  // this value is stored in milliseconds since epoch (converted in data_format.py with datetime)
-					.y( getY ) 
-					.color(d3.scale.category10().range())
+					.y( getY )
+					.color(["#0000FF"])
 					.useVoronoi(true)
+					.clipVoronoi(false)
 					.useInteractiveGuideline(false)
 					.yScale(d3.scale.log())	// Logarithmic Y axis. (GM - I think this make the flood event less decipherable in the visual but it probably scales better)
 					.margin({left: 120, top: 60})
 					.showLegend(false)
 					.showControls(false);
 			
-			chart.xAxis.axisLabel(" Date (M-D-Y H:M:S CST)")
+			chart.xAxis.axisLabel(" Date (M-D-Y H:M:S)")
 					.axisLabelDistance(10)
 					.ticks(5)
 					.tickFormat(function(d){return d3.time.format('%m-%d-%y %H:%M:%S')(new Date(d))});
@@ -37,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					//.ticks(5)
 					.tickValues([10, 100, 1000, 10000, 100000])
 					.tickFormat(function(d) { return d3.format(",")(d) + " cfps"});
-			
+
 			d3.select('#hydrograph svg').datum(data).call(chart);
 
 			nv.utils.windowResize(chart.update);

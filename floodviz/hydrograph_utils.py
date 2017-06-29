@@ -25,6 +25,7 @@ def parse_hydrodata(jdata):
     for idx, site in enumerate(jdata):
         site_name = site['sourceInfo']['siteName']
         site_id = site['sourceInfo']['siteCode'][0]['value']
+        timezone = site['sourceInfo']['timeZoneInfo']['defaultTimeZone']['zoneAbbreviation']
         all_series_data.append({'key': site_id, 'values': []})
 
         # Fill new data for this series
@@ -39,9 +40,11 @@ def parse_hydrodata(jdata):
             dt_ms = time.mktime(dt.timetuple()) * 1000
             # (for below if statment) create dummy value for nvd3 issue at https://github.com/novus/nvd3/issues/695 #
             if idx2 is 0: # First datapoint of this site
-                all_series_data[idx]['values'].append({'site_name': site_name, 'date': date, "time": 0, "time_mili": dt_ms, 'value': 0})
+                all_series_data[idx]['values'].append({'site_name': site_name, 'date': date, "time": 0,
+                                                       "time_mili": dt_ms, 'time_zone': timezone, 'value': 0})
 
-            all_series_data[idx]['values'].append({'date': date, "time": t, "time_mili": dt_ms, 'value': value})
+            all_series_data[idx]['values'].append({'site_name': site_name, 'date': date, "time": t,
+                                                   "time_mili": dt_ms, 'time_zone': timezone, 'value': value})
 
     return all_series_data
 
