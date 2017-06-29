@@ -4,20 +4,6 @@ from string import Template
 
 import requests
 
-
-def write_geojson(filename, data):
-    """
-    Writes site data to a .json file so it can be mapped
-    This version will create the file if it does not exist and overwrite it if it does. You have been warned.
-
-    :param  filename: the file to be written to
-    :param  data: the data to be written to the file
-    """
-    data = create_geojson(data)
-    with open(filename, "w+") as file:
-        json.dump(data, file, indent=True)
-
-
 def create_geojson(data):
     """
     :param data: a dictionary of sites to be transformed into geojson
