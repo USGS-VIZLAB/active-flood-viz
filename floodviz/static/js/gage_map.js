@@ -47,7 +47,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var site_data = FV.mapinfo.site_data;
 
     // set bounding box to values provided
-    var b = FV.mapinfo.bounds;
+    var b = path.bounds(FV.mapinfo.bounds);
+
 
     var s = FV.mapinfo.scale / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height);
     var t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
