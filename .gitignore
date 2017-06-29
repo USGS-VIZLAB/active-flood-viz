@@ -115,4 +115,4 @@ node_modules/
 # Data files #
 *floodviz/static/data/*
 !*floodviz/static/data/.gitkeep
-*floodviz/test/hydrodata_test.json
+

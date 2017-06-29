@@ -70,6 +70,7 @@ def req_hydrodata(sites, start_date, end_date, url_top):
         sites_string = ','.join(sites)
         url =  url_top +'iv/?site=' + sites_string + '&startDT=' + \
               start_date + '&endDT=' + end_date + '&parameterCD=00060&format=json'
+
         try:
             r = requests.get(url)
             if r.status_code is 200:
@@ -84,3 +85,4 @@ def req_hydrodata(sites, start_date, end_date, url_top):
         print('\nConfig Varibles Empty\n')
     
     return None
+
