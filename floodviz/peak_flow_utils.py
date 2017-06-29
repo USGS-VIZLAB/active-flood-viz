@@ -36,14 +36,18 @@ def parse_peak_data(content, site_no):
     """
     
     peak_data = []
-
+    seen = set([])
     # TODO: duplicate data clean
-
     for line in content:
         if not line.startswith('USGS'):
             continue
         line = line.split('\t')
         year = line[2].split('-')[0]
+        # remove duplicate years
+        if year in seen:
+            continue
+        else:
+            seen.add(year)
         peak_val = int(line[4])
         peak_data.append({'label': year, 'value': peak_val})
     return peak_data

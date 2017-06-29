@@ -44,6 +44,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("y", function(d) {return y(d.value); })
 			.attr("width", x.rangeBand())
 			.attr("height", function(d) {return height - y(d.value); });
+		svg.append("text")
+			.attr("x", (width/2))
+			.attr("y", 0 - (margin.top / 2))
+			.attr("text-anchor", "middle")
+			.text("Peak Annual Discharge")
+
 
 		// Lollipop 
 		var bars = d3.select('#peakflow_bar svg').selectAll('.bar')[0];
