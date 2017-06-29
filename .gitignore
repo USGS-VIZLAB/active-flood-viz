@@ -114,4 +114,4 @@ node_modules/
 
 # Data files #
 *floodviz/static/data/
-*floodviz/static/test/hydrodata_test.json
+*floodviz/test/hydrodata_test.json
