@@ -14,7 +14,7 @@ def root():
     return render_template('index.html', mapinfo=mapinfo)
 
 
-@app.route('/home/')
+@app.route('/hydrograph/')
 def home():
     _hydrograph_helper()
     return render_template('hydrograph.html')
