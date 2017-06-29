@@ -14,8 +14,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			
 			var getX = function(d) { return d.time_mili };
 			var getY = function(d) { return d.value };
-			// var timezone = function(d) { return d.time_zone } ;
-			// alert(data.time_zone)
 			
 			// might want to switch to lineChart(). When cumulative line chart is clicked, the Y axis freaks out and reverts back to issue at https://github.com/novus/nvd3/issues/695 # 
 			var chart = nv.models.cumulativeLineChart()
@@ -33,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			chart.xAxis.axisLabel(" Date (M-D-Y H:M:S)")
 					.axisLabelDistance(10)
 					.ticks(5)
-					.tickFormat(function(d){return d3.time.format('%m-%d-%y %H:%M:%S')(new Date(d))});
+					.tickFormat(function(d){return d3.time.format('%m-%d-%y %H:%M:%S %Z')(new Date(d))});
 
 			chart.yAxis.axisLabel('Discharge (cubic feet per second)')
 					.axisLabelDistance(40)
