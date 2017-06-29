@@ -65,7 +65,9 @@ def req_hydrodata(sites, start_date, end_date, url_top):
         all series from the nwis service 
     
     """
+    ret = None
     if len(sites) is not 0 and start_date and end_date and url_top:
+        # Form URL
         sites = [str(site) for site in sites]
         sites_string = ','.join(sites)
         url =  url_top +'iv/?site=' + sites_string + '&startDT=' + \
@@ -74,15 +76,14 @@ def req_hydrodata(sites, start_date, end_date, url_top):
         try:
             r = requests.get(url)
             if r.status_code is 200:
-                return r.json()['value']['timeSeries']
+                ret = r.json()['value']['timeSeries']
             else:
                 print('\n - Bad Request -\n')
 
-        except (requests.exceptions.MissingSchema) as e:
+        except requests.exceptions.RequestException as e:
             print('\n - Malformed URL - \n')
 
     else:
         print('\nConfig Varibles Empty\n')
     
-    return None
-
+    return ret
