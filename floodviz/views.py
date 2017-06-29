@@ -14,7 +14,7 @@ def root():
     return render_template('index.html', mapinfo=mapinfo)
 
 
-@app.route('/home/')
+@app.route('/hydrograph/')
 def home():
     _hydrograph_helper()
     return render_template('hydrograph.html')
@@ -50,14 +50,33 @@ def _map_helper():
     with open(app.config['BACKGROUND_FILE'], 'r') as bg_file:
         bg_data = json.load(bg_file)
 
-    with open(app.config['REFERENCE_FILE'], 'r') as ref_file:
-        ref_data = json.load(ref_file)
+    ref_data = app.config['REFERENCE_DATA']
 
     mapinfo = app.config['MAP_CONFIG']
     mapinfo.update({
         'proj4string': projection,
         'site_data': site_data,
         'bg_data': bg_data,
-        'ref_data': ref_data
+        'ref_data': ref_data,
+        # add bounding box as geojson
+        'bounds': {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": app.config['BOUNDING_BOX'][0:2]
+                    },
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": app.config['BOUNDING_BOX'][2:4]
+                    },
+                }
+            ]
+        }
     })
     return mapinfo

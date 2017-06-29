@@ -111,7 +111,7 @@ def projection_info(code, url):
     url = Template(url)
     url = url.substitute(epsg_code=str(code))
     req = requests.get(url)
-    if req.status_code == '404':
+    if req.status_code != 200:
         return None
     return req.text
 
