@@ -10,7 +10,7 @@ def parse_hydrodata(jdata):
     return empty data list.
 
     ARGS: 
-        jdata (list of dictonaries) - json objects in a list which contains 
+        jdata (list of one dictonary) - json object in a list which contains 
         time series data for all sites listed in config.py SITE_IDs.
     
     RETURNS:
@@ -27,7 +27,7 @@ def parse_hydrodata(jdata):
             site_name = site.get('sourceInfo').get('siteName')
             if site_name is None:
                 site_name = 'NaN'    
-            all_series_data.append({'key': site_name, 'values': [], 'max_val': 0})
+            all_series_data.append({'key': site_name, 'values': []})
 
             # Fill new data for this series
             for idx2, obj in enumerate(site['values'][0]['value']):
@@ -61,7 +61,8 @@ def req_hydrodata(sites, start_date, end_date, url_top):
         url_top - URL endpoint for the nwis web service
     
     RETURNS:
-        returns a dictonary with the requested data from the nwis service 
+        returns a list of one dictonary with the requested data for
+        all series from the nwis service 
     
     """
     if len(sites) is not 0 and start_date and end_date and url_top:

@@ -1,6 +1,6 @@
 import unittest
 import requests_mock
-#from floodviz.hydrograph_utils import req_hydrodata, parse_hydrodata
+from floodviz.hydrograph_utils import req_hydrodata, parse_hydrodata
 
 class TestReqHydroData(unittest.TestCase):
 
@@ -20,9 +20,7 @@ class TestReqHydroData(unittest.TestCase):
     with requests_mock.Mocker() as m:
       m.get(self.url, status_code=404)
       self.assertEqual(req_hydrodata(['05463500'], self.H_START_DT, self.H_END_DT, self.prefix), None)
-    with requests_mock.Mocker() as m:
-      m.get(self.url, status_code=200)
-      self.assertEqual(req_hydrodata(['05463500'], self.H_START_DT, self.H_END_DT, self.prefix), self.valid_data)
+
 
 
   def test_bad_list(self):
@@ -35,7 +33,7 @@ class TestReqHydroData(unittest.TestCase):
     self.assertEqual(req_hydrodata(self.sites, self.H_START_DT, self.H_END_DT, ''), None)
 
   def test_valid_data(self):
-    self.assertTrue(req_hydrodata(self.sites, self.H_START_DT, self.H_END_DT, self.prefix))
+    self.assertEqual(req_hydrodata(['05463500'], self.H_START_DT, self.H_END_DT, self.prefix), self.valid_data)
  
 
 class TestParseHydroData(unittest.TestCase):
@@ -58,6 +56,16 @@ class TestParseHydroData(unittest.TestCase):
       "value": "446","qualifiers": ["A"],"dateTime": "2008-05-20T01:00:00.000-05:00"},{
       "value": "446","qualifiers": ["A"],"dateTime": "2008-05-20T01:15:00.000-05:00"}]}]}]
 
+    self.mock_parsed_data = [{'key': 'Black Hawk Creek at Hudson, IA', 'values': [
+     {'date': '2008-05-20', 'time': 0, 'value': 0}, 
+     {'date': '2008-05-20', 'time': '00:00:00', 'value': '446'},
+     {'date': '2008-05-20', 'time': '00:15:00', 'value': '446'},
+     {'date': '2008-05-20', 'time': '00:30:00', 'value': '446'},
+     {'date': '2008-05-20', 'time': '00:45:00', 'value': '444'}, 
+     {'date': '2008-05-20', 'time': '01:00:00', 'value': '446'},
+     {'date': '2008-05-20', 'time': '01:15:00', 'value': '446'}]}] 
+
+
   def test_empty_data(self):
     self.assertEqual(parse_hydrodata([]), [])
     self.assertEqual(parse_hydrodata(None), [])
@@ -66,18 +74,11 @@ class TestParseHydroData(unittest.TestCase):
     self.assertEqual(parse_hydrodata({}), [])
 
   def test_valid_data(self):
-    self.assertTrue(parse_hydrodata(self.mock_data))
-
-
-
-if __name__ == '__main__':
- 
-  if __package__ is None:
-      import sys
-      from os import path
-      sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
-      from hydrograph_utils import req_hydrodata, parse_hydrodata
-  else:
-      from ..floodviz.hydrograph_utils import req_hydrodata, parse_hydrodata
-
-  unittest.main()
+    # Delete 'time_mili' key before comparing due to python time conversion inconsistencies.     
+    ret = parse_hydrodata(self.mock_data)[0]
+    for k1, v1 in ret.items():
+      if k1 is 'values':
+        for item in ret[k1]:
+          if item['time_mili'] is not None:
+            del item['time_mili']
+    self.assertEqual([ret], self.mock_parsed_data)
