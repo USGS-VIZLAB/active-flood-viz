@@ -20,7 +20,7 @@ HYDRO_META = {}
 SPATIAL_REFERENCE_ENDPOINT = 'http://spatialreference.org/ref/epsg/${epsg_code}/proj4/'
 PROJECTION_EPSG_CODE = '4326'
 
-#
+
 BOUNDING_BOX = [-94.294625, 41.015733, -91.424186, 43.102420]
 
 BACKGROUND_FILE = 'floodviz/static/geojson/states.json'
