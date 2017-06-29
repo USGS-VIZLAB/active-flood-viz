@@ -7,8 +7,26 @@ from . import hydrograph_utils
 from . import map_utils
 
 
+@app.route('/')
+def root():
+    _hydrograph_helper()
+    mapinfo = _map_helper()
+    return render_template('index.html', mapinfo=mapinfo)
+
+
 @app.route('/home/')
 def home():
+    _hydrograph_helper()
+    return render_template('hydrograph.html')
+
+
+@app.route('/map/')
+def sitemap():
+    mapinfo = _map_helper()
+    return render_template('sitemap.html', mapinfo=mapinfo)
+
+
+def _hydrograph_helper():
     # new data store #
     sites = app.config['SITE_IDS']
     start_date = app.config['START_DT']
@@ -23,11 +41,8 @@ def home():
     with open('floodviz/static/data/hydrograph_data.json', 'w') as fout:
         json.dump(all_series_data, fout, indent=1)
 
-    return render_template('index.html')
 
-
-@app.route('/map/')
-def sitemap():
+def _map_helper():
     site_data = map_utils.site_dict(app.config['SITE_IDS'], app.config['NWIS_SITE_SERVICE_ENDPOINT'])
     site_data = map_utils.create_geojson(site_data)
     projection = map_utils.projection_info(app.config['PROJECTION_EPSG_CODE'], app.config['SPATIAL_REFERENCE_ENDPOINT'])
@@ -45,6 +60,4 @@ def sitemap():
         'bg_data': bg_data,
         'ref_data': ref_data
     })
-
-    return render_template('sitemap.html', mapinfo=mapinfo)
-
+    return mapinfo
