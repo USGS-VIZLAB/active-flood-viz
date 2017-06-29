@@ -4,11 +4,6 @@ import unittest
 
 import requests_mock
 
-# mock_data = [{'agency_cd': 'USGS', 'site_no': '05411850', 'station_nm': 'Turkey River near Eldorado, IA',
-#               'site_tp_cd': 'ST', 'dec_lat_va': '43.0541879', 'dec_long_va': '-91.8090983', 'coord_acy_cd': '1',
-#               'dec_coord_datum_cd': 'NAD83', 'alt_va': ' 890.00', 'alt_acy_va': '.01', 'alt_datum_cd': 'NGVD29',
-#               'huc_cd': '07060004'}]
-
 
 class TestSiteDict(unittest.TestCase):
 
@@ -85,7 +80,7 @@ class TestSiteDict(unittest.TestCase):
 
     def test_bad_status_code(self):
         with requests_mock.Mocker() as m:
-            m.get(self.url, status_code=201)
+            m.get(self.url, status_code=404)
             self.assertEqual(site_dict(self.sites, self.prefix), None)
 
 
@@ -166,6 +161,4 @@ class TestWriteGeojson(unittest.TestCase):
     def test_missing_huc(self):
         self.assertEqual(get_sites_geojson(self.missing_huc_data), self.missing_huc_return)
 
-if __name__ == '__main__':
-    unittest.main()
 
