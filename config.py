@@ -20,34 +20,16 @@ HYDRO_META = {}
 SPATIAL_REFERENCE_ENDPOINT = 'http://spatialreference.org/ref/epsg/${epsg_code}/proj4/'
 PROJECTION_EPSG_CODE = '4326'
 
-#
-BOUNDING_BOX = [-94.294625, 41.015733, -91.424186, 43.102420]
+# Should be 4 numbers: x1, y1, x2, y2
+BOUNDING_BOX = []
 
-BACKGROUND_FILE = 'floodviz/static/geojson/states.json'
-REFERENCE_FILE = 'floodviz/static/geojson/reference.json'
+# paths to geojson files for background and reference locations
+BACKGROUND_FILE = ''
+REFERENCE_FILE = ''
+
 # this contains data that needs no further transformation before being sent to the javascript
 MAP_CONFIG = {
-    'width': 500,
-    'height': 300,
-    'scale': 1,
-    'bounds': {
-        "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": BOUNDING_BOX[0:2]
-                },
-            },
-            {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": BOUNDING_BOX[2:4]
-                },
-            }
-        ]
-    }
-
+    'width': None,
+    'height': None,
+    'scale': None,
 }
