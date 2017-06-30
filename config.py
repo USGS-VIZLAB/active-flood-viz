@@ -1,9 +1,8 @@
-
 DEBUG = False
 
 NWIS_SITE_SERVICE_ENDPOINT = 'https://waterservices.usgs.gov/nwis/'
 
-# Site IDs available for charting. Expects a list of valid site IDs. 
+# Site IDs available for charting. Expects a list of valid site IDs.
 SITE_IDS = []
 
 # Start and end of time series data #
@@ -16,3 +15,21 @@ N_SERIES = 5
 # This dict holds aspect ratio data for hydrograph rendered in static/js/hydrograph.js. Keys are 'height' and 'width'
 HYDRO_META = {}
 
+# Map configuration
+
+SPATIAL_REFERENCE_ENDPOINT = 'http://spatialreference.org/ref/epsg/${epsg_code}/proj4/'
+PROJECTION_EPSG_CODE = '4326'
+
+# Should be 4 numbers: x1, y1, x2, y2
+BOUNDING_BOX = []
+
+# paths to geojson files for background and reference locations
+BACKGROUND_FILE = ''
+REFERENCE_FILE = ''
+
+# this contains data that needs no further transformation before being sent to the javascript
+MAP_CONFIG = {
+    'width': None,
+    'height': None,
+    'scale': None,
+}
