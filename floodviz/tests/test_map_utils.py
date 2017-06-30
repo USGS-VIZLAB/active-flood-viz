@@ -52,7 +52,9 @@ class TestSiteDict(unittest.TestCase):
         self.correct_output = LIST_OF_SITE_DICTS
 
     def test_empty_list(self):
-        self.assertEqual(site_dict([], self.prefix), [])
+        with requests_mock.Mocker() as m:
+            m.get(self.mock_url, text=self.mock_good_web_data)
+        self.assertEqual(site_dict([], self.mock_prefix), [])
 
     def test_bad_status_code(self):
         with requests_mock.Mocker() as m:
