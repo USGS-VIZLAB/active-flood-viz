@@ -10,8 +10,8 @@ from . import map_utils
 def home():
     # new data store #
     sites = app.config['SITE_IDS']
-    start_date = app.config['H_START_DT']
-    end_date = app.config['H_END_DT']
+    start_date = app.config['EVENT_START_DT']
+    end_date = app.config['EVENT_END_DT']
     hydro_meta = app.config['HYDRO_META']
     url_top = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 
