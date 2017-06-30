@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var	width = parseInt(FV.peakmeta['width']);
 	var	height = parseInt(FV.peakmeta['height']);
 
-	var x = d3.scale.ordinal().rangeRoundBands([0, width], .15);
-	var	y = d3.scale.linear().range([height, 0]);
+	var x = d3.scaleBand().rangeRound([0, width]).padding(.5);
+	var	y = d3.scaleLinear().range([height, 0]);
 
-	var xAxis = d3.svg.axis().scale(x).orient('bottom');
-	var yAxis = d3.svg.axis().scale(y).orient('left').ticks(8);
+	var xAxis = d3.axisBottom().scale(x);
+	var yAxis = d3.axisLeft().scale(y).ticks(8);
 
 	var svg = d3.select('#peakflow_bar').append('svg').attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.top + margin.bottom)
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	d3.json('../static/data/peak_flow_data.json', function(data) {
 		
-		// For custom Y axis ticks
+		// For custom X axis ticks
 		var ticks = []
 		data.forEach( function(d, i){
 		 	if (i % 4 === 0) {
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr('class', 'bar')
 			.attr("x", function(d) {return x(d.label); })
 			.attr("y", function(d) {return y(d.value); })
-			.attr("width", x.rangeBand())
+			.attr("width", x.bandwidth())
 			.attr("height", function(d) {return height - y(d.value); });
 		svg.append("text")
 			.attr("x", (width/2))
@@ -61,20 +61,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("text-anchor", "middle")
 			.text("Peak Annual Discharge")
 
-		// Lollipop 
-		var bars = d3.select('#peakflow_bar svg').selectAll('.bar')[0];
-		var lolli = bars[bars.length-1];
+		// Lollipop ## Below code will be changed when new preprocessing for 'current' data arrives
+		var bars = d3.select('#peakflow_bar svg').selectAll('.bar')['_groups'][0];
+		var lolli = bars[bars.length-1]; // This (and line above) will change when grabbing current data instead of using historical data ^
 		lolli.setAttribute("id", "lollipop");
 		var cy = lolli.y.baseVal;
 		var cx = lolli.x.baseVal;
 		var loli_width = lolli.width.baseVal.value;
-		var cr = "20";
-		cy.convertToSpecifiedUnits(5);
-		cx.convertToSpecifiedUnits(5);
+		var cr = "5";
 		var group = d3.select('#peakflow_bar svg .group');
 		group.append("circle").attr('class', 'cir')
 			.attr('r', cr)
-			.attr('cx', cx.value + (loli_width/3.5) )
+			.attr('cx', cx.value + (loli_width) )
 			.attr('cy', cy.value  + parseInt(cr));	//offset by circle radius
 	});
 });

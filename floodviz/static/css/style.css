@@ -10,9 +10,6 @@ html, body, .main-content {
 .bar:hover {
 	fill: #7FFF00;
 }
-.cir:hover {
-	fill: #7FFF00;
-}
 
 .axis {
 	font: 10px sans-serif;
@@ -43,7 +40,7 @@ html, body, .main-content {
 	fill: #7FFF00 !important;
 }
 .cir {
-	fill: steelblue;
+	fill: #7FFF00;
 }
 .nv-indexLine {
 	display: none;
