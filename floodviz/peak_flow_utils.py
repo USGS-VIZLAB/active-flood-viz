@@ -2,24 +2,31 @@ import requests
 
 def req_peak_data(site, start_date, end_date, url_peak):
     """ 
-    Requests water peak flow data in rdb format from NWIS water data
-    service.  
+    This function first requests water peak flow data in
+    rdb format from NWIS peak water data service. Then it
+    requests data from the Daily Value NWIS water data service
+    for creating the lollipop svg elements for the current year.
 
     ARGS: 
         site - string site ID for the site to be charted
         start_date - starting date to chart peak flow data
         end_date - ending date to chart peak flow data
-        url_peak - config varbile for nwis waterdata service endpoint url
+        url_peak - config varbile for nwis peak waterdata service endpoint url
     
     RETURNS:
         content - list of all lines in the data file 
 
     """
+    # peak value historical data #
     content = []
     url = url_peak + '?site_no=' + site + '&agency_cd=USGS&format=rdb'
     r = requests.get(url)
     if r.status_code is 200:
         content = r.text.splitlines()
+    
+        # TODO: retrive DV data -- from : https://waterservices.usgs.gov/nwis/dv/?sites=05411850&startDT=2008-05-20&endDT=2008-07-05&siteStatus=all&format=json
+
+
     return content
 
 def parse_peak_data(content, site_no):
