@@ -11,14 +11,14 @@ from . import peak_flow_utils
 def home():
     # Hydrograph config vars #
     sites = app.config['SITE_IDS']
-    hydro_start_date = app.config['H_START_DT']
-    hydro_end_date = app.config['H_END_DT']
+    hydro_start_date = app.config['EVENT_START_DT']
+    hydro_end_date = app.config['EVENT_END_DT']
     hydro_meta = app.config['HYDRO_META']
     url_hydro = app.config['NWIS_SITE_SERVICE_ENDPOINT']
     # Peak Flow config vars #
     peak_site = app.config['PEAK_SITE']
-    peak_start_date = app.config['P_START_DT']
-    peak_end_date = app.config['P_END_DT']
+    peak_start_date = app.config['PEAK_START_DT']
+    peak_end_date = app.config['PEAK_END_DT']
     url_peak = app.config['NWIS_WATERPEAK_SITE_SERVICE_ENDPOINT']
 
     # Hydrodata data clean and write

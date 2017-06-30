@@ -7,9 +7,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	peakflow_bar.style.height = FV.peakmeta['height'];
 	peakflow_bar.style.width = FV.peakmeta['width'];
 
-	var margin = {bottom: 70, right: 20, left: 100, top: 100};
-	var	width = parseInt(FV.peakmeta['width']) - margin.left - margin.right;
-	var	height = parseInt(FV.peakmeta['height']) - margin.top - margin.bottom;
+	var margin = {bottom: 100, right: 120, left: 120, top: 150};
+	var	width = parseInt(FV.peakmeta['width']);
+	var	height = parseInt(FV.peakmeta['height']);
 
 	var x = d3.scale.ordinal().rangeRoundBands([0, width], .15);
 	var	y = d3.scale.linear().range([height, 0]);
@@ -36,8 +36,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		x.domain(data.map(function(d) {return d.label; }));
 		y.domain([0, d3.max(data, function(d) {return d.value; })]);
 
-		svg.append("g").attr('class', "axis axis--x").attr("transform", "translate(0," + height + ")").call(xAxis);
-		svg.append("g").attr('class', "axis axis--y").call(yAxis);
+		svg.append("g").attr('class', "axis axis--x").attr("transform", "translate(0," + height + ")").call(xAxis)
+			.append("text")
+			.attr("text-anchor", "middle")
+			.attr("x", (width/2))
+			.attr("y", 0 + (margin.bottom/2))
+			.text("Year");
+		svg.append("g").attr('class', "axis axis--y").call(yAxis)
+			.append("text")
+			.attr("text-anchor", "middle")
+			.attr("transform", "rotate(-90)")
+			.attr("x", 0 - (height/2))
+			.attr("y", 0 - (margin.left/2))
+			.text("Discharge (cfps)");
 		svg.selectAll("bar").data(data).enter().append("rect")
 			.attr('class', 'bar')
 			.attr("x", function(d) {return x(d.label); })
@@ -50,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("text-anchor", "middle")
 			.text("Peak Annual Discharge")
 
-
 		// Lollipop 
 		var bars = d3.select('#peakflow_bar svg').selectAll('.bar')[0];
 		var lolli = bars[bars.length-1];
@@ -62,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		cx.convertToSpecifiedUnits(5);
 		var group = d3.select('#peakflow_bar svg .group');
 		group.append("circle").attr('class', 'cir')
-			.attr('r', "15")
+			.attr('r', "20")
 			.attr('cx', cx.value + (loli_width/3.5) )
 			.attr('cy', cy.value);
 	});
