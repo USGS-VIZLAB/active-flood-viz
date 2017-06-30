@@ -1,3 +1,5 @@
+from nose.tools import raises
+
 from floodviz.map_utils import site_dict, create_geojson, projection_info
 
 import unittest
@@ -10,61 +12,88 @@ LIST_OF_SITE_DICTS = [
         'station_nm': 'Black Hawk Creek at Hudson, IA',
         'dec_lat_va': '42.4077639',
         'dec_long_va': '-92.4632451',
-        'huc_cd': None
+        'huc_cd': '07080102'
     },
     {
         'site_no': '05420680',
         'station_nm': 'Wapsipinicon River near Tripoli, IA',
         'dec_lat_va': '42.83609117',
         'dec_long_va': '-92.2574003',
-        'huc_cd': None
+        'huc_cd': '07080205'
     }
 ]
 
 
 class TestSiteDict(unittest.TestCase):
     def setUp(self):
+        self.maxDiff = None
         self.sites = ['05420680', '05463500']
         self.prefix = 'https://waterservices.usgs.gov/nwis/'
-
-        self.NWIS_url = 'https://waterservices.usgs.gov/nwis/site/?format=mapper&sites=05420680,05463500&siteStatus=all'
-
-        self.NWIS_response = '<mapper>' \
-                             '<sites>' \
-                             '<site ' \
-                             'sno="05463500" ' \
-                             'sna="Black Hawk Creek at Hudson, IA" ' \
-                             'cat="ST" ' \
-                             'lat="42.4077639" ' \
-                             'lng="-92.4632451" ' \
-                             'agc="USGS"' \
-                             '/>' \
-                             '<site ' \
-                             'sno="05420680" ' \
-                             'sna="Wapsipinicon River near Tripoli, IA" ' \
-                             'cat="ST" ' \
-                             'lat="42.83609117" ' \
-                             'lng="-92.2574003" ' \
-                             'agc="USGS"' \
-                             '/>' \
-                             '</sites>' \
-                             '</mapper>'
+        self.request_url = "https://waterservices.usgs.gov/nwis/site/?format=rdb&sites=05420680,05463500&siteStatus=all"
         self.correct_output = LIST_OF_SITE_DICTS
+        # these are explicitly separated with tabs because they might otherwise be converted to spaces.
+        self.NWIS_response = '# \n' \
+                             '# \n' \
+                             '# US Geological Survey \n' \
+                             '# retrieved: 2017-06-30 11:12:17 -04:00 (vaas01) \n' \
+                             '# \n' \
+                             '# The Site File stores location and general information about groundwater, \n' \
+                             '# surface water, and meteorological sites \n' \
+                             '# for sites in USA. \n' \
+                             '# \n' \
+                             '# Lots of comment lines ... \n' \
+                             '# \n' \
+                             'agency_cd\tsite_no\tstation_nm\tsite_tp_cd\tdec_lat_va\tdec_long_va\t' \
+                             'coord_acy_cd\tdec_coord_datum_cd\talt_va\talt_acy_va\talt_datum_cd\thuc_cd \n' \
+                             '5s\t15s\t50s\t7s\t16s\t16s\t1s\t10s\t8s\t3s\t10s\t16s \n' \
+                             'USGS\t05420680\tWapsipinicon River near Tripoli, IA\tST\t42.83609117\t-92.2574003\t' \
+                             'F\tNAD83\t986.42\t.01\tNGVD29\t07080205 \n' \
+                             'USGS\t05463500\tBlack Hawk Creek at Hudson, IA\tST\t42.4077639\t-92.4632451\t' \
+                             'F\tNAD83\t865.03\t.01\tNGVD29\t07080102 \n'
+
+        # Second site missing site_no
+        self.bad_NWIS_response ='# \n' \
+                                 '# \n' \
+                                 '# US Geological Survey \n' \
+                                 '# retrieved: 2017-06-30 11:12:17 -04:00 (vaas01) \n' \
+                                 '# \n' \
+                                 '# The Site File stores location and general information about groundwater, \n' \
+                                 '# surface water, and meteorological sites \n' \
+                                 '# for sites in USA. \n' \
+                                 '# \n' \
+                                 '# Lots of comment lines ... \n' \
+                                 '# \n' \
+                                 'agency_cd\tsite_no\tstation_nm\tsite_tp_cd\tdec_lat_va\tdec_long_va\t' \
+                                 'coord_acy_cd\tdec_coord_datum_cd\talt_va\talt_acy_va\talt_datum_cd\thuc_cd \n' \
+                                 '5s\t15s\t50s\t7s\t16s\t16s\t1s\t10s\t8s\t3s\t10s\t16s \n' \
+                                 'USGS\t05420680\tWapsipinicon River near Tripoli, IA\tST\t42.83609117\t-92.2574003\t' \
+                                 'F\tNAD83\t986.42\t.01\tNGVD29\t07080205 \n' \
+                                 'USGS\tBlack Hawk Creek at Hudson, IA\tST\t42.4077639\t-92.4632451\t' \
+                                 'F\tNAD83\t865.03\t.01\tNGVD29\t 07080102\n'
 
     def test_empty_list(self):
         with requests_mock.Mocker() as m:
-            m.get(self.mock_url, text=self.mock_good_web_data)
-        self.assertEqual(site_dict([], self.mock_prefix), [])
+            m.get(self.request_url, text=self.NWIS_response)
+        self.assertEqual(site_dict([], self.prefix), [])
 
     def test_bad_status_code(self):
         with requests_mock.Mocker() as m:
-            m.get(self.NWIS_url, status_code=404)
-            self.assertEqual(site_dict(self.sites, self.prefix), [])
+            m.get(self.request_url, status_code=404)
+            self.assertEqual(site_dict(self.sites, self.prefix), None)
 
     def test_good_data(self):
         with requests_mock.Mocker() as m:
-            m.get(self.NWIS_url, text=self.NWIS_response)
-            self.assertEqual(site_dict(self.sites, self.prefix), self.correct_output)
+            m.get(self.request_url, text=self.NWIS_response)
+            actual_output = site_dict(self.sites, self.prefix)
+            for item in actual_output:
+                self.assertIn(item, self.correct_output)
+
+    @raises(KeyError)
+    def test_missing_field(self):
+        with requests_mock.Mocker() as m:
+            m.get(self.request_url, text=self.bad_NWIS_response)
+            site_dict(self.sites, self.prefix)
+            self.assertRaises(KeyError)
 
 
 class TestCreateGeojson(unittest.TestCase):
@@ -86,7 +115,7 @@ class TestCreateGeojson(unittest.TestCase):
                     'properties': {
                         'name': 'Black Hawk Creek at Hudson, IA',
                         'id': '05463500',
-                        'huc': None
+                        'huc': '07080102'
                     }
                 },
                 {
@@ -101,7 +130,7 @@ class TestCreateGeojson(unittest.TestCase):
                     'properties': {
                         'name': 'Wapsipinicon River near Tripoli, IA',
                         'id': '05420680',
-                        'huc': None
+                        'huc': '07080205'
                     }
                 },
             ]
@@ -117,8 +146,8 @@ class TestCreateGeojson(unittest.TestCase):
     def test_empty_input(self):
         self.assertEqual(create_geojson([]), self.empty_geojson)
 
-class TestProjectionInfo(unittest.TestCase):
 
+class TestProjectionInfo(unittest.TestCase):
     def setUp(self):
         self.spacial_ref_url = 'http://spatialreference.org/ref/epsg/3582/proj4/'
         self.spacial_ref_response = '+proj=lcc ' \
@@ -140,4 +169,3 @@ class TestProjectionInfo(unittest.TestCase):
         with requests_mock.Mocker() as m:
             m.get(self.spacial_ref_url, text=self.spacial_ref_response)
             self.assertEqual(projection_info(self.code, self.url_template), self.correct_output)
-

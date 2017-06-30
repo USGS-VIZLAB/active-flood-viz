@@ -31,7 +31,7 @@ def site_dict(site_list, url_prefix):
 
     if req.status_code != 200:
         print("Error: service call failed")
-        return
+        return None
 
     if req.text == "":
         print("Service call returned no data")
@@ -45,28 +45,27 @@ def site_dict(site_list, url_prefix):
         else:
             break
 
-    # make a list of dicts from data
-    fields = data[0].split('\t')
+    keep_fields = [
+        'site_no',
+        'station_nm',
+        'dec_long_va',
+        'dec_lat_va',
+        'huc_cd'
+    ]
+
+    # make a list of dicts from data, remove any aberrant spaces
+    fields = [field.strip() for field in data[0].split('\t')]
     dnice = []
     for line in data[2:]:
-        line = line.split('\t')
+        line = [item.strip() for item in line.split('\t')]
         line_dict = dict(zip(fields, line))
-        dnice.append(line_dict)
+        try:
+            filtered_line_dict = {k: line_dict[k] for k in keep_fields}
+        except KeyError:
+            raise KeyError
+        dnice.append(filtered_line_dict)
 
     return dnice
-
-
-def write_geojson(filename, data):
-    """
-    Writes site data to a .json file so it can be mapped
-    This version will create the file if it does not exist and overwrite it if it does. You have been warned.
-
-    :param  filename: the file to be written to
-    :param  data: the data to be written to the file
-    """
-    data = create_geojson(data)
-    with open(filename, "w+") as file:
-        json.dump(data, file, indent=True)
 
 
 def create_geojson(data):
