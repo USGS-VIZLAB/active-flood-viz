@@ -68,12 +68,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		var cy = lolli.y.baseVal;
 		var cx = lolli.x.baseVal;
 		var loli_width = lolli.width.baseVal.value;
+		var cr = "20";
 		cy.convertToSpecifiedUnits(5);
 		cx.convertToSpecifiedUnits(5);
 		var group = d3.select('#peakflow_bar svg .group');
 		group.append("circle").attr('class', 'cir')
-			.attr('r', "20")
+			.attr('r', cr)
 			.attr('cx', cx.value + (loli_width/3.5) )
-			.attr('cy', cy.value);
+			.attr('cy', cy.value  + parseInt(cr));	//offset by circle radius
 	});
 });

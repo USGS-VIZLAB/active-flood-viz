@@ -15,11 +15,12 @@ def req_peak_data(site, start_date, end_date, url_peak):
         content - list of all lines in the data file 
 
     """
+    content = []
     url = url_peak + '?site_no=' + site + '&agency_cd=USGS&format=rdb'
     r = requests.get(url)
     if r.status_code is 200:
         content = r.text.splitlines()
-        return content
+    return content
 
 def parse_peak_data(content, site_no):
 

@@ -1,5 +1,5 @@
 
-DEBUG = False
+DEBUG = True
 
 NWIS_SITE_SERVICE_ENDPOINT = 'https://waterservices.usgs.gov/nwis/'
 NWIS_WATERPEAK_SITE_SERVICE_ENDPOINT = 'https://nwis.waterdata.usgs.gov/nwis/peak'
