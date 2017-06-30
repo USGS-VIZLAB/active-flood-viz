@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var ref = svg.append("g");
     var sites = svg.append("g");
 
+
     // Bind data and create one path per GeoJSON feature
     // Add sites to the map
     sites.selectAll("path")
@@ -73,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .style("stroke", "blue")
         .style("fill-opacity", "0");
 
-     // Read in background geojson
+    // Read in background geojson
     var ref_data = FV.mapinfo.ref_data;
 
     // Add geojson to map
@@ -96,8 +97,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .style("stroke", "black")
         .style("fill", "#ffffff");
 
-
-
+    if (FV.mapinfo.debug) {
+        var bbox = svg.append("g");
+        var bbox_data = FV.mapinfo.bounds;
+        // Add geojson to map
+        bbox.selectAll("path")
+            .data(bbox_data.features)
+            .enter()
+            .append("path")
+            .attr("d", path)
+            .style("fill", "green");
+    }
 
 
 });
