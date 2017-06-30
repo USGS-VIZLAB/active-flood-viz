@@ -1,4 +1,4 @@
-from floodviz.map_utils import alt_site_dict, create_geojson, projection_info
+from floodviz.map_utils import site_dict, create_geojson, projection_info
 
 import unittest
 
@@ -52,17 +52,17 @@ class TestSiteDict(unittest.TestCase):
         self.correct_output = LIST_OF_SITE_DICTS
 
     def test_empty_list(self):
-        self.assertEqual(alt_site_dict([], self.prefix), [])
+        self.assertEqual(site_dict([], self.prefix), [])
 
     def test_bad_status_code(self):
         with requests_mock.Mocker() as m:
             m.get(self.NWIS_url, status_code=404)
-            self.assertEqual(alt_site_dict(self.sites, self.prefix), [])
+            self.assertEqual(site_dict(self.sites, self.prefix), [])
 
     def test_good_data(self):
         with requests_mock.Mocker() as m:
             m.get(self.NWIS_url, text=self.NWIS_response)
-            self.assertEqual(alt_site_dict(self.sites, self.prefix), self.correct_output)
+            self.assertEqual(site_dict(self.sites, self.prefix), self.correct_output)
 
 
 class TestCreateGeojson(unittest.TestCase):

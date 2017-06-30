@@ -52,7 +52,7 @@ def projection_info(code, url):
     return req.text
 
 
-def alt_site_dict(ids, url_prefix):
+def site_dict(ids, url_prefix):
     """
     Retrieves data on a list of sites and returns it in a list of dicts
     :param ids: list of site IDs
