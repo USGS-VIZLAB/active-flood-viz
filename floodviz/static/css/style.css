@@ -2,9 +2,25 @@ html, body, .main-content {
 	height: 100%;
 	margin: 0;
 }
-#hydrograph {
-	margin-top: 50px;
+/*#hydrograph {*/
+	/*margin-top: 50px;*/
+/*}*/
+/*.nv-indexLine {*/
+	/*display: none;*/
+/*}*/
+
+body { font: 12px Arial;}
+
+path {
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
 }
-.nv-indexLine {
-	display: none;
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
 }
