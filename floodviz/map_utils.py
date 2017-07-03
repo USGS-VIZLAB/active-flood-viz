@@ -115,7 +115,26 @@ def projection_info(code, url):
     return req.text
 
 
+def filter_background(bbox, bg_filename):
+    box_lat = [bbox[0], bbox[2]]
+    box_lon = [bbox[1], bbox[3]]
 
+    with open(bg_filename, 'r') as bg_file:
+        bg = json.load(bg_file)
+    features = bg['features']
+    in_box = []
+    for f in features:
+        coordinates = f['geometry']['coordinates']
+        for group in coordinates:
+            if f['geometry']['type'] == 'MultiPolygon':
+                group = group[0]
+            for pair in group:
+                if min(box_lat) <= pair[0] <= max(box_lat) and min(box_lon) <= pair[1] <= max(box_lon):
+                    in_box.append(f)
+                    break
 
-
-
+    keepers = {
+        'type': 'FeatureCollection',
+        'features': in_box
+    }
+    return keepers

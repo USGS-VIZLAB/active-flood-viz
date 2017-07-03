@@ -3,3 +3,9 @@ circle.gage-point{
     stroke-width: 2;
     fill-opacity: 0;
 }
+
+circle.debug-point{
+    stroke: green;
+    stroke-width: 2;
+    fill-opacity: 0;
+}

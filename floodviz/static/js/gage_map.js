@@ -103,12 +103,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
         var bbox = svg.append("g");
         var bbox_data = FV.mapinfo.bounds;
         // Add geojson to map
-        bbox.selectAll("path")
-            .data(bbox_data.features)
-            .enter()
-            .append("fis")
-            .attr("d", path)
-            .style("fill", "green");
+        bbox.selectAll("circle")
+        .data(bbox_data.features)
+        .enter()
+        .append("circle")
+        .attr("r", 3)
+        .attr("transform", function (d) {
+            return "translate(" + projection(d.geometry.coordinates) + ")";
+        })
+        .attr("class", "debug-point");
     }
 
 
