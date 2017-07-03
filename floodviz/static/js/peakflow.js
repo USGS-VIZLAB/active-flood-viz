@@ -86,6 +86,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		group.append("circle").attr('class', 'cir')
 		 	.attr('r', "5")
 		 	.attr('cx', lolli_pos_x)
-		 	.attr('cy', lolli_pos_y);	//offset by circle radius
+		 	.attr('cy', lolli_pos_y);
 	});
 });
