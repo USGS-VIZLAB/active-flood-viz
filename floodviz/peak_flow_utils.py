@@ -16,11 +16,14 @@ def req_peak_data(site, start_date, end_date, url_pefix):
 
     """
     # peak value historical data #
-    content = []
+    content = None
     url = url_pefix + '?site_no=' + site + '&agency_cd=USGS&format=rdb' + '&end_date=' + end_date
-    r = requests.get(url)
-    if r.status_code is 200:
-        content = r.text.splitlines()
+    try:
+        r = requests.get(url)
+        if r.status_code is 200:
+            content = r.text.splitlines()
+    except requests.exceptions.RequestException as e:
+        print('- Bad URL -')
     return content
 
 def req_peak_dv_data(site, date, url_prefix):
@@ -37,16 +40,19 @@ def req_peak_dv_data(site, date, url_prefix):
         content - list of all lines in the data file 
 
     """
-    content = []
+    content = None
     url = url_prefix + 'dv/?format=rdb&sites=' + site + '&startDT=' + date + '&endDT=' + date + '&siteStatus=all'
-    r = requests.get(url)
-    if r.status_code is 200:
-        content = r.text.splitlines()
+    try:
+        r = requests.get(url)
+        if r.status_code is 200:
+            content = r.text.splitlines()
+    except requests.exceptions.RequestException as e:
+        print('- Bad URL -')
     return content
 
 
 
-def parse_peak_data(peak_data, dv_data, site_no):
+def parse_peak_data(peak_data, dv_data):
 
     """ 
     Parses peak flow water data peak_data and constructs a dictionary 
@@ -54,6 +60,7 @@ def parse_peak_data(peak_data, dv_data, site_no):
 
     ARGS: 
         peak_data - list of lines from peak flow data requested from NWIS waterdata service.
+        dv_data - list of lines from daily value data requested from NWIS waterdata service.
     
     RETURNS:
         peak_data - A list holding the peak flow data points
@@ -62,32 +69,34 @@ def parse_peak_data(peak_data, dv_data, site_no):
     
     all_data = []
     seen = set([])
-    # parse peak_data 
-    for line in peak_data:
-        if not line.startswith('USGS'):
-            continue
-        line = line.split('\t')
-        year = line[2].split('-')[0]
-        # remove duplicate years
-        if year in seen:
-            continue
-        else:
-            seen.add(year)
-        if line[4]:
-            peak_val = int(line[4])
-            all_data.append({'label': year, 'value': peak_val})
-    # parse daily_value data
-    for line in dv_data:
-        if not line.startswith('USGS'):
-            continue
-        line = line.split('\t')
-        year = line[2].split('-')[0]
-        # below conditon will favor the peak value retrieved from
-        # peak value data opposed to daily value data if peak value data is available
-        if year in seen:
-            break
-        if line[3]:
-            peak_val = float(line[3])
-            all_data.append({'label': year, 'value': peak_val})
+    if isinstance(peak_data, list):
+        # parse peak_data 
+        for line in peak_data:
+            if not line.startswith('USGS'):
+                continue
+            line = line.split('\t')
+            year = line[2].split('-')[0]
+            # remove duplicate years
+            if year in seen:
+                continue
+            else:
+                seen.add(year)
+            if line[4]:
+                peak_val = int(line[4])
+                all_data.append({'label': year, 'value': peak_val})
+    if isinstance(dv_data, list):    
+        # parse daily_value data
+        for line in dv_data:
+            if not line.startswith('USGS'):
+                continue
+            line = line.split('\t')
+            year = line[2].split('-')[0]
+            # below conditon will favor the peak value retrieved from
+            # peak value data opposed to daily value data if peak value data is available
+            if year in seen:
+                break
+            if line[3]:
+                peak_val = float(line[3])
+                all_data.append({'label': year, 'value': peak_val})
 
     return all_data
