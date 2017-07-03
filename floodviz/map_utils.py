@@ -124,14 +124,37 @@ def filter_background(bbox, bg_filename):
     features = bg['features']
     in_box = []
     for f in features:
+        added = False
         coordinates = f['geometry']['coordinates']
+        feature_bbox = {
+            'min': {
+                'lat': float('inf'),
+                'lon': float('inf')
+            },
+            'max': {
+                'lat': float('-inf'),
+                'lon': float('-inf')
+            }
+        }
         for group in coordinates:
             if f['geometry']['type'] == 'MultiPolygon':
                 group = group[0]
             for pair in group:
+                feature_bbox['min']['lat'] = min(feature_bbox['min']['lat'], pair[0])
+                feature_bbox['min']['lon'] = min(feature_bbox['min']['lon'], pair[1])
+                feature_bbox['max']['lat'] = max(feature_bbox['max']['lat'], pair[0])
+                feature_bbox['max']['lon'] = max(feature_bbox['max']['lon'], pair[1])
                 if min(box_lat) <= pair[0] <= max(box_lat) and min(box_lon) <= pair[1] <= max(box_lon):
                     in_box.append(f)
+                    added = True
                     break
+            if not added and \
+                    feature_bbox['min']['lat'] < min(box_lat) and \
+                    feature_bbox['max']['lat'] > max(box_lat) and \
+                    feature_bbox['min']['lon'] < min(box_lon) and \
+                    feature_bbox['max']['lon'] > max(box_lon):
+                in_box.append(f)
+                added = True
 
     keepers = {
         'type': 'FeatureCollection',
