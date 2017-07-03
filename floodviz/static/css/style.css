@@ -37,7 +37,7 @@ html, body, .main-content {
 
 #lollipop {
 	width: .3%;
-	fill: #7FFF00 !important;
+	stroke: #7fff00;
 }
 .cir {
 	fill: #7FFF00;

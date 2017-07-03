@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var	width = parseInt(FV.peakmeta['width']);
 	var	height = parseInt(FV.peakmeta['height']);
 
-	var x = d3.scaleBand().rangeRound([0, width]).padding(.5);
+	var x = d3.scaleBand().rangeRound([0, width]).padding(.4);
 	var	y = d3.scaleLinear().range([height, 0]);
 
 	var xAxis = d3.axisBottom().scale(x);
@@ -49,6 +49,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("x", 0 - (height/2))
 			.attr("y", 0 - (margin.left/2))
 			.text("Discharge (cfps)");
+		
+		var lolli_data = data[data.length-1];
+		data = data.slice(0, data.length-1);
+
+		// Normal Bar value creation
 		svg.selectAll("bar").data(data).enter().append("rect")
 			.attr('class', 'bar')
 			.attr("x", function(d) {return x(d.label); })
@@ -61,18 +66,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("text-anchor", "middle")
 			.text("Peak Annual Discharge")
 
-		// Lollipop ## Below code will be changed when new preprocessing for 'current' data arrives
+		// create lollipop path
 		var bars = d3.select('#peakflow_bar svg').selectAll('.bar')['_groups'][0];
-		var lolli = bars[bars.length-1]; // This (and line above) will change when grabbing current data instead of using historical data ^
-		lolli.setAttribute("id", "lollipop");
-		var cy = lolli.y.baseVal;
-		var cx = lolli.x.baseVal;
-		var loli_width = lolli.width.baseVal.value;
-		var cr = "5";
+		var last_bar = bars[bars.length-1];
+		var penultimant_bar = bars[bars.length-2];
+		var lb_x = last_bar.x.baseVal.value;
+		var slb_x = penultimant_bar.x.baseVal.value;
+		var padding = lb_x - slb_x;
+		var lolli_pos_x = ((lb_x+padding+((1/2)*x.bandwidth())).toString())
+		var lolli_pos_y = (y(lolli_data['value'])).toString()
+		var path_string = "M " + lolli_pos_x +"," + 300 + " " + lolli_pos_x + "," + lolli_pos_y;
+
+		svg.append("path")
+			.attr('id', 'lollipop')
+			.attr("stroke-width", 2)
+			.attr("d", path_string);
+
 		var group = d3.select('#peakflow_bar svg .group');
 		group.append("circle").attr('class', 'cir')
-			.attr('r', cr)
-			.attr('cx', cx.value + (loli_width) )
-			.attr('cy', cy.value  + parseInt(cr));	//offset by circle radius
+		 	.attr('r', "5")
+		 	.attr('cx', lolli_pos_x)
+		 	.attr('cy', lolli_pos_y);	//offset by circle radius
 	});
 });
