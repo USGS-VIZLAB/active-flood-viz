@@ -25,8 +25,10 @@ if __name__ == '__main__':
         port = 5050
 
     if do_freeze:
+        print("freezing")
+        freezer.freeze()
         print("frozen")
-        freezer.run(host=host, port=port, threaded=True)
+        freezer.serve(host=host, port=port, threaded=True)
     else:
         application.run(host=host, port=port, threaded=True)
     # run from the command line as follows
