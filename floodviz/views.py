@@ -14,9 +14,8 @@ url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 def root():
     _hydrograph_helper()
     _peakflow_helper()
-    #mapinfo = _map_helper()
-    return render_template('index.html')
-    #return render_template('index.html', mapinfo=mapinfo)
+    mapinfo = _map_helper()
+    return render_template('index.html', mapinfo=mapinfo)
 
 
 @app.route('/hydrograph/')
@@ -33,7 +32,6 @@ def sitemap():
 
 def _hydrograph_helper():
     # Hydrograph config vars #
-    sites = app.config['SITE_IDS']
     hydro_start_date = app.config['EVENT_START_DT']
     hydro_end_date = app.config['EVENT_END_DT']
     sites = app.config['SITE_IDS']
