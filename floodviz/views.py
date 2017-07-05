@@ -45,7 +45,6 @@ def _hydrograph_helper():
     with open('floodviz/static/data/hydrograph_data.json', 'w') as fout: 
         json.dump(all_series_data, fout, indent=1)
 
-    return render_template('index.html')
 
 
 def _peakflow_helper():
@@ -63,7 +62,6 @@ def _peakflow_helper():
     with open('floodviz/static/data/peak_flow_data.json', 'w') as fout: 
         json.dump(peak_data, fout, indent=1)
 
-    return render_template('index.html')
 
 
 def _map_helper():
