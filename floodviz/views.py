@@ -32,7 +32,6 @@ def sitemap():
 
 def _hydrograph_helper():
     # Hydrograph config vars #
-    sites = app.config['SITE_IDS']
     hydro_start_date = app.config['EVENT_START_DT']
     hydro_end_date = app.config['EVENT_END_DT']
     sites = app.config['SITE_IDS']

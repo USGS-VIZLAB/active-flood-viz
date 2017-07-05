@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	peakflow_bar.style.width = FV.peakmeta['width'];
 
 	var margin = {bottom: 100, right: 120, left: 120, top: 150};
-	var	width = parseInt(FV.peakmeta['width']);
+	var width = parseInt(FV.peakmeta['width']);
 	var	height = parseInt(FV.peakmeta['height']);
 
 	var x = d3.scaleBand().rangeRound([0, width]).padding(.5);
@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var xAxis = d3.axisBottom().scale(x);
 	var yAxis = d3.axisLeft().scale(y).ticks(8);
 
+<<<<<<< HEAD
 	var svg = d3.select('#peakflow_bar').append('svg')
 				.attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.top + margin.bottom)
@@ -26,6 +27,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var tooltip = d3.select("body")
 		.append("div")
 		.attr("class", "toolTip");
+=======
+	var svg = d3.select('#peakflow_bar')
+		.append('svg')
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+		.attr('class', 'group');
+>>>>>>> 67cc21bda219ccc56fc7d9966c684351dfce3aea
 
 
 	d3.json('../static/data/peak_flow_data.json', function(data) {
@@ -45,21 +55,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		svg.append("g").attr('class', "axis axis--x").attr("transform", "translate(0," + height + ")").call(xAxis)
 			.append("text")
 			.attr("text-anchor", "middle")
-			.attr("x", (width/2))
-			.attr("y", 0 + (margin.bottom/2))
+			.attr("x", (width / 2))
+			.attr("y", 0 + (margin.bottom / 2))
 			.text("Year");
 		svg.append("g").attr('class', "axis axis--y").call(yAxis)
 			.append("text")
 			.attr("text-anchor", "middle")
 			.attr("transform", "rotate(-90)")
-			.attr("x", 0 - (height/2))
-			.attr("y", 0 - (margin.left/2))
+			.attr("x", 0 - (height / 2))
+			.attr("y", 0 - (margin.left / 2))
 			.text("Discharge (cfps)");
 		
+<<<<<<< HEAD
 		// Save last data point as lollipop
 		var lolli_data = data[data.length-1];
 		// remove last data point for creating bars
 		data = data.slice(0, data.length-1);
+=======
+		var lolli_data = data[data.length - 1];
+		data = data.slice(0, data.length - 1);
+>>>>>>> 67cc21bda219ccc56fc7d9966c684351dfce3aea
 
 		// Normal Bar value creation
 		svg.selectAll("bar").data(data).enter().append("rect")
@@ -91,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		var lb_x = last_bar.x.baseVal.value;
 		var slb_x = penultimant_bar.x.baseVal.value;
 		var padding = lb_x - slb_x;
-		var lolli_pos_x = ((lb_x+padding+((1/2)*x.bandwidth())).toString())
+		var lolli_pos_x = ((lb_x + padding + ((1/2) * x.bandwidth())).toString())
 		var lolli_pos_y = (y(lolli_data['value'])).toString()
 		var path_string = "M " + lolli_pos_x +"," + 300 + " " + lolli_pos_x + "," + lolli_pos_y;
 		svg.append("path")
