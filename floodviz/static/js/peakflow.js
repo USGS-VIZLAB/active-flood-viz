@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var	width = parseInt(FV.peakmeta['width']);
 	var	height = parseInt(FV.peakmeta['height']);
 
-	var x = d3.scaleBand().rangeRound([0, width]).padding(.4);
+	var x = d3.scaleBand().rangeRound([0, width]).padding(.5);
 	var	y = d3.scaleLinear().range([height, 0]);
 
 	var xAxis = d3.axisBottom().scale(x);
@@ -60,13 +60,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("y", function(d) {return y(d.value); })
 			.attr("width", x.bandwidth())
 			.attr("height", function(d) {return height - y(d.value); });
+		var title = "Peak Annual Discharge";
 		svg.append("text")
 			.attr("x", (width/2))
 			.attr("y", 0 - (margin.top / 2))
 			.attr("text-anchor", "middle")
-			.text("Peak Annual Discharge")
+			.text(title);
 
-		// create lollipop path
+		// create lollipop Stroke and Circle
 		var bars = d3.select('#peakflow_bar svg').selectAll('.bar')['_groups'][0];
 		var last_bar = bars[bars.length-1];
 		var penultimant_bar = bars[bars.length-2];
@@ -76,15 +77,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		var lolli_pos_x = ((lb_x+padding+((1/2)*x.bandwidth())).toString())
 		var lolli_pos_y = (y(lolli_data['value'])).toString()
 		var path_string = "M " + lolli_pos_x +"," + 300 + " " + lolli_pos_x + "," + lolli_pos_y;
-
 		svg.append("path")
 			.attr('id', 'lollipop')
 			.attr("stroke-width", 2)
 			.attr("d", path_string);
-
 		var group = d3.select('#peakflow_bar svg .group');
 		group.append("circle").attr('class', 'cir')
-		 	.attr('r', "5")
+		 	.attr('r', "4.5")
 		 	.attr('cx', lolli_pos_x)
 		 	.attr('cy', lolli_pos_y);
 	});
