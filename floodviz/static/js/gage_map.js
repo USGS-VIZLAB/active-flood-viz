@@ -64,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var sites = svg.append("g");
 
 
-    // Bind data and create one path per GeoJSON feature
     // Add sites to the map
     sites.selectAll("circle")
         .data(site_data.features)
@@ -76,10 +75,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         })
         .attr("class", "gage-point");
 
-    // Read in background geojson
+    // add reference points to map
     var ref_data = FV.mapinfo.ref_data;
-
-    // Add geojson to map
     ref.selectAll("path")
         .data(ref_data.features)
         .enter()
@@ -89,15 +86,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     // Read in background geojson
     var bg_data = FV.mapinfo.bg_data;
-
-    // Add geojson to map
+    // Add background to map
     bg.selectAll("path")
         .data(bg_data.features)
         .enter()
         .append("path")
         .attr("d", path)
-        .style("stroke", "black")
-        .style("fill", "#ffffff");
+        .attr("class", "background");
 
     if (FV.mapinfo.debug) {
         var bbox = svg.append("g");
