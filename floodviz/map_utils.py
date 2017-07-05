@@ -1,5 +1,5 @@
 import json
-import xml.etree.ElementTree as ET
+
 from string import Template
 
 import requests
@@ -174,3 +174,17 @@ def filter_background(bbox, bg_filename):
     }
 
     return keepers
+
+def fetch_rivers(url, query_template, bbox):
+    lower_lat = min(bbox[1], bbox[3])
+    upper_lat = max(bbox[1], bbox[3])
+    lower_lon = min(bbox[0], bbox[2])
+    upper_lon = max(bbox[0], bbox[2])
+    query_template = Template(query_template)
+    query = query_template.substitute(lower_lat=lower_lat, upper_lat=upper_lat,
+                                      lower_lon=lower_lon, upper_lon=upper_lon)
+    req = requests.post(url, query)
+    if req.status_code != 200:
+        print('Call to geoserver has failed')
+        return None
+    return json.loads(req.text)
