@@ -23,7 +23,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 				.attr('class', 'group');
 
-	var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+	var tooltip = d3.select("body")
+		.append("div")
+		.attr("class", "toolTip");
 
 
 	d3.json('../static/data/peak_flow_data.json', function(data) {
@@ -54,7 +56,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("y", 0 - (margin.left/2))
 			.text("Discharge (cfps)");
 		
+		// Save last data point as lollipop
 		var lolli_data = data[data.length-1];
+		// remove last data point for creating bars
 		data = data.slice(0, data.length-1);
 
 		// Normal Bar value creation
@@ -67,8 +71,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.on("mousemove", function(d) {
 				tooltip.transition().duration(500).style("opacity", .9);
 				tooltip.style("display", "inline-block")
-                .style("left", (d3.event.pageX) + 20 + "px")		
-                .style("top", (d3.event.pageY - 28) + "px")
+                .style("left", (d3.event.pageX) + 10 + "px")		
+                .style("top", (d3.event.pageY - 70) + "px")
 				.html((d.label) + "<br>" + (d.value) + " cfps");
         	})
     		.on("mouseout", function(d){ tooltip.style("display", "none");});
@@ -97,8 +101,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.on("mousemove", function() {
 				tooltip.transition().duration(500).style("opacity", .9);
 				tooltip.style("display", "inline-block")
-                .style("left", (d3.event.pageX) + 20 + "px")		
-                .style("top", (d3.event.pageY - 28) + "px")
+                .style("left", (d3.event.pageX) + 10 + "px")		
+                .style("top", (d3.event.pageY) - 70 + "px")
 				.html((lolli_data.label) + "<br>" + (lolli_data.value) + " cfps");
         	})
     		.on("mouseout", function(d){ tooltip.style("display", "none");});
