@@ -6,7 +6,7 @@ def parse_hydrodata(jdata):
     
     """ 
     Parses json Hydrodata from NWIS webservice
-    and formats for NVD3 charting library. Upon failure, this will
+    and formats for D3 charting library. Upon failure, this will
     return empty data list.
 
     ARGS: 
@@ -14,21 +14,20 @@ def parse_hydrodata(jdata):
         time series data for all sites listed in config.py SITE_IDs.
     
     RETURNS:
-        All series data correctly formated for NVD3 charting library. 
-        This is also a list of python dictonaries where each dictionary 
-        corresponds to a different site.   
+        All series data correctly formated for D3.
+        This is also a list of python dictonaries.
 
     """
     all_series_data = []
     
     if jdata is not None:
-        for idx, site in enumerate(jdata):
+        for site in jdata:
 
             site_name = site['sourceInfo']['siteName']
             site_id = site['sourceInfo']['siteCode'][0]['value']
 
             # Fill data for this series
-            for idx2, obj in enumerate(site['values'][0]['value']):
+            for obj in site['values'][0]['value']:
                 value = obj['value']
                 dt = obj['dateTime']
                 date = dt.split('T')[0]
@@ -57,7 +56,7 @@ def req_hydrodata(sites, start_date, end_date, url_top):
     
     RETURNS:
         returns a list of one dictonary with the requested data for
-        all series from the nwis service 
+        all series from the nwis service
     
     """
     ret = None
