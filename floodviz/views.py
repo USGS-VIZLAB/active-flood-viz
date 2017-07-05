@@ -46,7 +46,9 @@ def _map_helper():
     site_data = map_utils.create_geojson(site_data)
     projection = map_utils.projection_info(app.config['PROJECTION_EPSG_CODE'], app.config['SPATIAL_REFERENCE_ENDPOINT'])
 
-    bg_data = map_utils.filter_background(app.config['BOUNDING_BOX'], app.config['BACKGROUND_FILE'])
+    with open(app.config['BACKGROUND_FILE'], 'r') as bg_file:
+        bg_data = json.load(bg_file)
+    bg_data = map_utils.filter_background(app.config['BOUNDING_BOX'], bg_data)
 
     ref_data = app.config['REFERENCE_DATA']
 

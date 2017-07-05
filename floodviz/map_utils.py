@@ -115,7 +115,7 @@ def projection_info(code, url):
     return req.text
 
 
-def filter_background(bbox, bg_filename):
+def filter_background(bbox, bg_data):
     """
     Takes bounding box and background geojson file assumed to be the US states, and outputs a geojson-like dictionary
     containing only those features with at least one point within the bounding box, or any state that completely
@@ -127,14 +127,13 @@ def filter_background(bbox, bg_filename):
     Virginia. To deal with this, we are allowed to find that multiple states contain the bounding box.
 
     :param bbox: The coordinates of the bounding box as [lon, lat, lon, lat]
-    :param bg_filename: the name of the background file
+    :param bg_data: a geojson-like dict describing the background
     :return: the features from bg_filename whose borders intersect bbox OR the feature which completely contains bbox
     """
     box_lon = [bbox[0], bbox[2]]
     box_lat = [bbox[1], bbox[3]]
-    with open(bg_filename, 'r') as bg_file:
-        bg = json.load(bg_file)
-    features = bg['features']
+
+    features = bg_data['features']
     in_box = []
     for f in features:
         starting_len = len(in_box)
