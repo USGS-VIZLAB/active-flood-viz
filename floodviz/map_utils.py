@@ -115,7 +115,64 @@ def projection_info(code, url):
     return req.text
 
 
+def filter_background(bbox, bg_filename):
+    """
+    Takes bounding box and background geojson file assumed to be the US states, and outputs a geojson-like dictionary
+    containing only those features (states) whose borders at some point intersect the bounding box, OR the state that
+    completely contains the bounding box.
+    :param bbox: The coordinates of the bounding box
+    :param bg_filename: the name of the background file
+    :return: the features from bg_filename whose borders intersect bbox OR the feature which completely contains bbox
+    """
+    box_lon = [bbox[0], bbox[2]]
+    box_lat = [bbox[1], bbox[3]]
+    with open(bg_filename, 'r') as bg_file:
+        bg = json.load(bg_file)
+    features = bg['features']
+    in_box = []
+    for f in features:
+        starting_len = len(in_box)
 
+        # Define points for bounding box around the state.
+        feature_max_lat = float('-inf')
+        feature_max_lon = float('-inf')
+        feature_min_lat = float('inf')
+        feature_min_lon = float('inf')
+        
+        coordinates = f['geometry']['coordinates']
+
+        for group in coordinates:
+            if len(in_box) > starting_len:
+                # This feature has already been added
+                break
+            # actual points for MultiPolygons are nested one layer deeper than those for polygons
+            if f['geometry']['type'] == 'MultiPolygon':
+                group = group[0]
+
+            for pair in group:
+                # check if any point along the state's borders falls within the bounding box.
+                if min(box_lon) <= pair[0] <= max(box_lon) and min(box_lat) <= pair[1] <= max(box_lat):
+                    in_box.append(f)
+                    break
+
+                # We only need to check the box around the state if we don't add the state based on an intersection.
+                feature_min_lon = min(feature_min_lon, pair[0])
+                feature_min_lat = min(feature_min_lat, pair[1])
+                feature_max_lon = max(feature_max_lon, pair[0])
+                feature_max_lat = max(feature_max_lat, pair[1])
+
+        # If the box containing a feature also contains the bounding box, keep this feature
+        # Allow adding more than one because otherwise MD contains boxes in WV, and CA would contain most of NV.
+        if feature_min_lat < min(box_lat) and feature_max_lat > max(box_lat) and \
+                feature_min_lon < min(box_lon) and feature_max_lon > max(box_lon):
+            in_box.append(f)
+
+    keepers = {
+        'type': 'FeatureCollection',
+        'features': in_box
+    }
+
+    return keepers
 
 
 
