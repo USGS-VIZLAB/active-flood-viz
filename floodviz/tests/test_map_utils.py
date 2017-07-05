@@ -52,7 +52,7 @@ class TestSiteDict(unittest.TestCase):
                              'F\tNAD83\t865.03\t.01\tNGVD29\t07080102 \n'
 
         # Second site missing site_no
-        self.bad_NWIS_response ='# \n' \
+        self.bad_NWIS_response = '# \n' \
                                  '# \n' \
                                  '# US Geological Survey \n' \
                                  '# retrieved: 2017-06-30 11:12:17 -04:00 (vaas01) \n' \
