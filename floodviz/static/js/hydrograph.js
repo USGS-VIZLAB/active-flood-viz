@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			nv.utils.windowResize(chart.update);
 			return chart;
 	
-		});
+		// });
 	
 	});
 });
