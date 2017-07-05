@@ -1,6 +1,6 @@
 import requests
 
-def req_peak_data(site, start_date, end_date, url_pefix):
+def req_peak_data(site, start_date, end_date, url_prefix):
     """ 
     This function first requests water peak flow data in
     rdb format from NWIS peak water data service.
@@ -17,7 +17,7 @@ def req_peak_data(site, start_date, end_date, url_pefix):
     """
     # peak value historical data #
     content = None
-    url = url_pefix + '?site_no=' + site + '&agency_cd=USGS&format=rdb' + '&end_date=' + end_date
+    url = url_prefix + '?site_no=' + site + '&agency_cd=USGS&format=rdb' + '&end_date=' + end_date
     try:
         r = requests.get(url)
         if r.status_code is 200:
@@ -34,7 +34,7 @@ def req_peak_dv_data(site, date, url_prefix):
     ARGS: 
         site - string site ID for the site to be charted
         date - date to chart lollipop flow data
-        url_pefix - config varbile for nwis peak waterdata service endpoint url
+        url_pefix - String constant for nwis peak waterdata service endpoint url
     
     RETURNS:
         content - list of all lines in the data file 
