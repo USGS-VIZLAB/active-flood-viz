@@ -17,9 +17,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var xAxis = d3.axisBottom().scale(x);
 	var yAxis = d3.axisLeft().scale(y).ticks(8);
 
-	var svg = d3.select('#peakflow_bar').append('svg').attr("width", width + margin.left + margin.right)
+	var svg = d3.select('#peakflow_bar').append('svg')
+				.attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.top + margin.bottom)
-				.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr('class', 'group');
+				.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+				.attr('class', 'group');
+
+	var tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
 
 	d3.json('../static/data/peak_flow_data.json', function(data) {
@@ -59,7 +63,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("x", function(d) {return x(d.label); })
 			.attr("y", function(d) {return y(d.value); })
 			.attr("width", x.bandwidth())
-			.attr("height", function(d) {return height - y(d.value); });
+			.attr("height", function(d) {return height - y(d.value); })
+			.on("mousemove", function(d) {
+				tooltip.transition().duration(500).style("opacity", .9);
+				tooltip.style("display", "inline-block")
+                .style("left", (d3.event.pageX) + 20 + "px")		
+                .style("top", (d3.event.pageY - 28) + "px")
+				.html((d.label) + "<br>" + (d.value) + " cfps");
+        	})
+    		.on("mouseout", function(d){ tooltip.style("display", "none");});
+		
 		var title = "Peak Annual Discharge";
 		svg.append("text")
 			.attr("x", (width/2))
@@ -80,9 +93,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		svg.append("path")
 			.attr('id', 'lollipop')
 			.attr("stroke-width", 2)
-			.attr("d", path_string);
+			.attr("d", path_string)
+			.on("mousemove", function() {
+				tooltip.transition().duration(500).style("opacity", .9);
+				tooltip.style("display", "inline-block")
+                .style("left", (d3.event.pageX) + 20 + "px")		
+                .style("top", (d3.event.pageY - 28) + "px")
+				.html((lolli_data.label) + "<br>" + (lolli_data.value) + " cfps");
+        	})
+    		.on("mouseout", function(d){ tooltip.style("display", "none");});
+		
 		var group = d3.select('#peakflow_bar svg .group');
-		group.append("circle").attr('class', 'cir')
+		group.append("circle")
+			.attr('class', 'cir')
 		 	.attr('r', "4.5")
 		 	.attr('cx', lolli_pos_x)
 		 	.attr('cy', lolli_pos_y);
