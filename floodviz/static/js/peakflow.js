@@ -17,25 +17,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var xAxis = d3.axisBottom().scale(x);
 	var yAxis = d3.axisLeft().scale(y).ticks(8);
 
-<<<<<<< HEAD
 	var svg = d3.select('#peakflow_bar').append('svg')
 				.attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.top + margin.bottom)
-				.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+				.append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 				.attr('class', 'group');
 
 	var tooltip = d3.select("body")
 		.append("div")
 		.attr("class", "toolTip");
-=======
-	var svg = d3.select('#peakflow_bar')
-		.append('svg')
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
-		.append("g")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-		.attr('class', 'group');
->>>>>>> 67cc21bda219ccc56fc7d9966c684351dfce3aea
+
 
 
 	d3.json('../static/data/peak_flow_data.json', function(data) {
@@ -65,16 +57,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("x", 0 - (height / 2))
 			.attr("y", 0 - (margin.left / 2))
 			.text("Discharge (cfps)");
-		
-<<<<<<< HEAD
+
 		// Save last data point as lollipop
-		var lolli_data = data[data.length-1];
-		// remove last data point for creating bars
-		data = data.slice(0, data.length-1);
-=======
 		var lolli_data = data[data.length - 1];
+		// remove last data point for creating bars
 		data = data.slice(0, data.length - 1);
->>>>>>> 67cc21bda219ccc56fc7d9966c684351dfce3aea
+
 
 		// Normal Bar value creation
 		svg.selectAll("bar").data(data).enter().append("rect")
