@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	var margin = {bottom: 100, right: 120, left: 120, top: 150};
 	var width = parseInt(FV.peakmeta['width']);
-	var	height = parseInt(FV.peakmeta['height']);
+	var height = parseInt(FV.peakmeta['height']);
 
 	var x = d3.scaleBand().rangeRound([0, width]).padding(.5);
 	var	y = d3.scaleLinear().range([height, 0]);
@@ -31,9 +31,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		// For custom X axis ticks
 		var ticks = []
 		data.forEach( function(d, i){
-		 	if (i % 4 === 0) {
-		 		ticks.push(d.label);
-		 	}
+			if (i % 4 === 0) {
+				ticks.push(d.label);
+			}
 		})
 		xAxis.tickValues(ticks);
 
@@ -87,8 +87,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("d", path_string);
 		var group = d3.select('#peakflow_bar svg .group');
 		group.append("circle").attr('class', 'cir')
-		 	.attr('r', "4.5")
-		 	.attr('cx', lolli_pos_x)
-		 	.attr('cy', lolli_pos_y);
+			.attr('r', "4.5")
+			.attr('cx', lolli_pos_x)
+			.attr('cy', lolli_pos_y);
 	});
 });
