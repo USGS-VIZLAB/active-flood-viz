@@ -11,7 +11,7 @@ var x = d3.scaleTime().range([0, width]);
 var y = d3.scaleLog().range([height, 0]);
 
 // Define the line
-var valueline = d3.line()
+var line = d3.line()
     .x(function(d) { return x(d.time_mili); })
     .y(function(d) { return y(d.value); });
 
@@ -46,11 +46,9 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
         svg.append("path")
             .attr("class", "line")
             .attr("id", d.key)
-            .attr("d", valueline(d.values));
+            .attr("d", line(d.values));
 
     });
-
-
 
     // Add the X Axis
     svg.append("g")
@@ -62,7 +60,6 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
     svg.append("g")
       .attr("class", "axis")
       .call(d3.axisLeft(y).ticks(10, ".0f"));
-
 
 });
 
