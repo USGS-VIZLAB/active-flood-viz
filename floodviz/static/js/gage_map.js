@@ -78,12 +78,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     // add reference points to map
     var ref_data = FV.mapinfo.ref_data;
-    ref_points.selectAll("path")
+    ref_points.selectAll("circle")
         .data(ref_data.features)
         .enter()
-        .append("path")
-        .attr("d", path)
-        .style("fill", "red");
+        .append("circle")
+        .attr("r", 2)
+        .attr("transform", function (d) {
+            return "translate(" + projection(d.geometry.coordinates) + ")";
+        })
+        .attr("class", "ref-point");
 
     // Read in background geojson
     var bg_data = FV.mapinfo.bg_data;

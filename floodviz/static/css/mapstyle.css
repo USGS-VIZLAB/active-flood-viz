@@ -4,6 +4,10 @@ circle.gage-point{
     fill-opacity: 0;
 }
 
+circle.ref-point{
+    fill: red;
+}
+
 circle.debug-point{
     stroke: #ff00ff;
     stroke-width: 2;
