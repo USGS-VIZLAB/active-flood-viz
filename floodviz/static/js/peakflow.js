@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		.attr('class', 'group');
 
 
-	d3.json('../static/data/peak_flow_data.json', function(data) {
+	d3.json('static/data/peak_flow_data.json', function(data) {
 		
 		// For custom X axis ticks
 		var ticks = []

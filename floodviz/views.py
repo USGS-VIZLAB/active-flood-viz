@@ -57,7 +57,7 @@ def _peakflow_helper():
     content = peak_flow_utils.req_peak_data(peak_site, peak_start_date, peak_end_date, url_peak_prefix)
     daily_value_data = peak_flow_utils.req_peak_dv_data(peak_site, peak_dv_date, url_nwis_prefix)
     peak_data = peak_flow_utils.parse_peak_data(content, daily_value_data)
-    with open('floodviz/static/data/peak_flow_data.json', 'w') as fout: 
+    with open('floodviz/build/static/data/peak_flow_data.json', 'w') as fout: 
         json.dump(peak_data, fout, indent=1)
 
 
