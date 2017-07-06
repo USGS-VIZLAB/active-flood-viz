@@ -115,30 +115,34 @@ def projection_info(code, url):
     return req.text
 
 
-def filter_background(bbox, bg_filename):
+def filter_background(bbox, bg_data):
     """
     Takes bounding box and background geojson file assumed to be the US states, and outputs a geojson-like dictionary
-    containing only those features (states) whose borders at some point intersect the bounding box, OR the state that
-    completely contains the bounding box.
+    containing only those features with at least one point within the bounding box, or any state that completely
+    contains the bounding box.
 
-    :param bbox: The coordinates of the bounding box
-    :param bg_filename: the name of the background file
+    This tests if a feature contains the bounding box by drawing the box that contains the feature and checking if that
+    box also contains the bounding box. Because features are odd shapes, this may find that more than one feature
+    completely contains the bounding box. E.g., if you draw a box around Maryland it will also contain a chunk of West
+    Virginia. To deal with this, we are allowed to find that multiple states contain the bounding box.
+
+    :param bbox: The coordinates of the bounding box as [lon, lat, lon, lat]
+    :param bg_data: a geojson-like dict describing the background
     :return: the features from bg_filename whose borders intersect bbox OR the feature which completely contains bbox
     """
     box_lon = [bbox[0], bbox[2]]
     box_lat = [bbox[1], bbox[3]]
-    with open(bg_filename, 'r') as bg_file:
-        bg = json.load(bg_file)
-    features = bg['features']
+
+    features = bg_data['features']
     in_box = []
     for f in features:
         starting_len = len(in_box)
 
-        # Define points for bounding box around the state.
-        feature_max_lat = float('-inf')
-        feature_max_lon = float('-inf')
-        feature_min_lat = float('inf')
-        feature_min_lon = float('inf')
+        # Define points for bounding box around the feature.
+        feature_max_lat = -90
+        feature_max_lon = -180
+        feature_min_lat = 90
+        feature_min_lon = 180
         
         coordinates = f['geometry']['coordinates']
 
@@ -148,19 +152,23 @@ def filter_background(bbox, bg_filename):
                 break
             # actual points for MultiPolygons are nested one layer deeper than those for polygons
             if f['geometry']['type'] == 'MultiPolygon':
-                group = group[0]
+                geom = group[0]
 
-            for pair in group:
+            else:
+                geom = group
+
+            for lon, lat in geom:
                 # check if any point along the state's borders falls within the bounding box.
-                if min(box_lon) <= pair[0] <= max(box_lon) and min(box_lat) <= pair[1] <= max(box_lat):
+                if min(box_lon) <= lon <= max(box_lon) and min(box_lat) <= lat <= max(box_lat):
                     in_box.append(f)
                     break
 
-                # We only need to check the box around the state if we don't add the state based on an intersection.
-                feature_min_lon = min(feature_min_lon, pair[0])
-                feature_min_lat = min(feature_min_lat, pair[1])
-                feature_max_lon = max(feature_max_lon, pair[0])
-                feature_max_lat = max(feature_max_lat, pair[1])
+                # If any point of a feature falls within the bounding box, then the feature cannot contain the box,
+                #  so this only needs to be run if the above if statement is not executed
+                feature_min_lon = min(feature_min_lon, lon)
+                feature_min_lat = min(feature_min_lat, lat)
+                feature_max_lon = max(feature_max_lon, lon)
+                feature_max_lat = max(feature_max_lat, lat)
 
         # If the box containing a feature also contains the bounding box, keep this feature
         # Allow adding more than one because otherwise MD contains boxes in WV, and CA would contain most of NV.

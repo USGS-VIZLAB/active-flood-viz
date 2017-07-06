@@ -2,8 +2,45 @@ html, body, .main-content {
 	height: 100%;
 	margin: 0;
 }
+
+.bar{
+	fill: steelblue;
+}
+
+.bar:hover {
+	fill: #7FFF00;
+}
+
+.axis {
+	font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+
+
 #hydrograph {
 	margin-top: 50px;
+}
+#peakflow_bar {
+	margin: 0 auto;
+	width: 80%;
+}
+#peakflow_bar svg {
+	display: block;
+	margin: auto;
+}
+
+#lollipop {
+	width: .3%;
+	stroke: #7fff00;
+}
+.cir {
+	fill: #7FFF00;
 }
 .nv-indexLine {
 	display: none;
