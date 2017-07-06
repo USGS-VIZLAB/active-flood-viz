@@ -68,7 +68,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
     if (FV.mapinfo.debug) {
         add_circles(FV.mapinfo.bounds, "debug-point", 3)
     }
-
+    /**
+     * Add circles to the map.
+     * @param data The geojson to be added to the svg
+     * @param classname The class to be given to each element for use in CSS
+     * @param radius The radius of each circle. This cannot be set from CSS
+     */
     function add_circles(data, classname, radius) {
         var group = svg.append("g");
         group.selectAll("circle")
@@ -82,6 +87,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
             .attr("class", classname);
     }
 
+    /**
+     * Add paths to the map
+     * @param data The geojson to be added to the svg
+     * @param classname The class to be given to each element for use in CSS
+     */
     function add_paths(data, classname) {
         var group = svg.append("g");
         group.selectAll("path")
