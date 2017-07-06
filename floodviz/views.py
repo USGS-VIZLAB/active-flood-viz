@@ -69,6 +69,7 @@ def _map_helper():
     
     with open(app.config['BACKGROUND_FILE'], 'r') as bg_file:
         bg_data = json.load(bg_file)
+    bg_data = map_utils.filter_background(app.config['BOUNDING_BOX'], bg_data)
 
     ref_data = app.config['REFERENCE_DATA']
 
