@@ -4,7 +4,6 @@ var margin = {top: 30, right: 20, bottom: 30, left: 50},
     height = 270 - margin.top - margin.bottom;
 
 // Parse the date / time
-// var parseDate = d3.timeParse("%m-%d");
 
 // Set the ranges
 var x = d3.scaleTime().range([0, width]);
@@ -22,7 +21,8 @@ var svg = d3.select("#hydrograph")
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
+              "translate(" + margin.left + "," + margin.top + ")"),
+	g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Get the data
 d3.json("../static/data/hydrograph_data.json", function(error, data) {
