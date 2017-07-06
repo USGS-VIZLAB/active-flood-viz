@@ -3,8 +3,13 @@
 
 <head>
 	<meta charset="UTF-8">
+<<<<<<< HEAD
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}"/>
+=======
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}"/>>
+>>>>>>> 67cc21bda219ccc56fc7d9966c684351dfce3aea
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
 	<title>Flood Viz</title>
 
@@ -16,13 +21,15 @@
 		<div id="hydrograph">
 		</div>
 		<div id="map"></div>
+		<div id="peakflow_bar"></div>
 	</div>
 
 	<script type="text/javascript">
 		// Global Namespace for project - FV
 		var FV = FV || {};
-		FV.hydrometa = {{ config.HYDRO_META|safe }};
-		FV.mapinfo = {{ mapinfo | tojson |safe }};
+		FV.hydrometa = {{ config.HYDRO_META | safe }};
+		FV.peakmeta = {{ config.PEAK_META | safe }}
+		FV.mapinfo = {{ mapinfo | tojson | safe }}
 	</script>
 
 	<script type="text/javascript"
@@ -30,9 +37,10 @@
 	<script type="text/javascript"
 			src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/d3/d3.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/hydrograph.js')}}"></script>
 	<script type="text/javascript"
 			src="{{ url_for('static', filename='bower_components/proj4/dist/proj4.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/hydrograph.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/peakflow.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/gage_map.js') }}"></script>
 
 </body>
