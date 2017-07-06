@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		})
 		xAxis.tickValues(ticks);
 
-		x.domain(data.map(function(d) {return d.label; }));
+		x.domain(data.map( function(d) {return d.label; }));
 		y.domain([0, d3.max(data, function(d) {return d.value; })]);
 
 		svg.append("g").attr('class', "axis axis--x").attr("transform", "translate(0," + height + ")").call(xAxis)
@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr("y", function(d) {return y(d.value); })
 			.attr("width", x.bandwidth())
 			.attr("height", function(d) {return height - y(d.value); })
+			// tooltip event
 			.on("mousemove", function(d) {
 				tooltip.transition().duration(500).style("opacity", .9);
 				tooltip.style("display", "inline-block")
@@ -101,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.attr('id', 'lollipop')
 			.attr("stroke-width", 2)
 			.attr("d", path_string)
+			// tooltip event
 			.on("mousemove", function() {
 				tooltip.transition().duration(500).style("opacity", .9);
 				tooltip.style("display", "inline-block")
@@ -109,7 +111,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				.html((lolli_data.label) + "<br>" + (lolli_data.value) + " cfps");
         	})
     		.on("mouseout", function(d){ tooltip.style("display", "none");});
-		
 		var group = d3.select('#peakflow_bar svg .group');
 		group.append("circle")
 			.attr('class', 'cir')
