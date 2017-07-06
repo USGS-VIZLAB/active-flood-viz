@@ -152,9 +152,12 @@ def filter_background(bbox, bg_data):
                 break
             # actual points for MultiPolygons are nested one layer deeper than those for polygons
             if f['geometry']['type'] == 'MultiPolygon':
-                group = group[0]
+                geom = group[0]
 
-            for lon, lat in group:
+            else:
+                geom = group
+
+            for lon, lat in geom:
                 # check if any point along the state's borders falls within the bounding box.
                 if min(box_lon) <= lon <= max(box_lon) and min(box_lat) <= lat <= max(box_lat):
                     in_box.append(f)
