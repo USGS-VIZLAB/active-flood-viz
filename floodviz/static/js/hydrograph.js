@@ -3,8 +3,6 @@ var margin = {top: 30, right: 20, bottom: 30, left: 50},
     width = 600 - margin.left - margin.right,
     height = 270 - margin.top - margin.bottom;
 
-// Parse the date / time
-
 // Set the ranges
 var x = d3.scaleTime().range([0, width]);
 var y = d3.scaleLog().range([height, 0]);
@@ -17,18 +15,16 @@ var line = d3.line()
 // Adds the svg canvas
 var svg = d3.select("#hydrograph")
     .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")"),
-	g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
 
 // Get the data
 d3.json("../static/data/hydrograph_data.json", function(error, data) {
     data.forEach(function(d) {
-		d.time_mili = d.time_mili;
-		d.value = +d.value;
+        d.value = Number(d.value);
     });
 
     // Scale the range of the data
@@ -52,14 +48,14 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
 
     // Add the X Axis
     svg.append("g")
-      .attr("class", "axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
 
     // Add the Y Axis
     svg.append("g")
-      .attr("class", "axis")
-      .call(d3.axisLeft(y).ticks(10, ".0f"));
+        .attr("class", "axis")
+        .call(d3.axisLeft(y).ticks(10, ".0f"));
 
 });
 
