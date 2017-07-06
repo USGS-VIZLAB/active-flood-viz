@@ -1,5 +1,3 @@
-import json
-import xml.etree.ElementTree as ET
 from string import Template
 
 import requests
