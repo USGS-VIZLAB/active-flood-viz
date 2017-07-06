@@ -60,7 +60,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     // Define order in which layers should be added
     var bg = svg.append("g");
-    var ref = svg.append("g");
+    var ref_rivers = svg.append("g");
+    var ref_points = svg.append("g");
     var sites = svg.append("g");
 
 
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     // add reference points to map
     var ref_data = FV.mapinfo.ref_data;
-    ref.selectAll("path")
+    ref_points.selectAll("path")
         .data(ref_data.features)
         .enter()
         .append("path")
@@ -93,6 +94,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .append("path")
         .attr("d", path)
         .attr("class", "background");
+
+    var rivers_data = FV.mapinfo.rivers_data;
+    ref_rivers.selectAll("path")
+        .data(rivers_data.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .attr("class", "river");
 
     if (FV.mapinfo.debug) {
         var bbox = svg.append("g");
