@@ -44,7 +44,6 @@ def _hydrograph_helper():
         json.dump(all_series_data, fout, indent=1)
 
 
-
 def _peakflow_helper():
     # Peak Flow config vars #
     peak_site = app.config['PEAK_SITE']
@@ -61,7 +60,6 @@ def _peakflow_helper():
         json.dump(peak_data, fout, indent=1)
 
 
-
 def _map_helper():
     site_data = map_utils.site_dict(app.config['SITE_IDS'], app.config['NWIS_SITE_SERVICE_ENDPOINT'])
     site_data = map_utils.create_geojson(site_data)
@@ -71,7 +69,11 @@ def _map_helper():
         bg_data = json.load(bg_file)
     bg_data = map_utils.filter_background(app.config['BOUNDING_BOX'], bg_data)
 
+    with open(app.config['RIVERS_FILE'], 'r') as rivers_file:
+        rivers = json.load(rivers_file)
+
     ref_data = app.config['REFERENCE_DATA']
+
 
     mapinfo = app.config['MAP_CONFIG']
     mapinfo.update({
@@ -79,6 +81,7 @@ def _map_helper():
         'site_data': site_data,
         'bg_data': bg_data,
         'ref_data': ref_data,
+        'rivers_data': rivers,
         # add bounding box as geojson
         'bounds': {
             "type": "FeatureCollection",

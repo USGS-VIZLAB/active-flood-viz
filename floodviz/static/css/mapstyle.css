@@ -1,11 +1,11 @@
 circle.gage-point{
-    stroke: blue;
+    stroke: green;
     stroke-width: 2;
     fill-opacity: 0;
 }
 
 circle.debug-point{
-    stroke: green;
+    stroke: #ff00ff;
     stroke-width: 2;
     fill-opacity: 0;
 }
@@ -14,4 +14,8 @@ path.background{
     stroke: black;
     fill: white;
     fill-opacity: 0;
+}
+
+path.river{
+    stroke: blue;
 }
