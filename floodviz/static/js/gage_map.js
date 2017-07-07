@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		})
 		.attr("class", "gage-point")
 		.on('mousemove', function(d) {
-			maptip.transition().duration(500).style("opacity", .9);
+			maptip.transition().duration(500);
 			maptip.style("display", "inline-block")
 			.style("left", (d3.event.pageX) + 10 + "px")
 			.style("top", (d3.event.pageY - 70) + "px")

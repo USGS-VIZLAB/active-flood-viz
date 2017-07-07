@@ -11,16 +11,16 @@ circle.debug-point{
 }
 
 .maptip {
-	position: absolute;
+	  position: absolute;
   	display: none;
   	min-width: 80px;
   	height: auto;
-  	background: none repeat scroll 0 0 #ffffff;
+  	background-color: #ffffff00;
   	border: 1px solid #7FFF00;
   	padding: 14px;
   	text-align: center;
+    opacity: 1;
 }
-
 
 #map {
 	float: right;
