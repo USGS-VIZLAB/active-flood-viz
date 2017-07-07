@@ -1,5 +1,3 @@
-import json
-import xml.etree.ElementTree as ET
 from string import Template
 
 import requests
@@ -115,7 +113,70 @@ def projection_info(code, url):
     return req.text
 
 
+def filter_background(bbox, bg_data):
+    """
+    Takes bounding box and background geojson file assumed to be the US states, and outputs a geojson-like dictionary
+    containing only those features with at least one point within the bounding box, or any state that completely
+    contains the bounding box.
 
+    This tests if a feature contains the bounding box by drawing the box that contains the feature and checking if that
+    box also contains the bounding box. Because features are odd shapes, this may find that more than one feature
+    completely contains the bounding box. E.g., if you draw a box around Maryland it will also contain a chunk of West
+    Virginia. To deal with this, we are allowed to find that multiple states contain the bounding box.
 
+    :param bbox: The coordinates of the bounding box as [lon, lat, lon, lat]
+    :param bg_data: a geojson-like dict describing the background
+    :return: the features from bg_filename whose borders intersect bbox OR the feature which completely contains bbox
+    """
+    box_lon = [bbox[0], bbox[2]]
+    box_lat = [bbox[1], bbox[3]]
 
+    features = bg_data['features']
+    in_box = []
+    for f in features:
+        starting_len = len(in_box)
 
+        # Define points for bounding box around the feature.
+        feature_max_lat = -90
+        feature_max_lon = -180
+        feature_min_lat = 90
+        feature_min_lon = 180
+        
+        coordinates = f['geometry']['coordinates']
+
+        for group in coordinates:
+            if len(in_box) > starting_len:
+                # This feature has already been added
+                break
+            # actual points for MultiPolygons are nested one layer deeper than those for polygons
+            if f['geometry']['type'] == 'MultiPolygon':
+                geom = group[0]
+
+            else:
+                geom = group
+
+            for lon, lat in geom:
+                # check if any point along the state's borders falls within the bounding box.
+                if min(box_lon) <= lon <= max(box_lon) and min(box_lat) <= lat <= max(box_lat):
+                    in_box.append(f)
+                    break
+
+                # If any point of a feature falls within the bounding box, then the feature cannot contain the box,
+                #  so this only needs to be run if the above if statement is not executed
+                feature_min_lon = min(feature_min_lon, lon)
+                feature_min_lat = min(feature_min_lat, lat)
+                feature_max_lon = max(feature_max_lon, lon)
+                feature_max_lat = max(feature_max_lat, lat)
+
+        # If the box containing a feature also contains the bounding box, keep this feature
+        # Allow adding more than one because otherwise MD contains boxes in WV, and CA would contain most of NV.
+        if feature_min_lat < min(box_lat) and feature_max_lat > max(box_lat) and \
+                feature_min_lon < min(box_lon) and feature_max_lon > max(box_lon):
+            in_box.append(f)
+
+    keepers = {
+        'type': 'FeatureCollection',
+        'features': in_box
+    }
+
+    return keepers

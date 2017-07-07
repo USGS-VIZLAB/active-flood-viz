@@ -1,10 +1,9 @@
-from nose.tools import raises
-
-from floodviz.map_utils import site_dict, create_geojson, projection_info
-
 import unittest
 
 import requests_mock
+from nose.tools import raises
+
+from floodviz.map_utils import site_dict, create_geojson, projection_info, filter_background
 
 LIST_OF_SITE_DICTS = [
     {
@@ -52,7 +51,7 @@ class TestSiteDict(unittest.TestCase):
                              'F\tNAD83\t865.03\t.01\tNGVD29\t07080102 \n'
 
         # Second site missing site_no
-        self.bad_NWIS_response ='# \n' \
+        self.bad_NWIS_response = '# \n' \
                                  '# \n' \
                                  '# US Geological Survey \n' \
                                  '# retrieved: 2017-06-30 11:12:17 -04:00 (vaas01) \n' \
@@ -169,3 +168,162 @@ class TestProjectionInfo(unittest.TestCase):
         with requests_mock.Mocker() as m:
             m.get(self.spacial_ref_url, text=self.spacial_ref_response)
             self.assertEqual(projection_info(self.code, self.url_template), self.correct_output)
+
+
+class TestFilterBackground(unittest.TestCase):
+    def setUp(self):
+
+        self.state_one = {
+                    'type': 'Feature',
+                    'properties': {
+                        'name': 'one'
+                    },
+                    'geometry': {
+                        'type': 'MultiPolygon',
+                        'coordinates': [
+                            [[
+                                [0, 0],
+                                [0, 10],
+                                [5, 10],
+                                [0, 0]
+                            ]],
+                            [[
+                                [5, 10],
+                                [4.5, 10.5],
+                                [4.8, 10.5],
+                                [5, 10]
+                            ]]
+                        ]
+                    }
+                }
+        self.state_two = {
+                    'type': 'Feature',
+                    'properties': {
+                        'name': 'two'
+                    },
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': [
+                            [
+                                [0, 10],
+                                [5, 10],
+                                [4.5, 10.5],
+                                [4.8, 10.5],
+                                [5, 10],
+                                [5, 13],
+                                [0, 13],
+                                [0, 10]
+                            ]
+                        ]
+                    }
+                }
+        self.state_three = {
+                    'type': 'Feature',
+                    'properties': {
+                        'name': 'three'
+                    },
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': [
+                            [
+                                [0, 0],
+                                [7, 0],
+                                [10, 7],
+                                [5, 13],
+                                [5, 10],
+                                [0, 0]
+                            ]
+                        ]
+                    }
+                }
+        self.state_four = {
+                    'type': 'Feature',
+                    'properties': {
+                        'name': 'four'
+                    },
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': [
+                            [
+                                [0, 0],
+                                [-3, 0],
+                                [-5, 7],
+                                [0, 9],
+                                [0, 0]
+                            ]
+                        ]
+                    }
+                }
+        self.state_five = {
+                    'type': 'Feature',
+                    'properties': {
+                        'name': 'five'
+                    },
+                    'geometry': {
+                        'type': 'Polygon',
+                        'coordinates': [
+                            [
+                                [-5, 7],
+                                [-3, 13],
+                                [0, 13],
+                                [0, 9],
+                                [-5, 7]
+                            ]
+                        ]
+                    }
+                }
+
+        # A collection of 4 polygons and 1 multipolygon in a geojson-like dict
+        self.states = {
+            'type': 'FeatureCollection',
+            'features': [
+                self.state_one,
+                self.state_two,
+                self.state_three,
+                self.state_four,
+                self.state_five
+            ]
+        }
+
+        # Bounding Boxes to test with
+        self.bboxA = [4, 11, 6, 10.3]
+        self.bboxB = [-2.5, 7.5, -1.5, 6]
+        self.bboxC = [2, 2, 3, 3]
+
+        # Correct output for each bbox
+        # bboxA should be found to contain boundaries of states one, two, and three
+        self.outputA = {
+            'type': 'FeatureCollection',
+            'features': [
+                self.state_one,
+                self.state_two,
+                self.state_three
+            ]
+        }
+        # bboxB should be contained by only state four
+        self.outputB = {
+            'type': 'FeatureCollection',
+            'features': [
+                self.state_four
+            ]
+        }
+        # bboxC should be contained by states one and three
+        self.outputC = {
+            'type': 'FeatureCollection',
+            'features': [
+                self.state_one,
+                self.state_three
+            ]
+        }
+
+    def test_bboxA(self):
+        actual = filter_background(self.bboxA, self.states)
+        self.assertEqual(actual, self.outputA)
+
+    def test_bboxB(self):
+        actual = filter_background(self.bboxB, self.states)
+        self.assertEqual(actual, self.outputB)
+
+    def test_bboxC(self):
+        actual = filter_background(self.bboxC, self.states)
+        self.assertEqual(actual, self.outputC)

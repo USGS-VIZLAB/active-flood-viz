@@ -75,13 +75,6 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
 
     focus.append("text")
 
-    // var div = d3.select("body").append("div")
-    //     .attr("transform", "translate(-100,-100)")
-    // .attr("class", "tooltip")
-    // .style("opacity", 0);
-    // div.append("circle")
-    //     .attr("r", 3.5);
-
     var voronoiGroup = svg.append("g")
         .attr("class", "voronoi");
 
@@ -97,24 +90,12 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
         //d.data.name.parentNode.appendChild(d.data.name);
         focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
         focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
-
-       //  div.transition()
-       //   // .duration(200)
-       //   .style("opacity", .9);
-       // div.html(d.data.key + ": " + d.data.value + " cfs" + "<br/>" + d.data.date + " " + d.data.time + " " + d.data.timezone)
-       //   .style("left", (d3.event.pageX) + "px")
-       //   .style("top", (d3.event.pageY - 28) + "px");
     }
 
     function mouseout(d) {
         d3.select(d.data.name).classed("river--hover", false);
         focus.attr("transform", "translate(-100,-100)");
-
-         // div.transition()
-         // // .duration(500)
-         // .style("opacity", 0);
     }
-
 });
 
 
