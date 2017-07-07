@@ -96,8 +96,7 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
         d3.select(d.data.name).classed("river--hover", true);
         //d.data.name.parentNode.appendChild(d.data.name);
         focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
-        focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + d.data.date + " " + d.data.time + " " + d.data.timezone);
-        console.log(d.data.key + ": " + d.data.value + " cfs \n" + d.data.date + " " + d.data.time + " " + d.data.timezone);
+        focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
 
        //  div.transition()
        //   // .duration(200)
