@@ -27,7 +27,7 @@ def home():
 @app.route('/map/')
 def sitemap():
     mapinfo = _map_helper()
-    return render_template('sitemap.html', mapinfo=mapinfo)
+    return render_template('map.html', mapinfo=mapinfo)
 
 
 def _hydrograph_helper():
