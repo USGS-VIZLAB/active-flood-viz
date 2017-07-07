@@ -35,9 +35,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		// For custom X axis ticks
 		var ticks = []
 		data.forEach( function(d, i){
-		 	if (i % 4 === 0) {
-		 		ticks.push(d.label);
-		 	}
+			if (i % 4 === 0) {
+				ticks.push(d.label);
+			}
 		})
 		xAxis.tickValues(ticks);
 
@@ -75,11 +75,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.on("mousemove", function(d) {
 				tooltip.transition().duration(500).style("opacity", .9);
 				tooltip.style("display", "inline-block")
-                .style("left", (d3.event.pageX) + 10 + "px")		
-                .style("top", (d3.event.pageY - 70) + "px")
+				.style("left", (d3.event.pageX) + 10 + "px")
+				.style("top", (d3.event.pageY - 70) + "px")
 				.html((d.label) + "<br>" + (d.value) + " cfps");
-        	})
-    		.on("mouseout", function(d){ tooltip.style("display", "none");});
+			})
+			.on("mouseout", function(d){ tooltip.style("display", "none");});
 		
 		var title = "Peak Annual Discharge";
 		svg.append("text")
@@ -106,16 +106,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			.on("mousemove", function() {
 				tooltip.transition().duration(500).style("opacity", .9);
 				tooltip.style("display", "inline-block")
-                .style("left", (d3.event.pageX) + 10 + "px")		
-                .style("top", (d3.event.pageY) - 70 + "px")
+				.style("left", (d3.event.pageX) + 10 + "px")		
+				.style("top", (d3.event.pageY) - 70 + "px")
 				.html((lolli_data.label) + "<br>" + (lolli_data.value) + " cfps");
-        	})
-    		.on("mouseout", function(d){ tooltip.style("display", "none");});
+			})
+			.on("mouseout", function(d){ tooltip.style("display", "none");});
 		var group = d3.select('#peakflow_bar svg .group');
 		group.append("circle")
 			.attr('class', 'cir')
-		 	.attr('r', "4.5")
-		 	.attr('cx', lolli_pos_x)
-		 	.attr('cy', lolli_pos_y);
+			.attr('r', "4.5")
+			.attr('cx', lolli_pos_x)
+			.attr('cy', lolli_pos_y);
 	});
 });
