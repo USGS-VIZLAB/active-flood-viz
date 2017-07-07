@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			})
 			.on("mouseout", function(d){ tooltip.style("display", "none");});
 		
-		var title = "Peak Annual Discharge";
+		var title = "Annual Peak Discharge";
 		svg.append("text")
 			.attr("x", (width/2))
 			.attr("y", 0 - (margin.top / 2))
