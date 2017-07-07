@@ -109,7 +109,6 @@ class TestParseHydroData(unittest.TestCase):
         self.assertEqual(parse_hydrodata({}), [])
 
     def test_valid_data(self):
-        def test_valid_data(self):
             # Delete 'time_mili' key before comparing due to python time conversion inconsistencies.
             ret = parse_hydrodata(self.mock_data)[0]
             self.assertEqual([ret[0]["key"]], self.mock_parsed_data[0]["key"])
