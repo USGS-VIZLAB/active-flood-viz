@@ -46,7 +46,7 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
     dataNest.forEach(function(d) {
 
         svg.append("g")
-            .attr('class', 'rivers')
+            .attr('class', 'gages')
             .append("path")
             .attr("id", d.key)
             .attr("d", line(d.values));
@@ -86,14 +86,13 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
         .on("mouseout", mouseout);
 
     function mouseover(d) {
-        d3.select(d.data.name).classed("river--hover", true);
-        //d.data.name.parentNode.appendChild(d.data.name);
+        d3.select(d.data.name).classed("gage--hover", true);
         focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
         focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
     }
 
     function mouseout(d) {
-        d3.select(d.data.name).classed("river--hover", false);
+        d3.select(d.data.name).classed("gage--hover", false);
         focus.attr("transform", "translate(-100,-100)");
     }
 });

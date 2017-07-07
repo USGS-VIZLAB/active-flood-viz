@@ -56,22 +56,14 @@ path {
 	fill: #7FFF00;
 }
 
-.nv-indexLine {
-	display: none;
-}
-
 /* Voronoi Stuff */
 
-.rivers {
+.gages {
 	fill: none;
 	stroke: #aaa;
 	stroke-linejoin: round;
 	stroke-linecap: round;
 	stroke-width: 1.5px;
-}
-
-.river--hover {
-	stroke: #000;
 }
 
 .focus text {

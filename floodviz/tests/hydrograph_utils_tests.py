@@ -93,20 +93,19 @@ class TestParseHydroData(unittest.TestCase):
             }]
 
 
-def test_empty_data(self):
-    self.assertEqual(parse_hydrodata([]), [])
-    self.assertEqual(parse_hydrodata(None), [])
+    def test_empty_data(self):
+        self.assertEqual(parse_hydrodata([]), [])
+        self.assertEqual(parse_hydrodata(None), [])
 
-def test_data_not_list(self):
-    self.assertEqual(parse_hydrodata({}), [])
+    def test_data_not_list(self):
+        self.assertEqual(parse_hydrodata({}), [])
 
-def test_valid_data(self):
     def test_valid_data(self):
-        # Delete 'time_mili' key before comparing due to python time conversion inconsistencies.
-        ret = parse_hydrodata(self.mock_data)[0]
-        for k1, v1 in ret.items():
-            if k1 is 'values':
-                for item in ret[k1]:
-                    if item['time_mili'] is not None:
-                        del item['time_mili']
-        self.assertEqual([ret], self.mock_parsed_data)
+            # Delete 'time_mili' key before comparing due to python time conversion inconsistencies.
+            ret = parse_hydrodata(self.mock_data)[0]
+            self.assertEqual([ret[0]["key"]], self.mock_parsed_data[0]["key"])
+            self.assertEqual([ret[0]["name"]], self.mock_parsed_data[0]["name"])
+            self.assertEqual([ret[0]["date"]], self.mock_parsed_data[0]["date"])
+            self.assertEqual([ret[0]["time"]], self.mock_parsed_data[0]["time"])
+            self.assertAlmostEqual([ret[0]["time_mili"]], self.mock_parsed_data[0]["time_mili"])
+            self.assertEqual([ret[0]["value"]], self.mock_parsed_data[0]["value"])
