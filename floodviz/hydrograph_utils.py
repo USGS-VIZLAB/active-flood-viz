@@ -6,7 +6,7 @@ def parse_hydrodata(jdata):
     
     """ 
     Parses json Hydrodata from NWIS webservice
-    and formats for NVD3 charting library. Upon failure, this will
+    and formats for D3 charting library. Upon failure, this will
     return empty data list.
 
     ARGS: 
@@ -14,36 +14,30 @@ def parse_hydrodata(jdata):
         time series data for all sites listed in config.py SITE_IDs.
     
     RETURNS:
-        All series data correctly formated for NVD3 charting library. 
-        This is also a list of python dictonaries where each dictionary 
-        corresponds to a different site.   
+        All series data correctly formated for D3.
+        This is also a list of python dictonaries.
 
     """
     all_series_data = []
     
     if jdata is not None:
-        for idx, site in enumerate(jdata):
+        for site in jdata:
 
-            site_name = site.get('sourceInfo').get('siteName')
-            if site_name is None:
-                site_name = 'NaN'    
-            all_series_data.append({'key': site_name, 'values': []})
+            site_name = site['sourceInfo']['siteName']
+            site_id = site['sourceInfo']['siteCode'][0]['value']
 
-            # Fill new data for this series
-            for idx2, obj in enumerate(site['values'][0]['value']):
+            # Fill data for this series
+            for obj in site['values'][0]['value']:
                 value = obj['value']
                 dt = obj['dateTime']
                 date = dt.split('T')[0]
                 t = dt.split('T')[1].split('.')[0]
-                # reformat datetime for python datetime #   
+                # reformat datetime for python datetime #
                 dt = datetime.strptime(date + ' ' + t, '%Y-%m-%d %H:%M:%S')
                 # Convert to milliseconds for use with d3 x axis format
                 dt_ms = time.mktime(dt.timetuple()) * 1000
-                # (for below if statment) create dummy value for nvd3 issue at https://github.com/novus/nvd3/issues/695 #
-                if idx2 is 0: # First datapoint of this site
-                    all_series_data[idx]['values'].append({'date': date, "time": 0, "time_mili": dt_ms, 'value': 0})
-
-                all_series_data[idx]['values'].append({'date': date, "time": t, "time_mili": dt_ms, 'value': value})
+                all_series_data.append({'key': site_id, 'name': site_name, 'date': date, "time": t,
+                                                   "time_mili": dt_ms, 'value': value})
 
     return all_series_data
 
@@ -62,7 +56,7 @@ def req_hydrodata(sites, start_date, end_date, url_top):
     
     RETURNS:
         returns a list of one dictonary with the requested data for
-        all series from the nwis service 
+        all series from the nwis service
     
     """
     ret = None
