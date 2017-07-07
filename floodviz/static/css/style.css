@@ -38,12 +38,11 @@ body { font: 12px Arial;}
 	shape-rendering: crispEdges;
 }
 
-#map {
-	float: right;
-}
 
 #hydrograph {
 	margin-top: 50px;
+	margin-left: 100px;
+	margin-bottom: 50px;
 	float: left;
 }
 #peakflow_bar {
@@ -64,4 +63,14 @@ body { font: 12px Arial;}
 }
 .nv-indexLine {
 	display: none;
+}
+.toolTip {
+  position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  border: 1px solid #7FFF00;
+  padding: 14px;
+  text-align: center;
 }
