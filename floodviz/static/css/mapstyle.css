@@ -20,3 +20,11 @@ circle.debug-point{
   	padding: 14px;
   	text-align: center;
 }
+
+
+#map {
+	float: right;
+	margin-right: 100px;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
