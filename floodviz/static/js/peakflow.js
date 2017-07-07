@@ -111,8 +111,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				.html((lolli_data.label) + "<br>" + (lolli_data.value) + " cfps");
 			})
 			.on("mouseout", function(){ tooltip.style("display", "none");});
-		var group = d3.select('#peakflow_bar svg .group');
 		
+    var group = d3.select('#peakflow_bar svg .group');
 		group.append("circle")
 			.attr('class', 'cir')
 			.attr('r', "4.5")
