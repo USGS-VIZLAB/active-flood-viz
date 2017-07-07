@@ -62,6 +62,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var bg = svg.append("g");
     var ref = svg.append("g");
     var sites = svg.append("g");
+    
+    // Tooltip
+    var maptip = d3.select("body")
+        .append("div")
+        .attr("class", "maptip");
 
 
     // Bind data and create one path per GeoJSON feature
@@ -74,7 +79,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .attr("transform", function (d) {
             return "translate(" + projection(d.geometry.coordinates) + ")";
         })
-        .attr("class", "gage-point");
+        .attr("class", "gage-point")
+        .on('mousemove', function(d) {
+            maptip.transition().duration(500).style("opacity", .9);
+            maptip.style("display", "inline-block")
+            .style("left", (d3.event.pageX) + 10 + "px")
+            .style("top", (d3.event.pageY - 70) + "px")
+            .html((d.properties.name));
+        })
+        .on("mouseout", function(d){ maptip.style("display", "none");});
+
 
     // Read in background geojson
     var ref_data = FV.mapinfo.ref_data;
@@ -98,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .attr("d", path)
         .style("stroke", "black")
         .style("fill", "#ffffff");
+
 
     if (FV.mapinfo.debug) {
         var bbox = svg.append("g");
