@@ -25,6 +25,7 @@ def parse_hydrodata(jdata):
 
             site_name = site['sourceInfo']['siteName']
             site_id = site['sourceInfo']['siteCode'][0]['value']
+            timezone = site['sourceInfo']['timeZoneInfo']['defaultTimeZone']['zoneAbbreviation']
 
             # Fill data for this series
             for obj in site['values'][0]['value']:
@@ -37,7 +38,7 @@ def parse_hydrodata(jdata):
                 # Convert to milliseconds for use with d3 x axis format
                 dt_ms = time.mktime(dt.timetuple()) * 1000
                 all_series_data.append({'key': site_id, 'name': site_name, 'date': date, "time": t,
-                                                   "time_mili": dt_ms, 'value': value})
+                                        'timezone': timezone, "time_mili": dt_ms, 'value': value})
 
     return all_series_data
 
