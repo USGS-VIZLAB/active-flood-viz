@@ -48,7 +48,7 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
 		svg.append("g")
 			.attr('class', 'gages')
 			.append("path")
-			.attr("id", "h"+d.key)
+			.attr("id", "h" + d.key)
 			.attr("d", line(d.values))
 	});
 
