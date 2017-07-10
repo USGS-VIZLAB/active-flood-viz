@@ -5,6 +5,7 @@ html, body, .main-content {
 
 body { font: 12px Arial;}
 
+
 #hydrograph path {
 	stroke: steelblue;
 	stroke-width: 2;
@@ -65,7 +66,7 @@ body { font: 12px Arial;}
 	display: none;
 }
 .toolTip {
- 	position: absolute;
+	position: absolute;
 	display: none;
 	min-width: 80px;
 	height: auto;

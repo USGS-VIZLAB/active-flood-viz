@@ -1,11 +1,15 @@
-circle.gage-point{
-    stroke: blue;
+#map circle.gage-point{
+    stroke: green;
     stroke-width: 2;
     fill-opacity: 0;
 }
 
-circle.debug-point{
-    stroke: green;
+#map circle.ref-point{
+    fill: red;
+}
+
+#map circle.debug-point{
+    stroke: #ff00ff;
     stroke-width: 2;
     fill-opacity: 0;
 }
@@ -28,3 +32,13 @@ circle.debug-point{
 	margin-top: 50px;
 	margin-bottom: 50px;
 }
+#map path.background{
+    stroke: black;
+    fill: white;
+    fill-opacity: 0;
+}
+
+#map path.river{
+    stroke: blue;
+}
+
