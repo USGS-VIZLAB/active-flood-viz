@@ -11,8 +11,8 @@ body { font: 12px Arial;}
     fill: none;
 }
 
-#hydrograph .axis path,
-#hydrograph .axis line {
+.axis path,
+.axis line {
 	fill: none;
 	stroke: grey;
 	stroke-width: 1;
