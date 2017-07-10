@@ -180,3 +180,5 @@ def filter_background(bbox, bg_data):
     }
 
     return keepers
+
+
