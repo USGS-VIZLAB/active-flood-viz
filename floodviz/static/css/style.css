@@ -45,6 +45,8 @@ path {
 
 #hydrograph {
 	margin-top: 50px;
+	margin-left: 100px;
+	margin-bottom: 50px;
 	float: left;
 }
 #peakflow_bar {
