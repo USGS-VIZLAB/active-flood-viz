@@ -101,11 +101,11 @@ class TestParseHydroData(unittest.TestCase):
         self.assertEqual(parse_hydrodata({}), [])
 
     def test_valid_data(self):
-            ret = parse_hydrodata(self.mock_data)[0]
-            self.assertEqual(ret["key"], self.mock_parsed_data[0]["key"])
-            self.assertEqual(ret["name"], self.mock_parsed_data[0]["name"])
-            self.assertEqual(ret["date"], self.mock_parsed_data[0]["date"])
-            self.assertEqual(ret["time"], self.mock_parsed_data[0]["time"])
-            self.assertAlmostEqual(ret["time_mili"], self.mock_parsed_data[0]["time_mili"], delta=100000000)
-            self.assertEqual(ret["value"], self.mock_parsed_data[0]["value"])
+        ret = parse_hydrodata(self.mock_data)[0]
+        self.assertEqual(ret["key"], self.mock_parsed_data[0]["key"])
+        self.assertEqual(ret["name"], self.mock_parsed_data[0]["name"])
+        self.assertEqual(ret["date"], self.mock_parsed_data[0]["date"])
+        self.assertEqual(ret["time"], self.mock_parsed_data[0]["time"])
+        self.assertAlmostEqual(ret["time_mili"], self.mock_parsed_data[0]["time_mili"], delta=100000000)
+        self.assertEqual(ret["value"], self.mock_parsed_data[0]["value"])
 
