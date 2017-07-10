@@ -114,3 +114,4 @@ document.addEventListener("DOMContentLoaded", function (event) {
             .attr("d", path)
             .attr("class", classname);
     }
+});
