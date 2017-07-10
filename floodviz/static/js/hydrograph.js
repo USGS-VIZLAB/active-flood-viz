@@ -1,4 +1,5 @@
 
+var data_path = FV.hydro_data_path;
 // Set the dimensions of the canvas / graph
 var margin = {top: 30, right: 20, bottom: 30, left: 50},
     width = 600 - margin.left - margin.right,
@@ -23,7 +24,7 @@ var svg = d3.select("#hydrograph")
         "translate(" + margin.left + "," + margin.top + ")");
 
 // Get the data
-d3.json("../static/data/hydrograph_data.json", function(error, data) {
+d3.json(data_path, function(error, data) {
     data.forEach(function(d) {
         d.value = Number(d.value);
     });
@@ -43,7 +44,6 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
         svg.append("path")
             .attr("class", "line " + d.key)
             .attr("d", line(d.values));
-
     });
 
     // Add the X Axis
