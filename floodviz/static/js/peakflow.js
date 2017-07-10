@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	var margin = {bottom: 100, right: 120, left: 120, top: 150};
 	var width = parseInt(FV.peakmeta['width']);
-	var	height = parseInt(FV.peakmeta['height']);
+	var height = parseInt(FV.peakmeta['height']);
 
 	var x = d3.scaleBand().rangeRound([0, width]).padding(.5);
 	var	y = d3.scaleLinear().range([height, 0]);
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			})
 			.on("mouseout", function(d){ tooltip.style("display", "none");});
 		
-		var title = "Peak Annual Discharge";
+		var title = "Annual Peak Discharge";
 		svg.append("text")
 			.attr("x", (width/2))
 			.attr("y", 0 - (margin.top / 2))
@@ -110,12 +110,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				.style("top", (d3.event.pageY) - 70 + "px")
 				.html((lolli_data.label) + "<br>" + (lolli_data.value) + " cfps");
 			})
-			.on("mouseout", function(d){ tooltip.style("display", "none");});
-		var group = d3.select('#peakflow_bar svg .group');
+			.on("mouseout", function(){ tooltip.style("display", "none");});
+		
+    var group = d3.select('#peakflow_bar svg .group');
 		group.append("circle")
 			.attr('class', 'cir')
 			.attr('r', "4.5")
 			.attr('cx', lolli_pos_x)
-			.attr('cy', lolli_pos_y);
+			.attr('cy', lolli_pos_y)
+			.on("mousemove", function() {
+				tooltip.transition().duration(500).style("opacity", .9);
+				tooltip.style("display", "inline-block")
+				.style("left", (d3.event.pageX) + 10 + "px")		
+				.style("top", (d3.event.pageY) - 70 + "px")
+				.html((lolli_data.label) + "<br>" + (lolli_data.value) + " cfps");
+			})
+			.on("mouseout", function(){ tooltip.style("display", "none");});
 	});
 });
