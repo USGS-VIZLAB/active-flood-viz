@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			svg.append("g")
 				.attr('class', 'gages')
 				.append("path")
-				.attr("id", "h" + d.key)
+				.attr("id", "hydro" + d.key)
 				.attr("d", line(d.values))
 		});
 
