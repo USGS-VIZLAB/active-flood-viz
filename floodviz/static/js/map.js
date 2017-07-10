@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .attr("width", width)
         .attr("height", height);
 
+    
 
     // set bounding box to values provided
     var b = path.bounds(FV.mapinfo.bounds);
