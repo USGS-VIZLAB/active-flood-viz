@@ -89,7 +89,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     classname += ' ' + d.properties.id;
                 }
             })
-            .attr("class", classname);
+            .attr("class", classname)
+            .on('mousemove', function(d) {
+				maptip.transition().duration(500);
+				maptip.style("display", "inline-block")
+				.style("left", (d3.event.pageX) + 10 + "px")
+				.style("top", (d3.event.pageY - 70) + "px")
+				.html((d.properties.name));
+			})
+			.on("mouseout", function(d){ maptip.style("display", "none");});;
     }
 
     /**
@@ -106,6 +114,3 @@ document.addEventListener("DOMContentLoaded", function (event) {
             .attr("d", path)
             .attr("class", classname);
     }
-
-
-});
