@@ -23,10 +23,11 @@
 	<script type="text/javascript">
 		// Global Namespace for project - FV
 		var FV = FV || {};
-		FV.hydrometa = {{ config.HYDRO_META | safe }};
-		FV.peakmeta = {{ config.PEAK_META | safe }}
-		FV.peakinfo = {{ peakinfo | tojson | safe }}
-		FV.mapinfo = {{ mapinfo | tojson | safe }}
+		FV.hydro_data_path = "{{ url_for('timeseries_data', filename='data/hydrograph_data.json') }}";
+		FV.hydrometa = {{ config.CHART_DIMENSIONS | safe }};
+		FV.peakmeta = {{ config.PEAK_META | safe }};
+		FV.peakinfo = {{ peakinfo | tojson | safe }};
+		FV.mapinfo = {{ mapinfo | tojson | safe }};
 	</script>
 
 	<script type="text/javascript"

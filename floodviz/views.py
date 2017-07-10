@@ -1,6 +1,6 @@
 import json
 
-from flask import render_template, Response, url_for
+from flask import render_template, jsonify, url_for
 
 from . import app
 from . import hydrograph_utils
@@ -14,7 +14,6 @@ url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 def root():
     peakinfo = _peakflow_helper()
     mapinfo = _map_helper()
-    timeseries_data_path = url_for()            # TODO: MAKE URL HERE WITH timeseries_data. Then save data on next line 
     return render_template('index.html', mapinfo=mapinfo, peakinfo=peakinfo)
 
 @app.route('/hydrograph/')
@@ -30,22 +29,19 @@ def sitemap():
 @app.route('/timeseries/')
 def timeseries_data():
     timeseries_data = _hydrograph_helper()
-    return Response(timeseries_data, content_type='application/json')
+    return jsonify(timeseries_data)
 
 def _hydrograph_helper():
     # Hydrograph config vars #
     hydro_start_date = app.config['EVENT_START_DT']
     hydro_end_date = app.config['EVENT_END_DT']
     sites = app.config['SITE_IDS']
-    hydro_meta = app.config['HYDRO_META']
+    hydro_meta = app.config['CHART_DIMENSIONS']
 
     # Hydrodata data clean and write
     j = hydrograph_utils.req_hydrodata(sites, hydro_start_date, hydro_end_date, url_nwis_prefix)
     all_series_data = hydrograph_utils.parse_hydrodata(j)
     return all_series_data    
-    # with open('floodviz/static/data/hydrograph_data.json', 'w') as fout: 
-    #     json.dump(all_series_data, fout, indent=1)
-
 
 def _peakflow_helper():
     # Peak Flow config vars #
@@ -60,7 +56,6 @@ def _peakflow_helper():
     daily_value_data = peak_flow_utils.req_peak_dv_data(peak_site, peak_dv_date, url_nwis_prefix)
     peak_data = peak_flow_utils.parse_peak_data(content, daily_value_data)
     return peak_data
-
 
 
 def _map_helper():
