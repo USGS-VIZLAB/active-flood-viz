@@ -95,9 +95,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			.attr("transform", function (d) {
 				return "translate(" + projection(d.geometry.coordinates) + ")";
 			})
-			.attr("class", function(d) {
+			.attr("id", function(d) {
 				if (classname === 'gage-point') {
-					classname += ' ' + d.properties.id;
+					return 'map' + d.properties.id;
 				}
 			})
 			.attr("class", classname)
