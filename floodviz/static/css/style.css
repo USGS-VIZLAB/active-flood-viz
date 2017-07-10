@@ -39,6 +39,9 @@ body { font: 12px Arial;}
 	shape-rendering: crispEdges;
 }
 
+#map {
+	float: right;
+}
 
 #hydrograph {
 	margin-top: 50px;
