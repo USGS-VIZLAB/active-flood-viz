@@ -29,9 +29,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .scale(1)
         .translate([0, 0]);
 
+
     //Define path generator
     var path = d3.geoPath().projection(projection);
 
+    // Read in height and width
     var height = FV.mapinfo.height;
     var width = FV.mapinfo.width;
 
@@ -41,6 +43,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .attr("width", width)
         .attr("height", height);
 
+    // read in geojson for sites
+    var site_data = FV.mapinfo.site_data;
 
     // set bounding box to values provided
     var b = path.bounds(FV.mapinfo.bounds);
@@ -54,52 +58,75 @@ document.addEventListener("DOMContentLoaded", function (event) {
         .scale(s)
         .translate(t);
 
+    // Define order in which layers should be added
+    var bg = svg.append("g");
+    var ref = svg.append("g");
+    var sites = svg.append("g");
+    
+    // Tooltip
+    var maptip = d3.select("body")
+        .append("div")
+        .attr("class", "maptip");
 
-    // add layers in sensible order
-    add_paths(FV.mapinfo.bg_data, "background");
 
-    add_paths(FV.mapinfo.rivers_data, "river");
+    // Bind data and create one path per GeoJSON feature
+    // Add sites to the map
+    sites.selectAll("circle")
+        .data(site_data.features)
+        .enter()
+        .append("circle")
+        .attr("r", 3)
+        .attr("transform", function (d) {
+            return "translate(" + projection(d.geometry.coordinates) + ")";
+        })
+        .attr("class", "gage-point")
+        .on('mousemove', function(d) {
+            maptip.transition().duration(500);
+            maptip.style("display", "inline-block")
+            .style("left", (d3.event.pageX) + 10 + "px")
+            .style("top", (d3.event.pageY - 70) + "px")
+            .html((d.properties.name));
+        })
+        .on("mouseout", function(d){ maptip.style("display", "none");});
 
-    add_circles(FV.mapinfo.ref_data, "ref-point", 2);
 
-    add_circles(FV.mapinfo.site_data, "gage-point", 3);
+    // Read in background geojson
+    var ref_data = FV.mapinfo.ref_data;
+
+    // Add geojson to map
+    ref.selectAll("path")
+        .data(ref_data.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .style("fill", "red");
+
+    // Read in background geojson
+    var bg_data = FV.mapinfo.bg_data;
+
+    // Add geojson to map
+    bg.selectAll("path")
+        .data(bg_data.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .style("stroke", "black")
+        .style("fill", "#ffffff");
 
 
     if (FV.mapinfo.debug) {
-        add_circles(FV.mapinfo.bounds, "debug-point", 3)
-    }
-    /**
-     * Add circles to the map.
-     * @param data The geojson to be added to the svg
-     * @param classname The class to be given to each element for use in CSS
-     * @param radius The radius of each circle. This cannot be set from CSS
-     */
-    function add_circles(data, classname, radius) {
-        var group = svg.append("g");
-        group.selectAll("circle")
-            .data(data.features)
-            .enter()
-            .append("circle")
-            .attr("r", radius)
-            .attr("transform", function (d) {
-                return "translate(" + projection(d.geometry.coordinates) + ")";
-            })
-            .attr("class", classname);
-    }
-
-    /**
-     * Add paths to the map
-     * @param data The geojson to be added to the svg
-     * @param classname The class to be given to each element for use in CSS
-     */
-    function add_paths(data, classname) {
-        var group = svg.append("g");
-        group.selectAll("path")
-            .data(data.features)
-            .enter()
-            .append("path")
-            .attr("d", path)
-            .attr("class", classname);
+        var bbox = svg.append("g");
+        var bbox_data = FV.mapinfo.bounds;
+        // Add geojson to map
+        bbox.selectAll("circle")
+        .data(bbox_data.features)
+        .enter()
+        .append("circle")
+        .attr("r", 3)
+        .attr("transform", function (d) {
+            return "translate(" + projection(d.geometry.coordinates) + ")";
+        })
+        .attr("class", "debug-point");
     }
 
 
