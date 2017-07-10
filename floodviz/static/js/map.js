@@ -1,41 +1,41 @@
 document.addEventListener("DOMContentLoaded", function (event) {
-    "use strict";
+	"use strict";
 
-    // Define helper functions
-    function degreesToRadians(degrees) {
-        return degrees * Math.PI / 180;
-    }
+	// Define helper functions
+	function degreesToRadians(degrees) {
+		return degrees * Math.PI / 180;
+	}
 
-    function radiansToDegrees(radians) {
-        return radians * 180 / Math.PI;
-    }
+	function radiansToDegrees(radians) {
+		return radians * 180 / Math.PI;
+	}
 
-    // read in projection information
-    var proj = proj4(FV.mapinfo.proj4string);
+	// read in projection information
+	var proj = proj4(FV.mapinfo.proj4string);
 
-    var project = function (lambda, phi) {
-        return proj.forward([lambda, phi].map(radiansToDegrees));
-    };
+	var project = function (lambda, phi) {
+		return proj.forward([lambda, phi].map(radiansToDegrees));
+	};
 
-    project.invert = function (x, y) {
-        return proj.inverse([x, y]).map(degreesToRadians);
-    };
+	project.invert = function (x, y) {
+		return proj.inverse([x, y]).map(degreesToRadians);
+	};
 
-    //Define map projection
-    var projection = d3.geoProjection(project);
+	//Define map projection
+	var projection = d3.geoProjection(project);
 
-    // Give projection initial rotation and scale
-    projection
-        .scale(1)
-        .translate([0, 0]);
+	// Give projection initial rotation and scale
+	projection
+		.scale(1)
+		.translate([0, 0]);
 
-    //Define path generator
-    var path = d3.geoPath().projection(projection);
+	//Define path generator
+	var path = d3.geoPath().projection(projection);
 
-    var height = FV.mapinfo.height;
-    var width = FV.mapinfo.width;
+	var height = FV.mapinfo.height;
+	var width = FV.mapinfo.width;
 
-    // Tooltip
+	// Tooltip
 	var maptip = d3.select("body")
 		.append("div")
 		.attr("class", "maptip");
@@ -96,11 +96,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				return "translate(" + projection(d.geometry.coordinates) + ")";
 			})
 			.attr("class", function(d) {
-                if (classname === 'gage-point') {
-                    classname += ' ' + d.properties.id;
-                }
-            })
-            .attr("class", classname)
+				if (classname === 'gage-point') {
+					classname += ' ' + d.properties.id;
+				}
+			})
+			.attr("class", classname)
 		return (group);
 	}
 
