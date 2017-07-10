@@ -16,7 +16,6 @@ path {
 #hydrograph .axis line {
 	fill: none;
 	stroke: grey;
-	stroke-width: 1;
 	shape-rendering: crispEdges;
 }
 
@@ -28,15 +27,13 @@ path {
 	fill: #7FFF00;
 }
 
-.axis {
-	font: 10px sans-serif;
-}
-
 .axis path,
 .axis line {
 	fill: none;
 	stroke: #000;
 	shape-rendering: crispEdges;
+	font: 10px sans-serif;
+	stroke-width: 1;
 }
 
 #map {
