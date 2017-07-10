@@ -108,3 +108,4 @@ class TestParseHydroData(unittest.TestCase):
             self.assertEqual(ret["time"], self.mock_parsed_data[0]["time"])
             self.assertAlmostEqual(ret["time_mili"], self.mock_parsed_data[0]["time_mili"], delta=100000000)
             self.assertEqual(ret["value"], self.mock_parsed_data[0]["value"])
+
