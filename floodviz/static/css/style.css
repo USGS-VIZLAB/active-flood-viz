@@ -3,13 +3,8 @@ html, body, .main-content {
 	margin: 0;
 }
 
-body { font: 12px Arial;}
-
-
-#hydrograph path {
-	stroke: steelblue;
-	stroke-width: 2;
-	fill: none;
+body {
+	font: 12px Arial;
 }
 
 #hydrograph .axis path,
@@ -19,7 +14,7 @@ body { font: 12px Arial;}
 	shape-rendering: crispEdges;
 }
 
-.bar{
+.bar {
 	fill: steelblue;
 }
 
@@ -46,10 +41,12 @@ body { font: 12px Arial;}
 	margin-bottom: 50px;
 	float: left;
 }
+
 #peakflow_bar {
 	margin: 0 auto;
 	width: 80%;
 }
+
 #peakflow_bar svg {
 	display: block;
 	margin: auto;
@@ -59,12 +56,32 @@ body { font: 12px Arial;}
 	width: .3%;
 	stroke: #7fff00;
 }
+
 .cir {
 	fill: #7FFF00;
 }
-.nv-indexLine {
-	display: none;
+
+/* Voronoi Stuff */
+
+.gages {
+	fill: none;
+	stroke: steelblue;
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	stroke-width: 1.5px;
 }
+
+.focus text {
+	text-anchor: middle;
+	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+.voronoi path {
+	fill: none;
+	stroke: none;
+	pointer-events: all;
+}
+
 .toolTip {
 	position: absolute;
 	display: none;
@@ -75,3 +92,4 @@ body { font: 12px Arial;}
 	padding: 14px;
 	text-align: center;
 }
+
