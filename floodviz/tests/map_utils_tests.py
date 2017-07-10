@@ -5,23 +5,6 @@ from nose.tools import raises
 
 from floodviz.map_utils import site_dict, create_geojson, projection_info, filter_background
 
-LIST_OF_SITE_DICTS = [
-    {
-        'site_no': '05463500',
-        'station_nm': 'Black Hawk Creek at Hudson, IA',
-        'dec_lat_va': '42.4077639',
-        'dec_long_va': '-92.4632451',
-        'huc_cd': '07080102'
-    },
-    {
-        'site_no': '05420680',
-        'station_nm': 'Wapsipinicon River near Tripoli, IA',
-        'dec_lat_va': '42.83609117',
-        'dec_long_va': '-92.2574003',
-        'huc_cd': '07080205'
-    }
-]
-
 
 class TestSiteDict(unittest.TestCase):
     def setUp(self):
@@ -29,7 +12,22 @@ class TestSiteDict(unittest.TestCase):
         self.sites = ['05420680', '05463500']
         self.prefix = 'https://waterservices.usgs.gov/nwis/'
         self.request_url = "https://waterservices.usgs.gov/nwis/site/?format=rdb&sites=05420680,05463500&siteStatus=all"
-        self.correct_output = LIST_OF_SITE_DICTS
+        self.correct_output = [
+            {
+                'site_no': '05463500',
+                'station_nm': 'Black Hawk Creek at Hudson, IA',
+                'dec_lat_va': '42.4077639',
+                'dec_long_va': '-92.4632451',
+                'huc_cd': '07080102'
+            },
+            {
+                'site_no': '05420680',
+                'station_nm': 'Wapsipinicon River near Tripoli, IA',
+                'dec_lat_va': '42.83609117',
+                'dec_long_va': '-92.2574003',
+                'huc_cd': '07080205'
+            }
+        ]
         # these are explicitly separated with tabs because they might otherwise be converted to spaces.
         self.NWIS_response = '# \n' \
                              '# \n' \
@@ -98,7 +96,22 @@ class TestSiteDict(unittest.TestCase):
 class TestCreateGeojson(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
-        self.input = LIST_OF_SITE_DICTS
+        self.input = [
+            {
+                'site_no': '05463500',
+                'station_nm': 'Black Hawk Creek at Hudson, IA',
+                'dec_lat_va': '42.4077639',
+                'dec_long_va': '-92.4632451',
+                'huc_cd': '07080102'
+            },
+            {
+                'site_no': '05420680',
+                'station_nm': 'Wapsipinicon River near Tripoli, IA',
+                'dec_lat_va': '42.83609117',
+                'dec_long_va': '-92.2574003',
+                'huc_cd': '07080205'
+            }
+        ]
         self.correct_geojson = {
             "type": "FeatureCollection",
             "features": [
@@ -172,106 +185,105 @@ class TestProjectionInfo(unittest.TestCase):
 
 class TestFilterBackground(unittest.TestCase):
     def setUp(self):
-
         self.state_one = {
-                    'type': 'Feature',
-                    'properties': {
-                        'name': 'one'
-                    },
-                    'geometry': {
-                        'type': 'MultiPolygon',
-                        'coordinates': [
-                            [[
-                                [0, 0],
-                                [0, 10],
-                                [5, 10],
-                                [0, 0]
-                            ]],
-                            [[
-                                [5, 10],
-                                [4.5, 10.5],
-                                [4.8, 10.5],
-                                [5, 10]
-                            ]]
-                        ]
-                    }
-                }
+            'type': 'Feature',
+            'properties': {
+                'name': 'one'
+            },
+            'geometry': {
+                'type': 'MultiPolygon',
+                'coordinates': [
+                    [[
+                        [0, 0],
+                        [0, 10],
+                        [5, 10],
+                        [0, 0]
+                    ]],
+                    [[
+                        [5, 10],
+                        [4.5, 10.5],
+                        [4.8, 10.5],
+                        [5, 10]
+                    ]]
+                ]
+            }
+        }
         self.state_two = {
-                    'type': 'Feature',
-                    'properties': {
-                        'name': 'two'
-                    },
-                    'geometry': {
-                        'type': 'Polygon',
-                        'coordinates': [
-                            [
-                                [0, 10],
-                                [5, 10],
-                                [4.5, 10.5],
-                                [4.8, 10.5],
-                                [5, 10],
-                                [5, 13],
-                                [0, 13],
-                                [0, 10]
-                            ]
-                        ]
-                    }
-                }
+            'type': 'Feature',
+            'properties': {
+                'name': 'two'
+            },
+            'geometry': {
+                'type': 'Polygon',
+                'coordinates': [
+                    [
+                        [0, 10],
+                        [5, 10],
+                        [4.5, 10.5],
+                        [4.8, 10.5],
+                        [5, 10],
+                        [5, 13],
+                        [0, 13],
+                        [0, 10]
+                    ]
+                ]
+            }
+        }
         self.state_three = {
-                    'type': 'Feature',
-                    'properties': {
-                        'name': 'three'
-                    },
-                    'geometry': {
-                        'type': 'Polygon',
-                        'coordinates': [
-                            [
-                                [0, 0],
-                                [7, 0],
-                                [10, 7],
-                                [5, 13],
-                                [5, 10],
-                                [0, 0]
-                            ]
-                        ]
-                    }
-                }
+            'type': 'Feature',
+            'properties': {
+                'name': 'three'
+            },
+            'geometry': {
+                'type': 'Polygon',
+                'coordinates': [
+                    [
+                        [0, 0],
+                        [7, 0],
+                        [10, 7],
+                        [5, 13],
+                        [5, 10],
+                        [0, 0]
+                    ]
+                ]
+            }
+        }
         self.state_four = {
-                    'type': 'Feature',
-                    'properties': {
-                        'name': 'four'
-                    },
-                    'geometry': {
-                        'type': 'Polygon',
-                        'coordinates': [
-                            [
-                                [0, 0],
-                                [-3, 0],
-                                [-5, 7],
-                                [0, 9],
-                                [0, 0]
-                            ]
-                        ]
-                    }
-                }
+            'type': 'Feature',
+            'properties': {
+                'name': 'four'
+            },
+            'geometry': {
+                'type': 'Polygon',
+                'coordinates': [
+                    [
+                        [0, 0],
+                        [-3, 0],
+                        [-5, 7],
+                        [0, 9],
+                        [0, 0]
+                    ]
+                ]
+            }
+        }
         self.state_five = {
-                    'type': 'Feature',
-                    'properties': {
-                        'name': 'five'
-                    },
-                    'geometry': {
-                        'type': 'Polygon',
-                        'coordinates': [
-                            [
-                                [-5, 7],
-                                [-3, 13],
-                                [0, 13],
-                                [0, 9],
-                                [-5, 7]
-                            ]
-                        ]
-                    }
-                }
+            'type': 'Feature',
+            'properties': {
+                'name': 'five'
+            },
+            'geometry': {
+                'type': 'Polygon',
+                'coordinates': [
+                    [
+                        [-5, 7],
+                        [-3, 13],
+                        [0, 13],
+                        [0, 9],
+                        [-5, 7]
+                    ]
+                ]
+            }
+        }
 
         # A collection of 4 polygons and 1 multipolygon in a geojson-like dict
         self.states = {

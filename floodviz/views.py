@@ -24,7 +24,7 @@ def hydrograph():
 @app.route('/map/')
 def sitemap():
     mapinfo = _map_helper()
-    return render_template('sitemap.html', mapinfo=mapinfo)
+    return render_template('map.html', mapinfo=mapinfo)
 
 @app.route('/timeseries/')
 def timeseries_data():
@@ -57,7 +57,6 @@ def _peakflow_helper():
     peak_data = peak_flow_utils.parse_peak_data(content, daily_value_data)
     return peak_data
 
-
 def _map_helper():
     site_data = map_utils.site_dict(app.config['SITE_IDS'], app.config['NWIS_SITE_SERVICE_ENDPOINT'])
     site_data = map_utils.create_geojson(site_data)
@@ -67,7 +66,11 @@ def _map_helper():
         bg_data = json.load(bg_file)
     bg_data = map_utils.filter_background(app.config['BOUNDING_BOX'], bg_data)
 
+    with open(app.config['RIVERS_FILE'], 'r') as rivers_file:
+        rivers = json.load(rivers_file)
+
     ref_data = app.config['REFERENCE_DATA']
+
 
     mapinfo = app.config['MAP_CONFIG']
     mapinfo.update({
@@ -75,6 +78,7 @@ def _map_helper():
         'site_data': site_data,
         'bg_data': bg_data,
         'ref_data': ref_data,
+        'rivers_data': rivers,
         # add bounding box as geojson
         'bounds': {
             "type": "FeatureCollection",
