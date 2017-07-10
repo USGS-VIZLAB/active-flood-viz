@@ -19,13 +19,6 @@ body { font: 12px Arial;}
 	shape-rendering: crispEdges;
 }
 
-.bar {
-	fill: steelblue;
-}
-
-.bar:hover {
-	fill: #7FFF00;
-}
 
 .axis {
 	font: 10px sans-serif;
@@ -36,10 +29,6 @@ body { font: 12px Arial;}
 	fill: none;
 	stroke: #000;
 	shape-rendering: crispEdges;
-}
-
-#map {
-	float: right;
 }
 
 #hydrograph {
