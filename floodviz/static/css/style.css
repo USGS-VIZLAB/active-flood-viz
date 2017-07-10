@@ -7,8 +7,8 @@ body {
 	font: 12px Arial;
 }
 
-.axis path,
-.axis line {
+#hydrograph .axis path,
+#hydrograph .axis line {
 	fill: none;
 	stroke: grey;
 	stroke-width: 1;
@@ -27,8 +27,22 @@ body {
 	font: 10px sans-serif;
 }
 
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+
+#map {
+	float: right;
+}
+
 #hydrograph {
 	margin-top: 50px;
+	margin-left: 100px;
+	margin-bottom: 50px;
+	float: left;
 }
 
 #peakflow_bar {
@@ -72,12 +86,13 @@ body {
 }
 
 .toolTip {
-  position: absolute;
-  display: none;
-  min-width: 80px;
-  height: auto;
-  background: none repeat scroll 0 0 #ffffff;
-  border: 1px solid #7FFF00;
-  padding: 14px;
-  text-align: center;
+	position: absolute;
+	display: none;
+	min-width: 80px;
+	height: auto;
+	background: none repeat scroll 0 0 #ffffff;
+	border: 1px solid #7FFF00;
+	padding: 14px;
+	text-align: center;
 }
+

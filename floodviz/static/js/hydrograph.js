@@ -1,106 +1,143 @@
-// Set the dimensions of the canvas / graph
-var margin = {top: 30, right: 20, bottom: 30, left: 50};
-var width = FV.chartdims.width - margin.left - margin.right;
-var height = FV.chartdims.height - margin.top - margin.bottom;
+document.addEventListener("DOMContentLoaded", function (event) {
+	"use strict";
 
-// Set the ranges
-var x = d3.scaleTime().range([0, width]);
-var y = d3.scaleLog().range([height, 0]);
+	var data_path = FV.hydrograph_data_path;
 
-// Define the voronoi
-var voronoi = d3.voronoi()
-    .x(function(d) { return x(d.time_mili); })
-    .y(function(d) { return y(d.value); })
-    .extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]])
+	// Set the dimensions of the canvas / graph
+	var margin = {top: 30, right: 20, bottom: 30, left: 50};
+	var width = FV.chart_dimensions.width - margin.left - margin.right;
+	var height = FV.chart_dimensions.height - margin.top - margin.bottom;
 
-// Define the line
-var line = d3.line()
-    .x(function(d) { return x(d.time_mili); })
-    .y(function(d) { return y(d.value); });
+	// Set the ranges
+			var x = d3.scaleTime().range([0, width]);
+			var y = d3.scaleLog().range([height, 0]);
 
-// Adds the svg canvas
-var svg = d3.select("#hydrograph")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
+			// Define the voronoi
+			var voronoi = d3.voronoi()
+				.x(function (d) {
+					return x(d.time_mili);
+				})
+				.y(function (d) {
+					return y(d.value);
+				})
+				.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]])
 
-// Get the data
-d3.json("../static/data/hydrograph_data.json", function(error, data) {
-    data.forEach(function(d) {
-        d.value = Number(d.value);
-    });
+			// Define the line
+			var line = d3.line()
+				.x(function (d) {
+					return x(d.time_mili);
+				})
+				.y(function (d) {
+					return y(d.value);
+				});
 
-    // Scale the range of the data
-    x.domain(d3.extent(data, function(d) { return d.time_mili; }));
-    y.domain([20, d3.max(data, function(d) { return d.value; })]);
+	// Get the data
+	d3.json(data_path, function (error, data) {
 
-    // Nest the entries by site number
-    var dataNest = d3.nest()
-        .key(function(d) {return d.key;})
-        .entries(data);
+		//save the original data
+		var original_data = data;
 
-    // Loop through each symbol / key
-    dataNest.forEach(function(d) {
+		update(data);
 
-        svg.append("g")
-            .attr('class', 'gages')
-            .append("path")
-            .attr("id", "h" + d.key)
-            .attr("d", line(d.values))
-            // .on("click", click(d.key));
-    });
-    
-    // Add the X Axis
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+		function update(data) {
 
-    // Add the Y Axis
-    svg.append("g")
-        .attr("class", "axis")
-        .call(d3.axisLeft(y).ticks(10, ".0f"));
+			// Adds the svg canvas
+			var svg = d3.select("#hydrograph")
+				.append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				.attr("transform",
+					"translate(" + margin.left + "," + margin.top + ")");
 
-    var focus = svg.append("g")
-        .attr("transform", "translate(-100,-100)")
-        .attr("class", "focus");
-    focus.append("circle")
-        .attr("r", 3.5);
+			data.forEach(function (d) {
+				d.value = Number(d.value);
+			});
 
-    focus.append("text")
-        .attr("y", -10);
+			// Scale the range of the data
+			x.domain(d3.extent(data, function (d) {
+				return d.time_mili;
+			}));
+			y.domain([20, d3.max(data, function (d) {
+				return d.value;
+			})]);
 
-    focus.append("text")
+			// Nest the entries by site number
+			var dataNest = d3.nest()
+				.key(function (d) {
+					return d.key;
+				})
+				.entries(data);
 
-    var voronoiGroup = svg.append("g")
-        .attr("class", "voronoi");
+			// Loop through each symbol / key
+			dataNest.forEach(function (d) {
 
-    voronoiGroup.selectAll("path")
-        .data(voronoi.polygons(d3.merge(dataNest.map( function(d) { return d.values }))))
-        .enter().append("path")
-        .attr("d", function(d) { return d ? "M" + d.join("L") + "Z" : null; })
-        .on("mouseover", mouseover)
-        .on("mouseout", mouseout);
+				svg.append("g")
+					.attr('class', 'gages')
+					.append("path")
+					.attr("id", "hydro" + d.key)
+					.attr("d", line(d.values));
+			});
 
-    function click(key) {
-        d3.selectAll("#h" + key).remove();
-    }
+			// Add the X Axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(d3.axisBottom(x));
 
-    function mouseover(d) {
-        d3.select(d.data.name).classed("gage--hover", true);
-        focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
-        focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
-    }
+			// Add the Y Axis
+			svg.append("g")
+				.attr("class", "axis")
+				.call(d3.axisLeft(y).ticks(10, ".0f"));
 
-    function mouseout(d) {
-        d3.select(d.data.name).classed("gage--hover", false);
-        focus.attr("transform", "translate(-100,-100)");
-    }
+			var focus = svg.append("g")
+				.attr("transform", "translate(-100,-100)")
+				.attr("class", "focus");
+			focus.append("circle")
+				.attr("r", 3.5);
+
+			focus.append("text")
+				.attr("y", -10);
+
+			focus.append("text")
+
+			var voronoiGroup = svg.append("g")
+				.attr("class", "voronoi");
+
+			voronoiGroup.selectAll("path")
+				.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
+					return d.values
+				}))))
+				.enter().append("path")
+				.attr("d", function (d) {
+					return d ? "M" + d.join("L") + "Z" : null;
+				})
+				.on("mouseover", mouseover)
+				.on("mouseout", mouseout)
+				.on("click", function(d) { console.log("x"); click(d.data.key); });
+
+			function mouseover(d) {
+				d3.select(d.data.name).classed("gage--hover", true);
+				focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
+				focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
+			}
+
+			function mouseout(d) {
+				d3.select(d.data.name).classed("gage--hover", false);
+				focus.attr("transform", "translate(-100,-100)");
+			}
+		}
+
+		function click(key) {
+			console.log(key);
+			d3.select("svg").remove();
+			var i;
+			for (i=0; i < data.length; i++) {
+				if (data[i]["key"] == key) {
+					data.splice(i, 1);
+				}
+			}
+			update(data);
+		}
+	});
 });
-
-
-
-
