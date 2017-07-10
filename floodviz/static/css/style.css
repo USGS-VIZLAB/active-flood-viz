@@ -3,8 +3,18 @@ html, body, .main-content {
 	margin: 0;
 }
 
+<<<<<<< HEAD
 body {
 	font: 12px Arial;
+=======
+body { font: 12px Arial;}
+
+
+path {
+	stroke: steelblue;
+	stroke-width: 2;
+	fill: none;
+>>>>>>> ff584ab9f88627b60548001597a65bddb6fce4f3
 }
 
 .axis path,
@@ -29,6 +39,9 @@ body {
 
 #hydrograph {
 	margin-top: 50px;
+	margin-left: 100px;
+	margin-bottom: 50px;
+	float: left;
 }
 
 #peakflow_bar {

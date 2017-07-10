@@ -94,6 +94,7 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
 		d3.select(d.data.name).classed("gage--hover", false);
 		focus.attr("transform", "translate(-100,-100)");
 	}
+
 });
 
 
