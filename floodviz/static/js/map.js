@@ -67,13 +67,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var sites = add_circles(FV.mapinfo.site_data, "gage-point", 3);
 	sites.selectAll("circle")
 		.on("mouseover", function (d) {
+			d3.select("#hydro" + d.properties.id).attr("class", "hydro-active");
 			maptip.transition().duration(500);
 			maptip.style("display", "inline-block")
 				.style("left", (d3.event.pageX) + 10 + "px")
-				.style("top", (d3.event.pageY - 70) + "px")
+				.style("top", (d3.event.pageY - 40) + "px")
 				.html((d.properties.name));
 		})
-		.on("mouseout", function (d) { maptip.style("display", "none");});
+		.on("mouseout", function (d) {
+			d3.select("#hydro" + d.properties.id).attr("class", "hydro-inactive");
+			maptip.style("display", "none");
+		});
 
 
 	if (FV.mapinfo.debug) {
