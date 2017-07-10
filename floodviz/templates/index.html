@@ -22,7 +22,7 @@
 	<script type="text/javascript">
 		// Global Namespace for project - FV
 		var FV = FV || {};
-		FV.hydrometa = {{ config.HYDRO_META | safe }};
+		FV.chartdims = {{ config.CHART_DIMENSIONS | safe }}
 		FV.peakmeta = {{ config.PEAK_META | safe }}
 		FV.mapinfo = {{ mapinfo | tojson | safe }}
 	</script>
@@ -36,7 +36,7 @@
 	<script type="text/javascript"
 			src="{{ url_for('static', filename='bower_components/proj4/dist/proj4.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/peakflow.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/gage_map.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/map.js') }}"></script>
 
 </body>
 

@@ -1,14 +1,15 @@
 html, body, .main-content {
-    height: 100%;
-    margin: 0;
+	height: 100%;
+	margin: 0;
 }
 
 body { font: 12px Arial;}
 
-#hydrograph path {
-    stroke: steelblue;
-    stroke-width: 2;
-    fill: none;
+
+path {
+	stroke: steelblue;
+	stroke-width: 2;
+	fill: none;
 }
 
 .axis path,
@@ -65,12 +66,12 @@ body { font: 12px Arial;}
 	display: none;
 }
 .toolTip {
-  position: absolute;
-  display: none;
-  min-width: 80px;
-  height: auto;
-  background: none repeat scroll 0 0 #ffffff;
-  border: 1px solid #7FFF00;
-  padding: 14px;
-  text-align: center;
+	position: absolute;
+	display: none;
+	min-width: 80px;
+	height: auto;
+	background: none repeat scroll 0 0 #ffffff;
+	border: 1px solid #7FFF00;
+	padding: 14px;
+	text-align: center;
 }
