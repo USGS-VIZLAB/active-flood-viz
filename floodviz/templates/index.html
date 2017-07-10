@@ -25,6 +25,7 @@
 		var FV = FV || {};
 		FV.hydrometa = {{ config.HYDRO_META | safe }};
 		FV.peakmeta = {{ config.PEAK_META | safe }}
+		FV.peakinfo = {{ peakinfo | tojson | safe }}
 		FV.mapinfo = {{ mapinfo | tojson | safe }}
 	</script>
 
