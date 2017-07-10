@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	add_circles(FV.mapinfo.ref_data, "ref-point", 2);
 	var sites = add_circles(FV.mapinfo.site_data, "gage-point", 3);
 	sites.selectAll("circle")
-		.on('mousemove', function (d) {
+		.on("mouseover", function (d) {
 			maptip.transition().duration(500);
 			maptip.style("display", "inline-block")
 				.style("left", (d3.event.pageX) + 10 + "px")

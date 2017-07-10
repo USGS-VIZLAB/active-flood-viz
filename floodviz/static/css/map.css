@@ -41,5 +41,6 @@
 
 #map path.river{
     stroke: blue;
+	fill: blue;
 }
 
