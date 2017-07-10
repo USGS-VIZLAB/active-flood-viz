@@ -3,18 +3,8 @@ html, body, .main-content {
 	margin: 0;
 }
 
-<<<<<<< HEAD
 body {
 	font: 12px Arial;
-=======
-body { font: 12px Arial;}
-
-
-path {
-	stroke: steelblue;
-	stroke-width: 2;
-	fill: none;
->>>>>>> ff584ab9f88627b60548001597a65bddb6fce4f3
 }
 
 .axis path,
