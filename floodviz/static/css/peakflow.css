@@ -1,0 +1,26 @@
+#peakflow_bar {
+	margin: 0 auto;
+	width: 80%;
+}
+
+#peakflow_bar svg {
+	display: block;
+	margin: auto;
+}
+
+#lollipop {
+	width: .3%;
+	stroke: #7fff00;
+}
+
+.cir {
+	fill: #7FFF00;
+}
+
+.bar {
+	fill: steelblue;
+}
+
+.bar:hover {
+	fill: #7FFF00;
+}
