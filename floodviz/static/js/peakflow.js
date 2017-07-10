@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	var margin = {bottom: 100, right: 120, left: 120, top: 150};
 	var width = parseInt(FV.peakmeta['width']);
-	var	height = parseInt(FV.peakmeta['height']);
+	var height = parseInt(FV.peakmeta['height']);
 
 	var x = d3.scaleBand().rangeRound([0, width]).padding(.5);
 	var	y = d3.scaleLinear().range([height, 0]);
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				tooltip.style("display", "inline-block")
 				.style("left", (d3.event.pageX) + 10 + "px")
 				.style("top", (d3.event.pageY - 70) + "px")
-				.html((d.label) + "<br>" + (d.value) + " cfps");
+				.html((d.label) + "<br>" + (d.value) + " cfs");
 			})
 			.on("mouseout", function(d){ tooltip.style("display", "none");});
 		
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				tooltip.style("display", "inline-block")
 				.style("left", (d3.event.pageX) + 10 + "px")		
 				.style("top", (d3.event.pageY) - 70 + "px")
-				.html((lolli_data.label) + "<br>" + (lolli_data.value) + " cfps");
+				.html((lolli_data.label) + "<br>" + (lolli_data.value) + " cfs");
 			})
 			.on("mouseout", function(d){ tooltip.style("display", "none");});
 		var group = d3.select('#peakflow_bar svg .group');

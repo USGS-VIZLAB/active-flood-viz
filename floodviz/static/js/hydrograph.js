@@ -57,7 +57,6 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
     svg.append("g")
         .attr("class", "axis")
         .call(d3.axisLeft(y).ticks(10, ".0f"));
-
 });
 
 
