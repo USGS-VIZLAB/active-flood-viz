@@ -16,7 +16,7 @@ EVENT_START_DT = ''
 EVENT_END_DT = ''
 
 # This dict holds aspect ratio data for hydrograph rendered in static/js/hydrograph.js. Keys are 'height' and 'width'
-HYDRO_META = {}
+CHART_DIMENSIONS = {}
 
 
 

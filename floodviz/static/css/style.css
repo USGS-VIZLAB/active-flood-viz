@@ -7,8 +7,8 @@ body {
 	font: 12px Arial;
 }
 
-.axis path,
-.axis line {
+#hydrograph .axis path,
+#hydrograph .axis line {
 	fill: none;
 	stroke: grey;
 	stroke-width: 1;
@@ -25,6 +25,17 @@ body {
 
 .axis {
 	font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+
+#map {
+	float: right;
 }
 
 #hydrograph {
