@@ -7,12 +7,6 @@ body {
 	font: 12px Arial;
 }
 
-path {
-	stroke: steelblue;
-	stroke-width: 1;
-	fill: none;
-}
-
 .axis path,
 .axis line {
 	fill: none;
@@ -60,7 +54,7 @@ path {
 
 .gages {
 	fill: none;
-	stroke: #aaa;
+	stroke: steelblue;
 	stroke-linejoin: round;
 	stroke-linecap: round;
 	stroke-width: 1.5px;
