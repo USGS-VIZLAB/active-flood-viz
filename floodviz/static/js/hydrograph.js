@@ -48,9 +48,11 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
         svg.append("g")
             .attr('class', 'gages')
             .append("path")
-            .attr("id", d.key)
-            .attr("d", line(d.values));
-
+            .attr("id", "h"+d.key)
+            .attr("d", line(d.values))
+            .on("click", function() {
+            d3.select("h"+d.data.key).exit().remove();
+        });
     });
 
     // Add the X Axis
