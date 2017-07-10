@@ -1,8 +1,8 @@
 
 // Set the dimensions of the canvas / graph
-var margin = {top: 30, right: 20, bottom: 30, left: 50};
-var width = FV.chartdims.width - margin.left - margin.right;
-var height = FV.chartdims.height - margin.top - margin.bottom;
+var margin = {top: 30, right: 20, bottom: 30, left: 50},
+    width = 600 - margin.left - margin.right,
+    height = 270 - margin.top - margin.bottom;
 
 // Set the ranges
 var x = d3.scaleTime().range([0, width]);
@@ -41,8 +41,7 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
     dataNest.forEach(function(d) {
 
         svg.append("path")
-            .attr("class", "line")
-            .attr("id", d.key)
+            .attr("class", "line " + d.key)
             .attr("d", line(d.values));
 
     });

@@ -84,6 +84,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
             .attr("transform", function (d) {
                 return "translate(" + projection(d.geometry.coordinates) + ")";
             })
+            .attr("class", function(d) {
+                if (classname === 'gage-point') {
+                    classname += ' ' + d.properties.id;
+                }
+            })
             .attr("class", classname);
     }
 
