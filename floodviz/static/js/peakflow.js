@@ -69,14 +69,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		.attr("width", x.bandwidth())
 		.attr("height", function(d) {return height - y(d.value); })
 		// tooltip event
-		.on("mousemove", function(d) {
-			tooltip.transition().duration(500).style("opacity", .9);
-			tooltip.style("display", "inline-block")
-			.style("left", (d3.event.pageX) + 10 + "px")
-			.style("top", (d3.event.pageY - 70) + "px")
-			.html((d.label) + "<br>" + (d.value) + " cfs");
-		})
-		.on("mouseout", function(d){ tooltip.style("display", "none");});
+		.on("mousemove", function(d) {mouseover(tooltip, d, d3.event)})
+		.on("mouseout", function() {mouseout(tooltip)});
 	
 	var title = "Peak Annual Discharge";
 	svg.append("text")
@@ -100,18 +94,24 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		.attr("stroke-width", 2)
 		.attr("d", path_string)
 		// tooltip event
-		.on("mousemove", function() {
-			tooltip.transition().duration(500).style("opacity", .9);
-			tooltip.style("display", "inline-block")
-			.style("left", (d3.event.pageX) + 10 + "px")		
-			.style("top", (d3.event.pageY) - 70 + "px")
-			.html((lolli_data.label) + "<br>" + (lolli_data.value) + " cfs");
-		})
-		.on("mouseout", function(d){ tooltip.style("display", "none");});
+		.on("mousemove", function() {mouseover(tooltip, lolli_data, d3.event)})
+		.on("mouseout", function() {mouseout(tooltip)});
+	
 	var group = d3.select('#peakflow_bar svg .group');
 	group.append("circle")
 		.attr('class', 'cir')
 		.attr('r', "4.5")
 		.attr('cx', lolli_pos_x)
-		.attr('cy', lolli_pos_y);
+		.attr('cy', lolli_pos_y)
+		.on("mousemove", function() {mouseover(tooltip, lolli_data, d3.event)})
+		.on("mouseout", function() {mouseout(tooltip)});
+
+	function mouseover(tooltip, d, event) {
+		tooltip.transition().duration(500).style("opacity", .9);
+		tooltip.style("display", "inline-block")
+			.style("left", (event.pageX) + 10 + "px")
+			.style("top", (event.pageY - 70) + "px")
+			.html((d.label) + "<br>" + (d.value) + " cfs");
+	}
+	function mouseout(tooltip) {tooltip.style("display", "none");}
 });
