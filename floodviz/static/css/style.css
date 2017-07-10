@@ -12,8 +12,8 @@ path {
 	fill: none;
 }
 
-.axis path,
-.axis line {
+#hydrograph .axis path,
+#hydrograph .axis line {
 	fill: none;
 	stroke: grey;
 	stroke-width: 1;
@@ -39,6 +39,9 @@ path {
 	shape-rendering: crispEdges;
 }
 
+#map {
+	float: right;
+}
 
 #hydrograph {
 	margin-top: 50px;
