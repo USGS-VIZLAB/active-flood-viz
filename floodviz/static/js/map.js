@@ -35,6 +35,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var height = FV.mapinfo.height;
     var width = FV.mapinfo.width;
 
+    // Tooltip
+	var maptip = d3.select("body")
+		.append("div")
+		.attr("class", "maptip");
+
     //Create SVG element
     var svg = d3.select("#map")
         .append("svg")
