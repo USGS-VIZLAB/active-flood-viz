@@ -50,13 +50,8 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
             .append("path")
             .attr("id", "h"+d.key)
             .attr("d", line(d.values));
-
-        .on("click", this.remove());
     });
-
-    d3.selectAll("gages").
-
-
+    
     // Add the X Axis
     svg.append("g")
         .attr("class", "axis")
@@ -88,10 +83,6 @@ d3.json("../static/data/hydrograph_data.json", function(error, data) {
         .attr("d", function(d) { return d ? "M" + d.join("L") + "Z" : null; })
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
-
-    function click(d, key) {
-        d3.selectAll("#h"+key).remove()
-    }
 
     function mouseover(d) {
         d3.select(d.data.name).classed("gage--hover", true);
