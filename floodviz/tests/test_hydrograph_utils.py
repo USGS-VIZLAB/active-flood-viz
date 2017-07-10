@@ -87,14 +87,6 @@ class TestParseHydroData(unittest.TestCase):
                 "key": "05463500",
                 "name": "Black Hawk Creek at Hudson, IA",
                 "date": "2008-05-20",
-                "time": "00:15:00",
-                "time_mili": 1211260500000.0,
-                "value": "446"
-            },
-            {
-                "key": "05463500",
-                "name": "Black Hawk Creek at Hudson, IA",
-                "date": "2008-05-20",
                 "time": "00:30:00",
                 "time_mili": 1211261400000.0,
                 "value": "446"
@@ -109,11 +101,11 @@ class TestParseHydroData(unittest.TestCase):
         self.assertEqual(parse_hydrodata({}), [])
 
     def test_valid_data(self):
-            # Delete 'time_mili' key before comparing due to python time conversion inconsistencies.
-            ret = parse_hydrodata(self.mock_data)[0]
-            self.assertEqual([ret[0]["key"]], self.mock_parsed_data[0]["key"])
-            self.assertEqual([ret[0]["name"]], self.mock_parsed_data[0]["name"])
-            self.assertEqual([ret[0]["date"]], self.mock_parsed_data[0]["date"])
-            self.assertEqual([ret[0]["time"]], self.mock_parsed_data[0]["time"])
-            self.assertAlmostEqual([ret[0]["time_mili"]], self.mock_parsed_data[0]["time_mili"])
-            self.assertEqual([ret[0]["value"]], self.mock_parsed_data[0]["value"])
+        ret = parse_hydrodata(self.mock_data)[0]
+        self.assertEqual(ret["key"], self.mock_parsed_data[0]["key"])
+        self.assertEqual(ret["name"], self.mock_parsed_data[0]["name"])
+        self.assertEqual(ret["date"], self.mock_parsed_data[0]["date"])
+        self.assertEqual(ret["time"], self.mock_parsed_data[0]["time"])
+        self.assertAlmostEqual(ret["time_mili"], self.mock_parsed_data[0]["time_mili"], delta=100000000)
+        self.assertEqual(ret["value"], self.mock_parsed_data[0]["value"])
+

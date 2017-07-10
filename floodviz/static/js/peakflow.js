@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var height = parseInt(FV.peakmeta['height']);
 	var data = FV.peakinfo;
 
-
 	var x = d3.scaleBand().rangeRound([0, width]).padding(.5);
 	var	y = d3.scaleLinear().range([height, 0]);
 
