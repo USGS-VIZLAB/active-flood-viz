@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function (event) {
 	"use strict";
 
@@ -63,12 +62,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 	// add layers in sensible order
 	add_paths(FV.mapinfo.bg_data, "background");
-
 	add_paths(FV.mapinfo.rivers_data, "river");
-
 	add_circles(FV.mapinfo.ref_data, "ref-point", 2);
-
-	add_circles(FV.mapinfo.site_data, "gage-point", 3);
+	var sites = add_circles(FV.mapinfo.site_data, "gage-point", 3);
+	sites.selectAll("circle")
+		.on('mousemove', function (d) {
+			maptip.transition().duration(500);
+			maptip.style("display", "inline-block")
+				.style("left", (d3.event.pageX) + 10 + "px")
+				.style("top", (d3.event.pageY - 70) + "px")
+				.html((d.properties.name));
+		})
+		.on("mouseout", function (d) { maptip.style("display", "none");});
 
 
 	if (FV.mapinfo.debug) {
@@ -90,15 +95,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			.attr("transform", function (d) {
 				return "translate(" + projection(d.geometry.coordinates) + ")";
 			})
-			.attr("class", classname)
-			.on('mousemove', function(d) {
-				maptip.transition().duration(500);
-				maptip.style("display", "inline-block")
-				.style("left", (d3.event.pageX) + 10 + "px")
-				.style("top", (d3.event.pageY - 70) + "px")
-				.html((d.properties.name));
-			})
-			.on("mouseout", function(d){ maptip.style("display", "none");});
+			.attr("class", classname);
+		return (group);
 	}
 
 	/**
