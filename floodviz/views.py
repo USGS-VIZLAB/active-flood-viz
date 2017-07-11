@@ -6,6 +6,7 @@ from . import app
 from . import hydrograph_utils
 from . import map_utils
 from . import peak_flow_utils
+from . import utils
 
 url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 
@@ -44,8 +45,6 @@ def _peakflow_helper():
     peak_end_date = app.config['PEAK_END_DT']
     peak_dv_date = app.config['PEAK_DV_DT']
     url_peak_prefix = app.config['NWIS_PEAK_STREAMFLOW_SERVICE_ENDPOINT']
-
-    # Peak Water Flow data clean and write 
     content = peak_flow_utils.req_peak_data(peak_site, peak_start_date, peak_end_date, url_peak_prefix)
     daily_value_data = peak_flow_utils.req_peak_dv_data(peak_site, peak_dv_date, url_nwis_prefix)
     peak_data = peak_flow_utils.parse_peak_data(content, daily_value_data)
