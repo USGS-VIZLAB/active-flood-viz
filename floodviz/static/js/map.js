@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	// Tooltip
 	var maptip = d3.select("body")
 		.append("div")
-		.attr("class", "maptip");
+		.attr("id", "maptip");
 
 	//Create SVG element
 	var svg = d3.select("#map")
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			maptip.transition().duration(500);
 			maptip.style("display", "inline-block")
 				.style("left", (d3.event.pageX) + 10 + "px")
-				.style("top", (d3.event.pageY - 70) + "px")
+				.style("top", (d3.event.pageY - 50) + "px")
 				.html((d.properties.name));
 		})
 		.on("mouseout", function (d) { maptip.style("display", "none");});
@@ -95,7 +95,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			.attr("transform", function (d) {
 				return "translate(" + projection(d.geometry.coordinates) + ")";
 			})
-			.attr("class", classname);
+			.attr("id", function(d) {
+				if (classname === 'gage-point') {
+					return 'map' + d.properties.id;
+				}
+			})
+			.attr("class", classname)
 		return (group);
 	}
 
