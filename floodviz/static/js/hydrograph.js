@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		svg.append("g")
 			.attr("class", "axis")
 			.attr("transform", "translate(0," + height + ")")
-			.call(d3.axisBottom(x));
+			.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%B %e")));
 
 		// Add the Y Axis
 		svg.append("g")
