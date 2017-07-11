@@ -71,7 +71,7 @@ body {
 	stroke: steelblue;
 	stroke-linejoin: round;
 	stroke-linecap: round;
-	stroke-width: 6px;
+	stroke-width: 1.5px;
 }
 
 .focus text {
