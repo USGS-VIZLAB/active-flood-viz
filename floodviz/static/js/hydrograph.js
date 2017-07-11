@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		.y(function (d) {
 			return y(d.value);
 		})
-		.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]])
+		.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]]);
 
 	// Define the line
 	var line = d3.line()
@@ -63,12 +63,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 		// Loop through each symbol / key
 		dataNest.forEach(function (d) {
-
 			svg.append("g")
-				.attr('class', 'gages')
 				.append("path")
-				.attr("id", "h" + d.key)
+				.attr("id", "hydro" + d.key)
 				.attr("d", line(d.values))
+				.attr("class", "hydro-inactive")
 		});
 
 		// Add the X Axis
@@ -91,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		focus.append("text")
 			.attr("y", -10);
 
-		focus.append("text")
+		focus.append("text");
 
 		var voronoiGroup = svg.append("g")
 			.attr("class", "voronoi");
@@ -108,13 +107,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			.on("mouseout", mouseout);
 
 		function mouseover(d) {
-			d3.select(d.data.name).classed("gage--hover", true);
+			d3.select("#hydro" + d.data.key).attr("class", "hydro-active");
 			focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
 			focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
 		}
 
 		function mouseout(d) {
-			d3.select(d.data.name).classed("gage--hover", false);
+			d3.select("#hydro" + d.data.key).attr("class", "hydro-inactive");
 			focus.attr("transform", "translate(-100,-100)");
 		}
 	});

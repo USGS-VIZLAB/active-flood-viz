@@ -14,13 +14,6 @@
 
 /* Voronoi Stuff */
 
-.gages {
-	fill: none;
-	stroke: steelblue;
-	stroke-linejoin: round;
-	stroke-linecap: round;
-	stroke-width: 1.5px;
-}
 
 .focus text {
 	text-anchor: middle;
@@ -42,4 +35,21 @@
 	border: 1px solid #7FFF00;
 	padding: 14px;
 	text-align: center;
+}
+
+.hydro-active{
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	fill: none;
+	stroke-width: 2;
+	stroke: blue;
+	opacity: 1;
+}
+.hydro-inactive{
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	fill: none;
+	stroke-width: 1;
+	stroke: steelblue;
+	opacity: 0.8;
 }
