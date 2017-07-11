@@ -3,10 +3,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 	var data_path = FV.hydrograph_data_path;
 
+	console.log(FV.hydrograph_display_ids);
+
 	// Set the dimensions of the canvas / graph
 	var margin = {top: 30, right: 20, bottom: 30, left: 50};
-	var width = FV.chart_dimensions.width - margin.left - margin.right;
-	var height = FV.chart_dimensions.height - margin.top - margin.bottom;
+	var width = FV.hydrograph_dimensions.width - margin.left - margin.right;
+	var height = FV.hydrograph_dimensions.height - margin.top - margin.bottom;
 
 	// Set the ranges
 	var x = d3.scaleTime().range([0, width]);

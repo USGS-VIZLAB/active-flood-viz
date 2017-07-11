@@ -20,7 +20,7 @@
 	<script type="text/javascript">
 		// Global Namespace for project - FV
 		var FV = FV || {};
-		FV.chartdims = {{ config.CHART_DIMENSIONS | safe }}
+		FV.hydrograph_dimensions = {{ config.CHART_DIMENSIONS | safe }};
 	</script>
 
 	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
