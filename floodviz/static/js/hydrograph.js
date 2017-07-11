@@ -3,8 +3,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 	var data_path = FV.hydrograph_data_path;
 
-	var site_count = FV.site_count;
-
 	// Set the dimensions of the canvas / graph
 	var margin = {top: 30, right: 20, bottom: 30, left: 50};
 	var width = FV.chart_dimensions.width - margin.left - margin.right;
@@ -116,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				})
 				.on("mouseover", mouseover)
 				.on("mouseout", mouseout)
-				.on("click", function(d) { console.log("x"); click(d.data.key); });
+				.on("click", function(d) { console.log("x"); click(d.data.key, data); });
 
 			function mouseover(d) {
 				d3.select(d.data.name).classed("gage--hover", true);
@@ -130,23 +128,19 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			}
 		}
 
-		function click(key) {
-
-			var data_per_site = data.length / site_count;
-
-			console.log(key + " " + data.length);
+		function click(key, data) {
 
 			d3.select("svg").remove();
 
+			var new_data = [];
+
 			var i;
-			for (i=0; i < data.length; i++) {
-				console.log(data[i]["key"]);
-				if (data[i]["key"] == key) {
-					data.splice(i, 1);
+			for (i=0; i<data.length; i++) {
+				if (data[i]["key"] != key) {
+					new_data.push(data[i]);
 				}
 			}
-
-			update(data);
+			update(new_data);
 		}
 	});
 });
