@@ -18,7 +18,6 @@ def root():
 
 @app.route('/hydrograph/')
 def hydrograph():
-    _hydrograph_helper()
     return render_template('hydrograph.html')
 
 @app.route('/map/')
@@ -28,20 +27,15 @@ def sitemap():
 
 @app.route('/timeseries/')
 def timeseries_data():
-    timeseries_data = _hydrograph_helper()
-    return jsonify(timeseries_data)
-
-def _hydrograph_helper():
-    # Hydrograph config vars #
     hydro_start_date = app.config['EVENT_START_DT']
     hydro_end_date = app.config['EVENT_END_DT']
     sites = app.config['SITE_IDS']
-    hydro_meta = app.config['CHART_DIMENSIONS']
 
     # Hydrodata data clean and write
     j = hydrograph_utils.req_hydrodata(sites, hydro_start_date, hydro_end_date, url_nwis_prefix)
-    all_series_data = hydrograph_utils.parse_hydrodata(j)
-    return all_series_data    
+    timeseries_data = hydrograph_utils.parse_hydrodata(j)
+    return jsonify(timeseries_data)
+
 
 def _peakflow_helper():
     # Peak Flow config vars #
