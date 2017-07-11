@@ -2,31 +2,31 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	"use strict";
 
 	// define module for map interactios
-	FV.mapInteractionsModule = (function() {
+	FV.mapmodule = ( function() {
 
 		// Tooltip
 		var maptip = d3.select("body")
 			.append("div")
 			.attr("id", "maptip");
 
-		return {
-			mousemove: function (sitename, sitekey) {
+		var self = {};
+		self.init = function() {}
+		self.mousemove = function (sitename, sitekey) {
 				var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
 				maptip.transition().duration(500);
 				maptip.style("display", "inline-block")
 					.style("left", (gage_point_cords.left) + 7 + "px")
 					.style("top", (gage_point_cords.top - 45) + "px")
 					.html((sitename));
-			},
-			mouseout: function () {
+		}
+		self.mouseout = function () {
 				maptip.style("display", "none");
-			},
-			removeaccent: function(sitekey) {
+		}
+		self.removeaccent = function(sitekey) {
 				var maptip = document.getElementById('map' + sitekey);
 				maptip.classList.remove('accent');
-			}
 		}
-
+		return self 
 	})();
 
 
@@ -54,9 +54,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var projection = d3.geoProjection(project);
 
 	// Give projection initial rotation and scale
-	projection
-		.scale(1)
-		.translate([0, 0]);
+	projection.scale(1)	.translate([0, 0]);
 
 	//Define path generator
 	var path = d3.geoPath().projection(projection);
@@ -91,8 +89,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	add_circles(FV.mapinfo.ref_data, "ref-point", 2);
 	var sites = add_circles(FV.mapinfo.site_data, "gage-point", 3);
 	sites.selectAll("circle")
-		.on('mousemove', function(d) {return FV.mapInteractionsModule.mousemove(d.properties.name, d.properties.id)})
-		.on("mouseout", function() {return FV.mapInteractionsModule.mouseout()});
+		.on('mousemove', function(d) {return FV.mapmodule.mousemove(d.properties.name, d.properties.id)})
+		.on("mouseout", function() {return FV.mapmodule.mouseout()});
 
 
 	if (FV.mapinfo.debug) {

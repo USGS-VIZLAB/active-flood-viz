@@ -116,17 +116,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
 			focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
 			// Interative linking with map
-			FV.mapInteractionsModule.mousemove(d.data.name, d.data.key);
+			FV.mapmodule.mousemove(d.data.name, d.data.key);
 		}
 		function mouseout(d) {
 			d3.select(d.data.name).classed("gage--hover", false);
 			focus.attr("transform", "translate(-100,-100)");
 			// Interative linking with map
-			FV.mapInteractionsModule.mouseout();
+			FV.mapmodule.mouseout();
 		}
 		function click(d){
 			// Interative linking with map
-			FV.mapInteractionsModule.removeaccent(d.data.key);
+			FV.mapmodule.removeaccent(d.data.key);
 		}
 
 	});
