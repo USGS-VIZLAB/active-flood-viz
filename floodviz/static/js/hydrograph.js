@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 			var i;
 			for (i=0; i<data.length; i++) {
-				if (data[i]["key"] != key) {
+				if (data[i]["key"] !== key) {
 					new_data.push(data[i]);
 				}
 			}
