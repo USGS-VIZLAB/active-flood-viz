@@ -1,5 +1,13 @@
 # active-flood-viz
 
+### Configuration Files
+
+Settings specific to a single event are stored in an `instance/` directory which is not tracked by git.
+Create this directory in the root project directory and then create the file `instance/config.py`.
+This will store any event-specific settings.
+The `examples/` directory contains files for example event settings.
+Copy and paste the contents of one of these files into `instance/config.py` to use these settings.
+
 ### Docker Instructions
 
 Currently, our dockerfile creates an image for a container that runs the basic flask app. 
