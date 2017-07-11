@@ -115,30 +115,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			d3.select(d.data.name).classed("gage--hover", true);
 			focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
 			focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
-			
 			// Interative linking with map
-			var map_site = document.getElementById('map'+d.data.key);
-			var cords = map_site.getBoundingClientRect();
-			var maptip = d3.select('#maptip');
-			maptip.transition().duration(500);
-			maptip.style("display", "inline-block")
-				.style("left", cords.left + 10 + "px")
-				.style("top", (cords.top - 50) + "px")
-				.html((d.data.name));
+			FV.mapInteractionsModule.mousemove(d.data.name, d.data.key);
 		}
-
 		function mouseout(d) {
 			d3.select(d.data.name).classed("gage--hover", false);
 			focus.attr("transform", "translate(-100,-100)");
 			// Interative linking with map
-			var maptip = d3.select('#maptip');
-			maptip.style("display", "none");
+			FV.mapInteractionsModule.mouseout();
 		}
-
 		function click(d){
 			// Interative linking with map
-			var map_site = document.getElementById('map'+d.data.key);
-			map_site.classList.remove('accent');
+			FV.mapInteractionsModule.removeaccent(d.data.key);
 		}
 
 	});

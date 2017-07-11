@@ -1,6 +1,35 @@
 document.addEventListener("DOMContentLoaded", function (event) {
 	"use strict";
 
+	// define module for map interactios
+	FV.mapInteractionsModule = (function() {
+
+		// Tooltip
+		var maptip = d3.select("body")
+			.append("div")
+			.attr("id", "maptip");
+
+		return {
+			mousemove: function (sitename, sitekey) {
+				var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
+				maptip.transition().duration(500);
+				maptip.style("display", "inline-block")
+					.style("left", (gage_point_cords.left) + 7 + "px")
+					.style("top", (gage_point_cords.top - 45) + "px")
+					.html((sitename));
+			},
+			mouseout: function () {
+				maptip.style("display", "none");
+			},
+			removeaccent: function(sitekey) {
+				var maptip = document.getElementById('map' + sitekey);
+				maptip.classList.remove('accent');
+			}
+		}
+
+	})();
+
+
 	// Define helper functions
 	function degreesToRadians(degrees) {
 		return degrees * Math.PI / 180;
@@ -35,10 +64,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var height = FV.mapinfo.height;
 	var width = FV.mapinfo.width;
 
-	// Tooltip
-	var maptip = d3.select("body")
-		.append("div")
-		.attr("id", "maptip");
 
 	//Create SVG element
 	var svg = d3.select("#map")
@@ -66,14 +91,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	add_circles(FV.mapinfo.ref_data, "ref-point", 2);
 	var sites = add_circles(FV.mapinfo.site_data, "gage-point", 3);
 	sites.selectAll("circle")
-		.on('mousemove', function (d) {
-			maptip.transition().duration(500);
-			maptip.style("display", "inline-block")
-				.style("left", (d3.event.pageX) + 10 + "px")
-				.style("top", (d3.event.pageY - 50) + "px")
-				.html((d.properties.name));
-		})
-		.on("mouseout", function (d) { maptip.style("display", "none");});
+		.on('mousemove', function(d) {return FV.mapInteractionsModule.mousemove(d.properties.name, d.properties.id)})
+		.on("mouseout", function() {return FV.mapInteractionsModule.mouseout()});
 
 
 	if (FV.mapinfo.debug) {
