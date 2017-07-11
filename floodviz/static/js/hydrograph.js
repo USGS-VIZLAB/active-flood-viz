@@ -95,8 +95,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		focus.append("text")
 			.attr("y", -10);
 
-		focus.append("text");
-
 		var voronoiGroup = svg.append("g")
 			.attr("class", "voronoi");
 
