@@ -106,7 +106,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				return d ? "M" + d.join("L") + "Z" : null;
 			})
 			.on("mouseover", mouseover)
-			.on("mouseout", mouseout);
+			.on("mouseout", mouseout)
+			.on("click", click);
 
 		// Event Functions
 		function mouseover(d) {
@@ -123,7 +124,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			focus.attr("transform", "translate(-100,-100)");
 			var map_site = document.getElementById('map'+d.data.key);
 			map_site.classList.remove('accent');
-
 		}
+
+		function click(d){
+			// var map_site = document.getElementById('map'+d.data.key);
+			// map_site.classList.remove('accent');
+		}
+
 	});
 });
