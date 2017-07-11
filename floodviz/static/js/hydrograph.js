@@ -9,27 +9,27 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var height = FV.chart_dimensions.height - margin.top - margin.bottom;
 
 	// Set the ranges
-			var x = d3.scaleTime().range([0, width]);
-			var y = d3.scaleLog().range([height, 0]);
+	var x = d3.scaleTime().range([0, width]);
+	var y = d3.scaleLog().range([height, 0]);
 
-			// Define the voronoi
-			var voronoi = d3.voronoi()
-				.x(function (d) {
-					return x(d.time_mili);
-				})
-				.y(function (d) {
-					return y(d.value);
-				})
-				.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]])
+	// Define the voronoi
+	var voronoi = d3.voronoi()
+		.x(function (d) {
+			return x(d.time_mili);
+		})
+		.y(function (d) {
+			return y(d.value);
+		})
+		.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]])
 
-			// Define the line
-			var line = d3.line()
-				.x(function (d) {
-					return x(d.time_mili);
-				})
-				.y(function (d) {
-					return y(d.value);
-				});
+	// Define the line
+	var line = d3.line()
+		.x(function (d) {
+			return x(d.time_mili);
+		})
+		.y(function (d) {
+			return y(d.value);
+		});
 
 	// Get the data
 	d3.json(data_path, function (error, data) {
@@ -79,11 +79,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
 					.attr("d", line(d.values));
 			});
 
-		// Add the X Axis
-		svg.append("g")
-			.attr("class", "axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%B %e")));
+			// Add the X Axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%B %e")));
 
 			// Add the Y Axis
 			svg.append("g")
@@ -98,8 +98,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 			focus.append("text")
 				.attr("y", -10);
-
-			focus.append("text")
 
 			var voronoiGroup = svg.append("g")
 				.attr("class", "voronoi");
