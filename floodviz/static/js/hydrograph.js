@@ -31,91 +31,114 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			return y(d.value);
 		});
 
-	// Adds the svg canvas
-	var svg = d3.select("#hydrograph")
-		.append("svg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
-		.append("g")
-		.attr("transform",
-			"translate(" + margin.left + "," + margin.top + ")");
-
 	// Get the data
 	d3.json(data_path, function (error, data) {
-		data.forEach(function (d) {
-			d.value = Number(d.value);
-		});
 
-		// Scale the range of the data
-		x.domain(d3.extent(data, function (d) {
-			return d.time_mili;
-		}));
-		y.domain([20, d3.max(data, function (d) {
-			return d.value;
-		})]);
+		//save the original data
+		var original_data = data;
 
-		// Nest the entries by site number
-		var dataNest = d3.nest()
-			.key(function (d) {
-				return d.key;
-			})
-			.entries(data);
+		update(data);
 
-		// Loop through each symbol / key
-		dataNest.forEach(function (d) {
+		function update(data) {
 
+			// Adds the svg canvas
+			var svg = d3.select("#hydrograph")
+				.append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				.attr("transform",
+					"translate(" + margin.left + "," + margin.top + ")");
+
+			data.forEach(function (d) {
+				d.value = Number(d.value);
+			});
+
+			// Scale the range of the data
+			x.domain(d3.extent(data, function (d) {
+				return d.time_mili;
+			}));
+			y.domain([20, d3.max(data, function (d) {
+				return d.value;
+			})]);
+
+			// Nest the entries by site number
+			var dataNest = d3.nest()
+				.key(function (d) {
+					return d.key;
+				})
+				.entries(data);
+
+			// Loop through each symbol / key
+			dataNest.forEach(function (d) {
+
+				svg.append("g")
+					.attr('class', 'gages')
+					.append("path")
+					.attr("id", "hydro" + d.key)
+					.attr("d", line(d.values));
+			});
+
+			// Add the X Axis
 			svg.append("g")
-				.attr('class', 'gages')
-				.append("path")
-				.attr("id", "h" + d.key)
-				.attr("d", line(d.values))
-		});
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%B %e")));
 
-		// Add the X Axis
-		svg.append("g")
-			.attr("class", "axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%B %e")));
+			// Add the Y Axis
+			svg.append("g")
+				.attr("class", "axis")
+				.call(d3.axisLeft(y).ticks(10, ".0f"));
 
-		// Add the Y Axis
-		svg.append("g")
-			.attr("class", "axis")
-			.call(d3.axisLeft(y).ticks(10, ".0f"));
+			var focus = svg.append("g")
+				.attr("transform", "translate(-100,-100)")
+				.attr("class", "focus");
+			focus.append("circle")
+				.attr("r", 3.5);
 
-		var focus = svg.append("g")
-			.attr("transform", "translate(-100,-100)")
-			.attr("class", "focus");
-		focus.append("circle")
-			.attr("r", 3.5);
+			focus.append("text")
+				.attr("y", -10);
 
-		focus.append("text")
-			.attr("y", -10);
+			var voronoiGroup = svg.append("g")
+				.attr("class", "voronoi");
 
-		focus.append("text")
+			voronoiGroup.selectAll("path")
+				.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
+					return d.values
+				}))))
+				.enter().append("path")
+				.attr("d", function (d) {
+					return d ? "M" + d.join("L") + "Z" : null;
+				})
+				.on("mouseover", mouseover)
+				.on("mouseout", mouseout)
+				.on("click", function(d) { console.log("x"); click(d.data.key, data); });
 
-		var voronoiGroup = svg.append("g")
-			.attr("class", "voronoi");
+			function mouseover(d) {
+				d3.select(d.data.name).classed("gage--hover", true);
+				focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
+				focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
+			}
 
-		voronoiGroup.selectAll("path")
-			.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
-				return d.values
-			}))))
-			.enter().append("path")
-			.attr("d", function (d) {
-				return d ? "M" + d.join("L") + "Z" : null;
-			})
-			.on("mouseover", mouseover)
-			.on("mouseout", mouseout);
-
-		function mouseover(d) {
-			d3.select(d.data.name).classed("gage--hover", true);
-			focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
-			focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
+			function mouseout(d) {
+				d3.select(d.data.name).classed("gage--hover", false);
+				focus.attr("transform", "translate(-100,-100)");
+			}
 		}
 
-		function mouseout(d) {
-			d3.select(d.data.name).classed("gage--hover", false);
-			focus.attr("transform", "translate(-100,-100)");
+		function click(key, data) {
+
+			d3.select("svg").remove();
+
+			var new_data = [];
+
+			var i;
+			for (i=0; i<data.length; i++) {
+				if (data[i]["key"] !== key) {
+					new_data.push(data[i]);
+				}
+			}
+			update(new_data);
 		}
 	});
 });
