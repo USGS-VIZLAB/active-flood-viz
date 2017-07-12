@@ -23,7 +23,7 @@
 	fill-opacity: 0;
 }
 
-.maptip {
+#maptip {
 	position: absolute;
 	display: none;
 	min-width: 80px;
