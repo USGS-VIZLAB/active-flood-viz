@@ -4,10 +4,10 @@
 		* @param {Javascript Object} options - holds options for the configuration of the hydrograph
 		*	All keys are not optional.
 		*  Keys include: 	
-		* 	'height' v(int) - height of the graph 
-		*	'width' v(int) - width of the graph
-		*	'data_path' v(string) - path to the data file for this graph
-		*	'div_id' v(string) - id for the container for this graph
+		*   'height' v(int) - height of the graph 
+		*	  'width' v(int) - width of the graph
+		*	  'data_path' v(string) - path to the data file for this graph
+		*	  'div_id' v(string) - id for the container for this graph
 		*
 		* hydromodule is a module for creating hydrographs using d3. Pass it a javascript object 
 		* specifying config options for the graph. Call init() to create the graph. Other pulic fuctions
@@ -48,7 +48,8 @@
 		// Set the ranges
 		var x = d3.scaleTime().range([0, width]);
 		var y = d3.scaleLog().range([height, 0]);
-		/**
+		
+    /**
 			* @param {Array} data -- an array containing the json data to be drawn
 			*
 			* Draws the svg, scales the range of the data, and draws the line for each site
@@ -74,12 +75,13 @@
 				"time_mili": d.time_mili,
 				"timezone": d.timezone,
 				"value": Number(d.value) };
+
 			});
 			// Scale the range of the data
-			x.domain(d3.extent(data, function (d) {
+			x.domain(d3.extent(graph_data, function (d) {
 				return d.time_mili;
 			}));
-			y.domain([20, d3.max(data, function (d) {
+			y.domain([20, d3.max(graph_data, function (d) {
 				return d.value;
 			})]);
 			// Nest the entries by site number
@@ -130,6 +132,7 @@
 					.on("mouseout", self.mouseout)
 					.on("click", function(d) {return self.click(d.data.key, graph_data)})
 		};
+    
 		/**
 		 * Initalize the Hydrograph
 		 */
@@ -140,6 +143,7 @@
 				update(data);
 			});
 		};
+    
 		/**
 		 * Handle all mouse over movements for calling element. 
 		 */
@@ -150,6 +154,7 @@
 			// Interative linking with map
 			FV.map_figure.mousemove(d.data.name, d.data.key);
 		};
+    
 		/**
 		 * Handle all mouse out movements for calling element. 
 		 */
@@ -159,6 +164,7 @@
 			// Interative linking with map
 			FV.map_figure.mouseout();
 		};
+    
 		/**
 		 * Handle all click events for calling element. 
 		 */
@@ -173,8 +179,5 @@
 		};
 
 		return self
-
 	};
-
 }());
-
