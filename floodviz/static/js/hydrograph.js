@@ -179,7 +179,7 @@ FV.hydromodule = function (options) {
 		d3.select('#hydro' + sitekey).attr('class', 'hydro-active');
 	};
 	self.deactivate_line = function(sitekey){
-		d3.select('#hydro' + sitekey).attr('class', 'hydro-inactive')
+		d3.select('#hydro' + sitekey).attr('class', 'hydro-inactive');
 	};
 	return self
 
