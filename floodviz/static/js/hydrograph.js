@@ -139,7 +139,7 @@ FV.hydromodule = function (options) {
 	};
 
 	self.mouseover = function (d) {
-		d3.select("#hydro" + d.data.key).attr("class", "hydro-active");
+		self.activate_line(d.data.key);
 		focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
 		focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
 		// Interative linking with map
@@ -147,7 +147,7 @@ FV.hydromodule = function (options) {
 	};
 
 	self.mouseout = function (d) {
-		d3.select("#hydro" + d.data.key).attr("class", "hydro-inactive");
+		self.deactivate_line(d.data.key);
 		focus.attr("transform", "translate(-100,-100)");
 		// Interative linking with map
 		FV.map_figure.mouseout();
@@ -173,6 +173,13 @@ FV.hydromodule = function (options) {
 			}
 		});
 		update(new_data);
+	};
+
+	self.activate_line = function(sitekey){
+		d3.select('#hydro' + sitekey).attr('class', 'hydro-active');
+	};
+	self.deactivate_line = function(sitekey){
+		d3.select('#hydro' + sitekey).attr('class', 'hydro-inactive')
 	};
 	return self
 
