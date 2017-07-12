@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	"use strict";
 
 	// Map figure 
-	var map_options = { 'height': FV.mapinfo.height,
+	var map_options = {'height': FV.mapinfo.height,
 						'width': FV.mapinfo.width,
 						'proj': proj4(FV.mapinfo.proj4string), 
 						'bounds': FV.mapinfo.bounds,
@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	
 	// Hydrograph 
 	var hydro_options = {'height': FV.chart_dimensions.height,
-						 'width': FV.chart_dimensions.width, 
-						 'data_path': FV.hydrograph_data_path,
-						 'div_id' :  '#hydrograph'};
+						'width': FV.chart_dimensions.width, 
+						'data_path': FV.hydrograph_data_path,
+						'div_id' :  '#hydrograph'};
 	FV.hydro_figure = FV.hydromodule(hydro_options);
 	FV.hydro_figure.init();
 
