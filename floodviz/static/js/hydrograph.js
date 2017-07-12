@@ -4,6 +4,7 @@ FV.hydromodule = function (options) {
 
 	var self = {}
 	var margin = {top: 30, right: 20, bottom: 30, left: 50};
+
 	var height = options.height - margin.top - margin.bottom;
 	var width = options.width - margin.left - margin.right;
 	var sel_div = options.div_id;
@@ -22,6 +23,7 @@ FV.hydromodule = function (options) {
 	// Voronoi layer
 	var voronoiGroup = svg.append("g")
 		.attr("class", "voronoi");
+
 	// Set the ranges
 	var x = d3.scaleTime().range([0, width]);
 	var y = d3.scaleLog().range([height, 0]);
@@ -137,3 +139,4 @@ FV.hydromodule = function (options) {
 	return self
 
 };
+
