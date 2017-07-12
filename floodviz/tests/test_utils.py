@@ -35,12 +35,12 @@ class TestPeakUtilsURLconstruct(unittest.TestCase):
         self.peak_start_date = '2008-05-20'
         self.peak_end_date = '2008-07-05'
         self.endpoint_peak = 'https://nwis.waterdata.usgs.gov/nwis/peak'
-        self.endpoint_dv = 'https://waterservices.usgs.gov/nwis/dv'
+        self.endpoint_dv = 'https://waterservices.usgs.gov/nwis/'
         self.url_valid_peak = self.endpoint_peak + '?format=rdb' + '&site_no=' + self.peak_site + \
         '&start_date=' + self.peak_start_date + '&end_date=' + self.peak_end_date +'&agency_cd=USGS'
-        self.url_valid_dv = self.endpoint_dv + '?format=rdb' + '&sites=' + self.peak_site + \
+        self.url_valid_dv = self.endpoint_dv + 'dv?format=rdb' + '&sites=' + self.peak_site + \
         '&startDT=' + self.peak_dv_date + '&endDT=' + self.peak_dv_date + '&siteStatus=all'
-        self.test_dict = {
+        self.test_dict_peak = {
                  'sites': [self.peak_site],
                  'site_query': '&site_no=',
                  'start_date': self.peak_start_date,
@@ -59,10 +59,11 @@ class TestPeakUtilsURLconstruct(unittest.TestCase):
                  'end_date_query': '&endDT=',
                  'format': '?format=rdb',
                  'site_status': '&siteStatus=all',
+                 'extra' : 'dv'
                 }
     
     def test_valid_url_peak(self):
-        url = url_construct(self.endpoint_peak, self.test_dict)
+        url = url_construct(self.endpoint_peak, self.test_dict_peak)
         self.assertEqual(url, self.url_valid_peak)
 
     def test_valid_url_dv(self):
@@ -82,7 +83,8 @@ class TestMapUtilsRDBparse(unittest.TestCase):
                  'sites': self.sites,
                  'site_query': '&sites=',
                  'site_status': '&siteStatus=all',
-                 'format': 'site/?format=rdb'
+                 'format': '?format=rdb',
+                 'extra' : 'site/'
                 }
 
 
@@ -97,7 +99,8 @@ class TestMapUtilsURLconstruct(unittest.TestCase):
                  'sites': self.sites,
                  'site_query': '&sites=',
                  'site_status': '&siteStatus=all',
-                 'format': 'site/?format=rdb'
+                 'format': '?format=rdb',
+                 'extra' : 'site/'
                 }
     
     def test_valid_url(self):
