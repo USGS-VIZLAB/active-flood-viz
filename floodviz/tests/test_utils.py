@@ -67,7 +67,6 @@ class TestPeakUtilsURLconstruct(unittest.TestCase):
 
     def test_valid_url_dv(self):
         url = url_construct(self.endpoint_dv, self.test_dict_dv)
-        print(url)
         self.assertEqual(url, self.url_valid_dv)
 
 

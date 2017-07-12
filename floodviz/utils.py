@@ -26,7 +26,7 @@ def url_construct(endpoint, params):
         url += params['end_date_query'] + params['end_date']
     if params.get('site_status'):
         url += params['site_status']
-    if params.get('agency'):
+    elif params.get('agency'):
         url += params['agency']
 
     return url
