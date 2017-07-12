@@ -11,9 +11,8 @@ SITE_IDS = ['05463500', '05471050', '05420680', '05479000',
             '05481950', '05416900', '05464500', '05487470']
 
 # Start and end of time series data #
-EVENT_START_DT = '2008-05-20'
+EVENT_START_DT = '2008-06-26'
 EVENT_END_DT = '2008-07-05'
-
 
 # dimensions for the hydrograph
 CHART_DIMENSIONS = {
