@@ -39,6 +39,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 		update(data);
 
+		/**
+		 * @param {Array} data -- an array containing the json data to be drawn
+		 *
+		 * Draws the svg, scales the range of the data, draws the line for each site, and creates the Voronoi
+		 * tesselation and mouseover interactions, all based on the data set as it was passed in. Called as needed
+		 * when data changes (as in removal of a line).
+		 *
+		 */
 		function update(data) {
 
 			// Adds the svg canvas
@@ -50,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				.attr("transform",
 					"translate(" + margin.left + "," + margin.top + ")");
 
-			data.forEach(function (d) {
+			data.map(function(d) {
 				d.value = Number(d.value);
 			});
 
@@ -112,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				})
 				.on("mouseover", mouseover)
 				.on("mouseout", mouseout)
-				.on("click", function(d) { console.log("x"); click(d.data.key, data); });
+				.on("click", function(d) { click(d.data.key, data); });
 
 			function mouseover(d) {
 				d3.select(d.data.name).classed("gage--hover", true);
@@ -130,14 +138,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 			d3.select("svg").remove();
 
-			var new_data = [];
+			var new_data = data.filter(function(d) {
+				return d.key !== key;
+			});
 
-			var i;
-			for (i=0; i<data.length; i++) {
-				if (data[i]["key"] !== key) {
-					new_data.push(data[i]);
-				}
-			}
 			update(new_data);
 		}
 	});
