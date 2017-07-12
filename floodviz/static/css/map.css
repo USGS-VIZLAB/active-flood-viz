@@ -1,14 +1,14 @@
 #map circle.gage-point{
-	stroke: green;
+	stroke: #004500;
 	stroke-width: 2;
 	fill-opacity: 0;
 	opacity: .75;
 }
 
 #map circle.accent {
-	stroke: #40ff00;
+	stroke: #00d040 ;
 	stroke-width: 3;
-	fill-opacity: 1;
+	fill-opacity: 0;
 	opacity: 1;
 }
 
