@@ -75,10 +75,6 @@ REFERENCE_DATA = {
 
 # Site ID for peak flow bar chart
 PEAK_SITE = '05481950'  # used arbitrary site for now --- 05458900
-# start date for peak flow values
-PEAK_START_DT = '2008-05-20'  ## THIS VALUE REALLY ISN'T USED
-# end date for peak flow values
-PEAK_END_DT = '2008-07-05'
 # Daily Value date for lollipop construction
 PEAK_DV_DT = '2008-07-05'
 # This dict holds aspect ratio data for the peak flow chart rendered in static/js/peakflow.js
