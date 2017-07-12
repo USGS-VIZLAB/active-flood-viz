@@ -58,15 +58,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				.attr("transform",
 					"translate(" + margin.left + "," + margin.top + ")");
 
-			data.map(function(d) {
-				d.value = Number(d.value);
+			var graph_data = data.map(function(d) {
+				return  { "date": d.date, "key": d.key, "name": d.name, "time": d.time, "time_mili": d.time_mili,
+					"timezone": d.timezone, "value": Number(d.value) } ;
 			});
 
 			// Scale the range of the data
-			x.domain(d3.extent(data, function (d) {
+			x.domain(d3.extent(graph_data, function (d) {
 				return d.time_mili;
 			}));
-			y.domain([20, d3.max(data, function (d) {
+			y.domain([20, d3.max(graph_data, function (d) {
 				return d.value;
 			})]);
 
@@ -75,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				.key(function (d) {
 					return d.key;
 				})
-				.entries(data);
+				.entries(graph_data);
 
 			// Loop through each symbol / key
 			dataNest.forEach(function (d) {
@@ -120,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 				})
 				.on("mouseover", mouseover)
 				.on("mouseout", mouseout)
-				.on("click", function(d) { click(d.data.key, data); });
+				.on("click", function(d) { click(d.data.key, graph_data); });
 
 			function mouseover(d) {
 				d3.select(d.data.name).classed("gage--hover", true);
