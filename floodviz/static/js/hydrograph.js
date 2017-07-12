@@ -3,17 +3,12 @@
 FV.hydromodule = function (options) {
 
 	var self = {};
-
+	/**
+	 * options.display_ids is the intiial value of display_ids and defines the set of sites to be displayed by default.
+	 * display_ids is also used to keep track of the set of gages being displayed as this is changed by the user.
+	 * This should be set ONLY via the change_lines function.
+	 */
 	var display_ids = options.display_ids;
-	var subset_data = function (data) {
-		var toKeep = [];
-		data.forEach(function (d) {
-			if (display_ids.indexOf(d.key) !== -1) {
-				toKeep.push(d);
-			}
-		});
-		return toKeep;
-	};
 
 	var margin = {top: 30, right: 20, bottom: 30, left: 50};
 
@@ -48,11 +43,28 @@ FV.hydromodule = function (options) {
 	var y = d3.scaleLog().range([height, 0]);
 
 	/**
+	 * Filters a set of data based on the ids listed in display_ids
+	 * @param data The dataset to be filtered
+	 * @returns {Array} The entries of the original `data` whose `key` values are elements of display_ids.
+	 */
+	var subset_data = function (data) {
+		var toKeep = [];
+		data.forEach(function (d) {
+			if (display_ids.indexOf(d.key) !== -1) {
+				toKeep.push(d);
+			}
+		});
+		return toKeep;
+	};
+
+	/**
 	 * Updates the SVG figure.
 	 * @param data: list of data objects
 	 */
 	var update = function (data) {
+		// Cut the data down to sites we want to display
 		data = subset_data(data);
+		// Remove the current version of the graph if one exists
 		if (svg !== null){
 			d3.select(sel_div).select('svg').remove();
 		}
@@ -133,6 +145,7 @@ FV.hydromodule = function (options) {
 		// Get the data
 		d3.json(data_path, function (error, data) {
 			if (error) { console.error(error); }
+			// Used to store the entire data set before any filtering. This is used to produce new data sets.
 			self.full_data = data;
 			update(data);
 		});
@@ -153,17 +166,28 @@ FV.hydromodule = function (options) {
 		FV.map_figure.mouseout();
 	};
 
+	/**
+	 * Process a click: remove the line from the graph and un-accent the gage on the map
+	 * @param d
+	 */
 	self.click = function (d) {
 		FV.map_figure.removeaccent(d.data.key);
 		var keep_ids = display_ids;
 			keep_ids.splice(display_ids.indexOf(d.data.key), 1);
 		self.change_lines(keep_ids);
 	};
-
+	/**
+	 * Returns display_ids
+	 * @returns {*} display_ids
+	 */
 	self.get_display_ids = function(){
 		return display_ids;
 	};
 
+	/**
+	 * Update the value of display_ids and call update to redraw the graph to match.
+	 * @param new_display_ids The new set of gages to be displayed.
+	 */
 	self.change_lines = function (new_display_ids) {
 		display_ids = new_display_ids;
 		var new_data = [];
@@ -174,10 +198,17 @@ FV.hydromodule = function (options) {
 		});
 		update(new_data);
 	};
-
+	/**
+	 * Highlight a line.
+	 * @param sitekey the site number of the line to be highlighted
+	 */
 	self.activate_line = function(sitekey){
 		d3.select('#hydro' + sitekey).attr('class', 'hydro-active');
 	};
+	/**
+	 * Un-highlight a line
+	 * @param sitekey the site number of the line to be un-highlighted
+	 */
 	self.deactivate_line = function(sitekey){
 		d3.select('#hydro' + sitekey).attr('class', 'hydro-inactive');
 	};
