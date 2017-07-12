@@ -132,7 +132,7 @@ FV.hydromodule = function (options) {
 			if(error){ console.error(error); }
 			data = subset_data(data);
 			update(data);
-		});		
+		});
 	};
 
 	self.mouseover = function(d) {
