@@ -3,6 +3,18 @@
 FV.hydromodule = function (options) {
 
 	var self = {};
+
+	self.display_ids = options.display_ids;
+	var subset_data = function(data){
+		var toKeep = [];
+		data.forEach(function(d){
+			if(self.display_ids.indexOf(d.key) !== -1) {
+				toKeep.push(d);
+			}
+		});
+		return toKeep;
+	};
+
 	var margin = {top: 30, right: 20, bottom: 30, left: 50};
 
 	var height = options.height - margin.top - margin.bottom;
@@ -20,6 +32,7 @@ FV.hydromodule = function (options) {
 	var focus = svg.append("g")
 		.attr("transform", "translate(-100,-100)")
 		.attr("class", "focus");
+
 	// Voronoi layer
 	var voronoi_group = svg.append("g")
 		.attr("class", "voronoi");
@@ -30,7 +43,6 @@ FV.hydromodule = function (options) {
 
 
 	self.init = function() {
-
 		var data_path = options.data_path;
 
 		// Define the voronoi
@@ -54,6 +66,10 @@ FV.hydromodule = function (options) {
 
 		// Get the data
 		d3.json(data_path, function (error, data) {
+
+			if(error){ console.error(error); }
+
+			data = subset_data(data);
 
 			data.forEach(function (d) {
 				d.value = Number(d.value);
@@ -79,7 +95,7 @@ FV.hydromodule = function (options) {
 				var map_site = document.getElementById('map' + d.key);
 				map_site.classList.add('accent');
 				svg.append("g")
-					.attr('class', 'gages')
+					.attr('class', 'hydro-inactive')
 					.append("path")
 					.attr("id", "hydro" + d.key)
 					.attr("d", line(d.values));
@@ -117,7 +133,7 @@ FV.hydromodule = function (options) {
 	};
 
 	self.mouseover = function(d) {
-		d3.select(d.data.name).classed("gage--hover", true);
+		d3.select("#hydro" + d.data.key).attr("class", "hydro-active");
 		focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
 		focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
 		// Interative linking with map
@@ -125,7 +141,7 @@ FV.hydromodule = function (options) {
 	};
 
 	self.mouseout = function(d) {
-		d3.select(d.data.name).classed("gage--hover", false);
+		d3.select("#hydro" + d.data.key).attr("class", "hydro-inactive");
 		focus.attr("transform", "translate(-100,-100)");
 		// Interative linking with map
 		FV.map_figure.mouseout();
