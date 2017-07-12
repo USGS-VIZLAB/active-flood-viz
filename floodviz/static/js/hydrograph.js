@@ -2,7 +2,7 @@
 
 FV.hydromodule = function (options) {
 
-	var self = {}
+	var self = {};
 	var margin = {top: 30, right: 20, bottom: 30, left: 50};
 	var height = options.height - margin.top - margin.bottom;
 	var width = options.width - margin.left - margin.right;
@@ -20,7 +20,7 @@ FV.hydromodule = function (options) {
 		.attr("transform", "translate(-100,-100)")
 		.attr("class", "focus");
 	// Voronoi layer
-	var voronoiGroup = svg.append("g")
+	var voronoi_group = svg.append("g")
 		.attr("class", "voronoi");
 	// Set the ranges
 	var x = d3.scaleTime().range([0, width]);
@@ -100,7 +100,7 @@ FV.hydromodule = function (options) {
 			focus.append("text")
 				.attr("y", -10);
 
-			voronoiGroup.selectAll("path")
+			voronoi_group.selectAll("path")
 				.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
 					return d.values
 				}))))
@@ -112,7 +112,7 @@ FV.hydromodule = function (options) {
 				.on("mouseout", self.mouseout)
 				.on("click", self.click);
 		});		
-	}
+	};
 
 	self.mouseover = function(d) {
 		d3.select(d.data.name).classed("gage--hover", true);
@@ -120,19 +120,19 @@ FV.hydromodule = function (options) {
 		focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
 		// Interative linking with map
 		FV.map_figure.mousemove(d.data.name, d.data.key);
-	}
+	};
 
 	self.mouseout = function(d) {
 		d3.select(d.data.name).classed("gage--hover", false);
 		focus.attr("transform", "translate(-100,-100)");
 		// Interative linking with map
 		FV.map_figure.mouseout();
-	}
+	};
 
 	self.click = function(d) {
 		// Interative linking with map
 		FV.map_figure.removeaccent(d.data.key);
-	}
+	};
 
 	return self
 

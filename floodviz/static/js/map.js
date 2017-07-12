@@ -17,7 +17,7 @@ FV.mapmodule = function (options) {
 	//Define map projection
 	var projection = d3.geoProjection(project);
 	// Give projection initial rotation and scale
-	projection.scale(1)	.translate([0, 0]);
+	projection.scale(1).translate([0, 0]);
 	//Define path generator
 	var path = d3.geoPath().projection(projection);
 	//Create SVG element
@@ -51,9 +51,9 @@ FV.mapmodule = function (options) {
 					return 'map' + d.properties.id;
 				}
 			})
-			.attr("class", classname)
+			.attr("class", classname);
 		return (group);
-	}
+	};
 	/**
 	 * Add paths to the map
 	 * @param data The geojson to be added to the svg
@@ -67,7 +67,7 @@ FV.mapmodule = function (options) {
 			.append("path")
 			.attr("d", path)
 			.attr("class", classname);
-	}
+	};
 	
 	self.init = function() {
 		
@@ -97,7 +97,7 @@ FV.mapmodule = function (options) {
 		if (FV.mapinfo.debug) {
 			add_circles(FV.mapinfo.bounds, "debug-point", 3)
 		}
-	}
+	};
 
 	self.mousemove = function (sitename, sitekey) {
 		var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
@@ -108,16 +108,16 @@ FV.mapmodule = function (options) {
 			.html((sitename));
 		// Link interactions with hydrograph here
 
-	}
+	};
 	self.mouseout = function () {
 		maptip.style("display", "none");
 		// Link interactions with hydrograph here
-	}
+	};
 	self.removeaccent = function(sitekey) {
 		var maptip = document.getElementById('map' + sitekey);
 		maptip.classList.remove('accent');
 		// Link interactions with hydrograph here
-	}
+	};
 	return self 
 };
 

@@ -12,8 +12,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 						'rivers_data': FV.mapinfo.rivers_data,
 						'ref_data': FV.mapinfo.ref_data, 
 						'site_data': FV.mapinfo.site_data,
-						'div_id': '#map'}
-
+						'div_id': '#map'};
 	FV.map_figure = FV.mapmodule(map_options);
 	FV.map_figure.init();
 
@@ -22,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var hydro_options = {'height': FV.chart_dimensions.height,
 						 'width': FV.chart_dimensions.width, 
 						 'data_path': FV.hydrograph_data_path,
-						 'div_id' :  '#hydrograph'}
+						 'div_id' :  '#hydrograph'};
 	FV.hydro_figure = FV.hydromodule(hydro_options);
 	FV.hydro_figure.init();
 
