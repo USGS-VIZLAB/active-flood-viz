@@ -4,11 +4,11 @@ FV.hydromodule = function (options) {
 
 	var self = {};
 
-	self.display_ids = options.display_ids;
-	var subset_data = function(data){
+	var display_ids = options.display_ids;
+	var subset_data = function (data) {
 		var toKeep = [];
-		data.forEach(function(d){
-			if(self.display_ids.indexOf(d.key) !== -1) {
+		data.forEach(function (d) {
+			if (display_ids.indexOf(d.key) !== -1) {
 				toKeep.push(d);
 			}
 		});
@@ -34,7 +34,7 @@ FV.hydromodule = function (options) {
 		.y(function (d) {
 			return y(d.value);
 		})
-		.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]])
+		.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]]);
 	// Define the line
 	var line = d3.line()
 		.x(function (d) {
@@ -49,20 +49,24 @@ FV.hydromodule = function (options) {
 
 	/**
 	 * Updates the SVG figure.
-	 * @param List of data objects
+	 * @param data: list of data objects
 	 */
-	var update = function(data) {
+	var update = function (data) {
+		data = subset_data(data);
+		if (svg !== null){
+			d3.select(sel_div).select('svg').remove();
+		}
 		// recreate svg
 		svg = d3.select(sel_div)
-				.append("svg")
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", height + margin.top + margin.bottom)
-				.append("g")
-				.attr("transform",
-					"translate(" + margin.left + "," + margin.top + ")");
+			.append("svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform",
+				"translate(" + margin.left + "," + margin.top + ")");
 
 		data.forEach(function (d) {
-				d.value = Number(d.value);
+			d.value = Number(d.value);
 		});
 		// Scale the range of the data
 		x.domain(d3.extent(data, function (d) {
@@ -79,8 +83,7 @@ FV.hydromodule = function (options) {
 			.entries(data);
 		// Loop through each symbol / key
 		dataNest.forEach(function (d) {
-			var map_site = document.getElementById('map' + d.key);
-			map_site.classList.add('accent');
+			FV.map_figure.addaccent(d.key);
 			svg.append("g")
 				.attr('class', 'hydro-inactive')
 				.append("path")
@@ -100,42 +103,42 @@ FV.hydromodule = function (options) {
 
 		// Tooltip
 		focus = svg.append("g")
-				.attr("transform", "translate(-100,-100)")
-				.attr("class", "focus");
+			.attr("transform", "translate(-100,-100)")
+			.attr("class", "focus");
 
 		focus.append("circle")
-				.attr("r", 3.5);
+			.attr("r", 3.5);
 
 		focus.append("text")
-				.attr("y", -10);
+			.attr("y", -10);
 
 		// Voronoi Layer
 		voronoi_group = svg.append("g")
-				.attr("class", "voronoi");
+			.attr("class", "voronoi");
 		voronoi_group.selectAll("path")
-				.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
-					return d.values
-				}))))
-				.enter().append("path")
-				.attr("d", function (d) {
-					return d ? "M" + d.join("L") + "Z" : null;
-				})
-				.on("mouseover", self.mouseover)
-				.on("mouseout", self.mouseout)
-				.on("click", function(d) {return self.click(d, data)})
+			.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
+				return d.values
+			}))))
+			.enter().append("path")
+			.attr("d", function (d) {
+				return d ? "M" + d.join("L") + "Z" : null;
+			})
+			.on("mouseover", self.mouseover)
+			.on("mouseout", self.mouseout)
+			.on("click", function (d) {return self.click(d)})
 	};
 
-	self.init = function() {
+	self.init = function () {
 		var data_path = options.data_path;
 		// Get the data
 		d3.json(data_path, function (error, data) {
-			if(error){ console.error(error); }
-			data = subset_data(data);
+			if (error) { console.error(error); }
+			self.full_data = data;
 			update(data);
 		});
 	};
 
-	self.mouseover = function(d) {
+	self.mouseover = function (d) {
 		d3.select("#hydro" + d.data.key).attr("class", "hydro-active");
 		focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
 		focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
@@ -143,27 +146,34 @@ FV.hydromodule = function (options) {
 		FV.map_figure.mousemove(d.data.name, d.data.key);
 	};
 
-	self.mouseout = function(d) {
+	self.mouseout = function (d) {
 		d3.select("#hydro" + d.data.key).attr("class", "hydro-inactive");
 		focus.attr("transform", "translate(-100,-100)");
 		// Interative linking with map
 		FV.map_figure.mouseout();
 	};
 
-	self.click = function(d, data) {
-		d3.select("svg").remove();
-			var new_data = [];
-			var i;
-			for (i=0; i<data.length; i++) {
-				if (data[i]["key"] !== d.data.key) {
-					new_data.push(data[i]);
-				}
-			}
-			update(new_data);
-		// Interative linking with map
+	self.click = function (d) {
 		FV.map_figure.removeaccent(d.data.key);
+		var keep_ids = display_ids;
+			keep_ids.splice(display_ids.indexOf(d.data.key), 1);
+		self.change_lines(keep_ids);
 	};
 
+	self.get_display_ids = function(){
+		return display_ids;
+	};
+
+	self.change_lines = function (new_display_ids) {
+		display_ids = new_display_ids;
+		var new_data = [];
+		self.full_data.forEach(function (d) {
+			if (display_ids.indexOf(d.key) !== -1) {
+				new_data.push(d);
+			}
+		});
+		update(new_data);
+	};
 	return self
 
 };

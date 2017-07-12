@@ -92,7 +92,8 @@ FV.mapmodule = function (options) {
 		var sites = add_circles(site_data, "gage-point", 3);
 		sites.selectAll("circle")
 			.on('mousemove', function(d) {return self.mousemove(d.properties.name, d.properties.id)})
-			.on("mouseout", function() {return self.mouseout()});
+			.on("mouseout", function() {return self.mouseout()})
+			.on('click', function(d) { return self.click(d.properties.id)});
 		// Debug points
 		if (FV.mapinfo.debug) {
 			add_circles(FV.mapinfo.bounds, "debug-point", 3)
@@ -104,20 +105,36 @@ FV.mapmodule = function (options) {
 		maptip.transition().duration(500);
 		maptip.style("display", "inline-block")
 			.style("left", (gage_point_cords.left) + 7 + "px")
-			.style("top", (gage_point_cords.top - 45) + "px")
+			.style("top", (gage_point_cords.top - 30) + "px")
 			.html((sitename));
-		// Link interactions with hydrograph here
-
 	};
 	self.mouseout = function () {
 		maptip.style("display", "none");
-		// Link interactions with hydrograph here
 	};
+
+	self.addaccent  = function(sitekey){
+		d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
+	};
+
 	self.removeaccent = function(sitekey) {
-		var maptip = document.getElementById('map' + sitekey);
-		maptip.classList.remove('accent');
-		// Link interactions with hydrograph here
+		d3.select('#map' + sitekey).attr('class', 'gage-point');
 	};
+
+
+	self.click = function(sitekey){
+		var display_ids = FV.hydro_figure.get_display_ids();
+		var being_displayed = display_ids.indexOf(sitekey) !== -1;
+		if (being_displayed === true){
+			self.removeaccent(sitekey);
+			display_ids.splice(display_ids.indexOf(sitekey), 1)
+		}
+		else{
+			self.addaccent(sitekey);
+			display_ids.push(sitekey);
+		}
+		FV.hydro_figure.change_lines(display_ids);
+	};
+
 	return self
 };
 
