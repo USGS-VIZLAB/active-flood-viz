@@ -92,7 +92,7 @@ FV.mapmodule = function (options) {
 		var sites = add_circles(site_data, "gage-point", 3);
 		sites.selectAll("circle")
 			.on('mousemove', function(d) {return self.mousemove(d.properties.name, d.properties.id)})
-			.on("mouseout", function() {return self.mouseout()})
+			.on("mouseout", function(d) {return self.mouseout(d.properties.id)})
 			.on('click', function(d) { return self.click(d.properties.id)});
 		// Debug points
 		if (FV.mapinfo.debug) {
@@ -101,6 +101,7 @@ FV.mapmodule = function (options) {
 	};
 
 	self.mousemove = function (sitename, sitekey) {
+		FV.hydro_figure.activate_line(sitekey);
 		var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
 		maptip.transition().duration(500);
 		maptip.style("display", "inline-block")
@@ -108,7 +109,8 @@ FV.mapmodule = function (options) {
 			.style("top", (gage_point_cords.top - 30) + "px")
 			.html((sitename));
 	};
-	self.mouseout = function () {
+	self.mouseout = function (sitekey) {
+		FV.hydro_figure.deactivate_line(sitekey);
 		maptip.style("display", "none");
 	};
 
@@ -133,6 +135,7 @@ FV.mapmodule = function (options) {
 			display_ids.push(sitekey);
 		}
 		FV.hydro_figure.change_lines(display_ids);
+		FV.hydro_figure.activate_line(sitekey);
 	};
 
 	return self
