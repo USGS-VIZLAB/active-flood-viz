@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}" />
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/hydrograph.css') }}"/>
 	<title>Flood Viz</title>
 
 </head>
@@ -13,13 +14,14 @@
 
 	<div class="main-content container-fluid">
 		<div id="hydrograph"><svg></svg></div>
-        <div id="map"></div>
+		<div id="map"></div>
 	</div>
 
 	<script type="text/javascript">
 		// Global Namespace for project - FV
 		var FV = FV || {};
-		FV.chartdims = {{ config.CHART_DIMENSIONS | safe }}
+		FV.hydrograph_data_path = "{{ url_for('timeseries_data', filename='data/hydrograph_data.json') }}";
+		FV.chart_dimensions = {{ config.CHART_DIMENSIONS | safe }};
 	</script>
 
 	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>

@@ -106,6 +106,7 @@ node_modules/
 
 #IDE specific ignores
 .idea/
+.DS_Store
 
 # certificates
 *.cer
