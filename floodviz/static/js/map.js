@@ -23,15 +23,11 @@
 	FV.mapmodule = function (options) {
 
 		var self = {};
-		var height = options.height;
-		var width = options.width;
-		var proj = options.proj;
-		var sel_div = options.div_id;
 		var project = function (lambda, phi) {
-			return proj.forward([lambda, phi].map(radiansToDegrees));
+			return options.proj.forward([lambda, phi].map(radiansToDegrees));
 		};
 		project.invert = function (x, y) {
-			return proj.inverse([x, y]).map(degreesToRadians);
+			return options.proj.inverse([x, y]).map(degreesToRadians);
 		};
 		//Define map projection
 		var projection = d3.geoProjection(project);
@@ -40,10 +36,10 @@
 		//Define path generator
 		var path = d3.geoPath().projection(projection);
 		//Create SVG element
-		var svg = d3.select(sel_div)
+		var svg = d3.select(options.div_id)
 			.append("svg")
-			.attr("width", width)
-			.attr("height", height);
+			.attr("width", options.width)
+			.attr("height", options.height);
 		// Tooltip
 		var maptip = d3.select("body")
 			.append("div")
@@ -95,8 +91,8 @@
 			
 			// set bounding box to values provided
 			var b = path.bounds(options.bounds);
-			var s = options.scale / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height);
-			var t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
+			var s = options.scale / Math.max((b[1][0] - b[0][0]) / options.width, (b[1][1] - b[0][1]) / options.height);
+			var t = [(options.width - s * (b[1][0] + b[0][0])) / 2, (options.height - s * (b[1][1] + b[0][1])) / 2];
 			// Update the projection
 			projection.scale(s).translate(t);
 			// Add layers
@@ -110,7 +106,7 @@
 				.on("mouseout", function() {return self.mouseout()});
 			// Debug points
 			if (FV.mapinfo.debug) {
-				add_circles(FV.mapinfo.bounds, "debug-point", 3)
+				add_circles(options.bounds, "debug-point", 3)
 			}
 		};
 		/**
