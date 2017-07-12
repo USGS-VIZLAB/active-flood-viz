@@ -1,95 +1,42 @@
-document.addEventListener("DOMContentLoaded", function (event) {
-	"use strict";
+"use strict";
 
-	// Define helper functions
-	function degreesToRadians(degrees) {
-		return degrees * Math.PI / 180;
-	}
+// define module for map interactios
+FV.mapmodule = function (options) {
 
-	function radiansToDegrees(radians) {
-		return radians * 180 / Math.PI;
-	}
-
-	// read in projection information
-	var proj = proj4(FV.mapinfo.proj4string);
-
+	var self = {};
+	var height = options.height;
+	var width = options.width;
+	var proj = options.proj;
+	var sel_div = options.div_id;
 	var project = function (lambda, phi) {
 		return proj.forward([lambda, phi].map(radiansToDegrees));
 	};
-
 	project.invert = function (x, y) {
 		return proj.inverse([x, y]).map(degreesToRadians);
 	};
-
 	//Define map projection
 	var projection = d3.geoProjection(project);
-
 	// Give projection initial rotation and scale
-	projection
-		.scale(1)
-		.translate([0, 0]);
-
+	projection.scale(1).translate([0, 0]);
 	//Define path generator
 	var path = d3.geoPath().projection(projection);
-
-	var height = FV.mapinfo.height;
-	var width = FV.mapinfo.width;
-
-	// Tooltip
-	var maptip = d3.select("body")
-		.append("div")
-		.attr("class", "maptip");
-
 	//Create SVG element
-	var svg = d3.select("#map")
+	var svg = d3.select(sel_div)
 		.append("svg")
 		.attr("width", width)
 		.attr("height", height);
+	// Tooltip
+	var maptip = d3.select("body")
+		.append("div")
+		.attr("id", "maptip");
 
-
-	// set bounding box to values provided
-	var b = path.bounds(FV.mapinfo.bounds);
-
-
-	var s = FV.mapinfo.scale / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height);
-	var t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
-
-	// Update the projection
-	projection
-		.scale(s)
-		.translate(t);
-
-
-	// add layers in sensible order
-	add_paths(FV.mapinfo.bg_data, "background");
-	add_paths(FV.mapinfo.rivers_data, "river");
-	add_circles(FV.mapinfo.ref_data, "ref-point", 2);
-	var sites = add_circles(FV.mapinfo.site_data, "gage-point", 3);
-	sites.selectAll("circle")
-		.on("mouseover", function (d) {
-			d3.select("#hydro" + d.properties.id).attr("class", "hydro-active");
-			maptip.transition().duration(500);
-			maptip.style("display", "inline-block")
-				.style("left", (d3.event.pageX) + 10 + "px")
-				.style("top", (d3.event.pageY - 40) + "px")
-				.html((d.properties.name));
-		})
-		.on("mouseout", function (d) {
-			d3.select("#hydro" + d.properties.id).attr("class", "hydro-inactive");
-			maptip.style("display", "none");
-		});
-
-
-	if (FV.mapinfo.debug) {
-		add_circles(FV.mapinfo.bounds, "debug-point", 3)
-	}
 	/**
 	 * Add circles to the map.
 	 * @param data The geojson to be added to the svg
 	 * @param classname The class to be given to each element for use in CSS
 	 * @param radius The radius of each circle. This cannot be set from CSS
 	 */
-	function add_circles(data, classname, radius) {
+	var add_circles = function (data, classname, radius) {
 		var group = svg.append("g");
 		group.selectAll("circle")
 			.data(data.features)
@@ -99,16 +46,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			.attr("transform", function (d) {
 				return "translate(" + projection(d.geometry.coordinates) + ")";
 			})
+			.attr("id", function(d) {
+				if (classname === 'gage-point') {
+					return 'map' + d.properties.id;
+				}
+			})
 			.attr("class", classname);
 		return (group);
-	}
-
+	};
 	/**
 	 * Add paths to the map
 	 * @param data The geojson to be added to the svg
 	 * @param classname The class to be given to each element for use in CSS
 	 */
-	function add_paths(data, classname) {
+	var add_paths = function (data, classname) {
 		var group = svg.append("g");
 		group.selectAll("path")
 			.data(data.features)
@@ -116,5 +67,68 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			.append("path")
 			.attr("d", path)
 			.attr("class", classname);
-	}
-});
+	};
+
+	self.init = function() {
+
+		var bounds = options.bounds;
+		var scale = options.scale;
+		var bg_data = options.bg_data;
+		var rivers_data = options.rivers_data;
+		var ref_data = options.ref_data;
+		var site_data = options.site_data;
+
+		// set bounding box to values provided
+		var b = path.bounds(bounds);
+		var s = scale / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height);
+		var t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
+		// Update the projection
+		projection.scale(s).translate(t);
+		// Add layers
+		add_paths(bg_data, "background");
+		add_paths(rivers_data, "river");
+		add_circles(ref_data, "ref-point", 2);
+		// Add sites and bind events for site hovers
+		var sites = add_circles(site_data, "gage-point", 3);
+		sites.selectAll("circle")
+			.on('mousemove', function(d) {return self.mousemove(d.properties.name, d.properties.id)})
+			.on("mouseout", function() {return self.mouseout()});
+		// Debug points
+		if (FV.mapinfo.debug) {
+			add_circles(FV.mapinfo.bounds, "debug-point", 3)
+		}
+	};
+
+	self.mousemove = function (sitename, sitekey) {
+		var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
+		maptip.transition().duration(500);
+		maptip.style("display", "inline-block")
+			.style("left", (gage_point_cords.left) + 7 + "px")
+			.style("top", (gage_point_cords.top - 45) + "px")
+			.html((sitename));
+		// Link interactions with hydrograph here
+
+	};
+	self.mouseout = function () {
+		maptip.style("display", "none");
+		// Link interactions with hydrograph here
+	};
+	self.removeaccent = function(sitekey) {
+		var maptip = document.getElementById('map' + sitekey);
+		maptip.classList.remove('accent');
+		// Link interactions with hydrograph here
+	};
+	return self
+};
+
+
+// Define helper functions
+function degreesToRadians(degrees) {
+	return degrees * Math.PI / 180;
+}
+
+function radiansToDegrees(radians) {
+	return radians * 180 / Math.PI;
+}
+
+
