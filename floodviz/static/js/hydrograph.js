@@ -4,10 +4,10 @@
 		* @param {Javascript Object} options - holds options for the configuration of the hydrograph
 		*	All keys are not optional.
 		*  Keys include: 	
-		* 					'height' v(int) - height of the graph 
-		*					'width' v(int) - width of the graph
-		*					'data_path' v(string) - path to the data file for this graph
-		*					'div_id' v(string) - id for the container for this graph
+		* 	'height' v(int) - height of the graph 
+		*	'width' v(int) - width of the graph
+		*	'data_path' v(string) - path to the data file for this graph
+		*	'div_id' v(string) - id for the container for this graph
 		*
 		* hydromodule is a module for creating hydrographs using d3. Pass it a javascript object 
 		* specifying config options for the graph. Call init() to create the graph. Other pulic fuctions

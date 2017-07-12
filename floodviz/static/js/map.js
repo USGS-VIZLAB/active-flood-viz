@@ -4,16 +4,16 @@
 		* @param {Javascript Object} options - holds options for the configuration of the map.
 		* All keys are not optional.
 		* Keys include: 	
-		* 					'height' v(int) - height of the map 
-		*					'width' v(int) - width of the map
-		*					'proj' v(proj4) - map projection
-		*					'bounds' v(javascript object) - bounding box
-		*					'scale' v(int) - scale for map
-		*					'bg_data' v(javascript object) - background data
-		*					'rivers_data' v(geojson) - rivers data
-		*					'ref_data' v(javascript object) - reference data
-		*					'site_data' v(javascript object) - site data
-		*					'div_id' v(string) - id for the container for this graph
+		* 	'height' v(int) - height of the map 
+		*	'width' v(int) - width of the map
+		*	'proj' v(proj4) - map projection
+		*	'bounds' v(javascript object) - bounding box
+		*	'scale' v(int) - scale for map
+		*	'bg_data' v(javascript object) - background data
+		*	'rivers_data' v(geojson) - rivers data
+		*	'ref_data' v(javascript object) - reference data
+		*	'site_data' v(javascript object) - site data
+		*	'div_id' v(string) - id for the container for this graph
 		*
 		* mapmodule is a module for creating maps using d3. Pass it a javascript object 
 		* specifying config options for the map. Call init() to create the map. Other pulic fuctions
