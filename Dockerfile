@@ -28,7 +28,9 @@ RUN node_modules/bower/bin/bower install --allow-root
 
 RUN nosetests --all-modules --exe
 
+RUN python3 run.py --freeze --norun
+
 EXPOSE 5050
 
 ENTRYPOINT ["python3"]
-CMD ["run.py" ,"--host", "0.0.0.0", "--freeze"]
+CMD ["run.py" ,"--host", "0.0.0.0"]
