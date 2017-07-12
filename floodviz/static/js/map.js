@@ -1,12 +1,13 @@
 "use strict";
 
 // define module for map interactios
-FV.mapmodule = ( function (options) {
+FV.mapmodule = function (options) {
 
 	var self = {};
 	var height = options.height;
 	var width = options.width;
 	var proj = options.proj;
+	var sel_div = options.div_id;
 	var project = function (lambda, phi) {
 		return proj.forward([lambda, phi].map(radiansToDegrees));
 	};
@@ -20,7 +21,7 @@ FV.mapmodule = ( function (options) {
 	//Define path generator
 	var path = d3.geoPath().projection(projection);
 	//Create SVG element
-	var svg = d3.select("#map")
+	var svg = d3.select(sel_div)
 		.append("svg")
 		.attr("width", width)
 		.attr("height", height);
@@ -118,7 +119,7 @@ FV.mapmodule = ( function (options) {
 		// Link interactions with hydrograph here
 	}
 	return self 
-});
+};
 
 
 // Define helper functions
