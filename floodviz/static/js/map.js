@@ -114,8 +114,8 @@ FV.mapmodule = function (options) {
 		// Link interactions with hydrograph here
 	};
 	self.removeaccent = function(sitekey) {
-		var maptip = document.getElementById('map' + sitekey);
-		maptip.classList.remove('accent');
+		var point = document.getElementById('map' + sitekey);
+		point.classList.remove('accent');
 		// Link interactions with hydrograph here
 	};
 	return self 
