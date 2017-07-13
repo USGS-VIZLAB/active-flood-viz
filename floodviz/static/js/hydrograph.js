@@ -126,9 +126,18 @@
 					.attr("d", function (d) {
 						return d ? "M" + d.join("L") + "Z" : null;
 					})
-					.on("mouseover", self.series_tooltip_show)
-					.on("mouseout", self.series_tooltip_remove)
-					.on("click", function(d) {return self.remove_series(d.data.key, graph_data)})
+					.on("mouseover", function(d) {
+						FV.map_figure.site_tooltip_show(d.data.name, d.data.key);
+						return self.series_tooltip_show(d);
+					})
+					.on("mouseout", function(d) {
+						FV.map_figure.site_tooltip_remove();
+						return self.series_tooltip_remove;
+					})
+					.on("click", function(d) {
+						FV.map_figure.site_remove_accent(d.data.key);
+						return self.remove_series(d.data.key, graph_data);
+					})
 		};
 
 		/**
@@ -150,8 +159,6 @@
 			d3.select(d.data.name).classed("gage--hover", true);
 			focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
 			focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
-			// Interactive linking with map
-			FV.map_figure.site_tooltip_show(d.data.name, d.data.key);
 		};
 
 		/**
@@ -161,8 +168,6 @@
 		self.series_tooltip_remove = function(d) {
 			d3.select(d.data.name).classed("gage--hover", false);
 			focus.attr("transform", "translate(-100,-100)");
-			// Interactive linking with map
-			FV.map_figure.site_tooltip_remove();
 		};
 
 		/**
@@ -176,8 +181,6 @@
 				return d.key !== key;
 			});
 			update(new_data);
-			// Interactive linking with map
-			FV.map_figure.site_remove_accent(key);
 		};
 
 		return self

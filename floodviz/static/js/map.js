@@ -137,8 +137,8 @@
 			// Link interactions with hydrograph here
 		};
 		self.site_add_accent = function(sitekey) {
-			var map_site = document.getElementById('map' + d.key);
-			map_site.classList.remove('accent');
+			var map_site = document.getElementById('map' + sitekey);
+			map_site.classList.add('accent');
 		};
 
 		return self 
