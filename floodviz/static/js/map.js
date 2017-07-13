@@ -35,8 +35,10 @@ FV.mapmodule = function (options) {
 	 * @param data The geojson to be added to the svg
 	 * @param classname The class to be given to each element for use in CSS
 	 * @param radius The radius of each circle. This cannot be set from CSS
+	 * @param property_for_id The name of a field in the 'properties' of each feature, to be used for ID
+	 * 							If null, or not provided, no id will be given.
 	 */
-	var add_circles = function (data, classname, radius) {
+	var add_circles = function (data, classname, radius, property_for_id) {
 		var group = svg.append("g");
 		group.selectAll("circle")
 			.data(data.features)
@@ -47,8 +49,8 @@ FV.mapmodule = function (options) {
 				return "translate(" + projection(d.geometry.coordinates) + ")";
 			})
 			.attr("id", function(d) {
-				if (classname === 'gage-point') {
-					return 'map' + d.properties.id;
+				if (property_for_id && d.properties[property_for_id]) {
+					return 'map' + d.properties[property_for_id];
 				}
 			})
 			.attr("class", classname);
@@ -89,7 +91,7 @@ FV.mapmodule = function (options) {
 		add_paths(rivers_data, "river");
 		add_circles(ref_data, "ref-point", 2);
 		// Add sites and bind events for site hovers
-		var sites = add_circles(site_data, "gage-point", 3);
+		var sites = add_circles(site_data, "gage-point", 3, 'id');
 		sites.selectAll("circle")
 			.on('mousemove', function(d) {return self.mousemove(d.properties.name, d.properties.id)})
 			.on("mouseout", function(d) {return self.mouseout(d.properties.id)})
