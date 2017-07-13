@@ -28,7 +28,7 @@ RUN node_modules/bower/bin/bower install --allow-root
 
 RUN nosetests --all-modules --exe
 
-RUN python3 run.py --freeze --norun
+RUN python3 run.py --config=instance_config.py --freeze --norun
 
 EXPOSE 5050
 

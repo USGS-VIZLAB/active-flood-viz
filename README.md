@@ -7,7 +7,7 @@ the frozen files.
 
 **To build the image:**
 1. Navigate to your project directory.
-1. Put your configuration parameters in `instance/config.py`
+1. Put your configuration parameters in 'instance_config.py' and copy into this directory.
 1. Put the rivers.json file in `floodviz/static/geojson/rivers.json` (temporary step)
 1. Copy `DOIRootCA2.cer` into this directory.
 1. Run `docker build --rm -t flood .`. This will create the docker image and name it `flood`.
