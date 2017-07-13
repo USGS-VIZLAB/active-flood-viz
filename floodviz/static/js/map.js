@@ -1,13 +1,28 @@
-"use strict";
-
-// define module for map interactios
-FV.mapmodule = function (options) {
+(function() {
+	"use strict";
+	/**
+		* @param {Javascript Object} options - holds options for the configuration of the map.
+		* All keys are not optional.
+		* Keys include:
+		* 	'height' v(int) - height of the map
+		*	'width' v(int) - width of the map
+		*	'proj' v(proj4) - map projection
+		*	'bounds' v(javascript object) - bounding box
+		*	'scale' v(int) - scale for map
+		*	'bg_data' v(javascript object) - background data
+		*	'rivers_data' v(geojson) - rivers data
+		*	'ref_data' v(javascript object) - reference data
+		*	'site_data' v(javascript object) - site data
+		*	'div_id' v(string) - id for the container for this graph
+		*
+		* mapmodule is a module for creating maps using d3. Pass it a javascript object
+		* specifying config options for the map. Call init() to create the map. Other pulic fuctions
+		* handle user events and link to other modules.
+		*
+	*/
+	FV.mapmodule = function (options) {
 
 	var self = {};
-	var height = options.height;
-	var width = options.width;
-	var proj = options.proj;
-	var sel_div = options.div_id;
 	var project = function (lambda, phi) {
 		return proj.forward([lambda, phi].map(radiansToDegrees));
 	};
@@ -21,10 +36,10 @@ FV.mapmodule = function (options) {
 	//Define path generator
 	var path = d3.geoPath().projection(projection);
 	//Create SVG element
-	var svg = d3.select(sel_div)
+	var svg = d3.select(options.div_id)
 		.append("svg")
-		.attr("width", width)
-		.attr("height", height);
+		.attr("width", options.width)
+		.attr("height", options.height);
 	// Tooltip
 	var maptip = d3.select("body")
 		.append("div")
@@ -73,35 +88,31 @@ FV.mapmodule = function (options) {
 
 	self.init = function() {
 
-		var bounds = options.bounds;
-		var scale = options.scale;
-		var bg_data = options.bg_data;
-		var rivers_data = options.rivers_data;
-		var ref_data = options.ref_data;
-		var site_data = options.site_data;
-
 		// set bounding box to values provided
-		var b = path.bounds(bounds);
-		var s = scale / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height);
-		var t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
+		var b = path.bounds(options.bounds);
+		var s = options.scale / Math.max((b[1][0] - b[0][0]) / options.width, (b[1][1] - b[0][1]) / options.height);
+		var t = [(options.width - s * (b[1][0] + b[0][0])) / 2, (options.height - s * (b[1][1] + b[0][1])) / 2];
 		// Update the projection
 		projection.scale(s).translate(t);
 		// Add layers
-		add_paths(bg_data, "background");
-		add_paths(rivers_data, "river");
-		add_circles(ref_data, "ref-point", 2);
+		add_paths(options.bg_data, "background");
+		add_paths(options.rivers_data, "river");
+		add_circles(options.ref_data, "ref-point", 2);
 		// Add sites and bind events for site hovers
-		var sites = add_circles(site_data, "gage-point", 3, 'id');
+		var sites = add_circles(options.site_data, "gage-point", 3, 'id');
 		sites.selectAll("circle")
 			.on('mousemove', function(d) {return self.mousemove(d.properties.name, d.properties.id)})
 			.on("mouseout", function(d) {return self.mouseout(d.properties.id)})
 			.on('click', function(d) { return self.click(d.properties.id)});
 		// Debug points
 		if (FV.mapinfo.debug) {
-			add_circles(FV.mapinfo.bounds, "debug-point", 3)
+			add_circles(options.bounds, "debug-point", 3)
 		}
 	};
 
+	/**
+		 * Handle all mouse over movements for calling element.
+		 */
 	self.mousemove = function (sitename, sitekey) {
 		FV.hydro_figure.activate_line(sitekey);
 		var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
@@ -111,6 +122,9 @@ FV.mapmodule = function (options) {
 			.style("top", (gage_point_cords.top - 30) + "px")
 			.html((sitename));
 	};
+	/**
+		 * Handle all mouse out movements for calling element.
+		 */
 	self.mouseout = function (sitekey) {
 		FV.hydro_figure.deactivate_line(sitekey);
 		maptip.style("display", "none");
@@ -120,6 +134,10 @@ FV.mapmodule = function (options) {
 		d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
 	};
 
+	/**
+		 * Remove accent for a svg circle representing a site.
+		 * Used primarily by hydromodule for cross figure interactions.
+		 */
 	self.removeaccent = function(sitekey) {
 		d3.select('#map' + sitekey).attr('class', 'gage-point');
 	};
@@ -143,14 +161,15 @@ FV.mapmodule = function (options) {
 	return self
 };
 
+}());
 
 // Define helper functions
 function degreesToRadians(degrees) {
+	"use strict";
 	return degrees * Math.PI / 180;
 }
 
 function radiansToDegrees(radians) {
+	"use strict";
 	return radians * 180 / Math.PI;
 }
-
-
