@@ -24,10 +24,10 @@
 
 	var self = {};
 	var project = function (lambda, phi) {
-		return proj.forward([lambda, phi].map(radiansToDegrees));
+		return options.proj.forward([lambda, phi].map(radiansToDegrees));
 	};
 	project.invert = function (x, y) {
-		return proj.inverse([x, y]).map(degreesToRadians);
+		return options.proj.inverse([x, y]).map(degreesToRadians);
 	};
 	//Define map projection
 	var projection = d3.geoProjection(project);
