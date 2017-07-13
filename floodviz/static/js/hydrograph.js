@@ -72,14 +72,15 @@
 						"translate(" + margin.left + "," + margin.top + ")");
 			
 			var graph_data = data.map(function(d) {
-				return  { "date": d.date,
-						"key": d.key,
-						"name": d.name,
-						"time": d.time,
-						"time_mili": d.time_mili,
-						"timezone": d.timezone,
-						"value": Number(d.value) };
-			});
+				return  {
+							"date": d.date,
+							"key": d.key,
+							"name": d.name,
+							"time": d.time,
+							"time_mili": d.time_mili,
+							"timezone": d.timezone,
+							"value": Number(d.value) };
+						});
 			// Scale the range of the data
 			x.domain(d3.extent(graph_data, function (d) {
 				return d.time_mili;
@@ -134,8 +135,8 @@
 						options.show_map_tooltip(d.data.name, d.data.key);
 						return self.series_tooltip_show(d);
 					})
-					.on("mouseout", function(d) {
-						options.remove_map_tooltip;
+					.on("mouseout", function() {
+						options.remove_map_tooltip();
 						return self.series_tooltip_remove;
 					})
 					.on("click", function(d) {
@@ -145,7 +146,7 @@
 		};
 
 		/**
-		 * Initalize the Hydrograph
+		 * Initialize the Hydrograph
 		 */
 		self.init = function() {
 			var data_path = options.data_path;
@@ -156,7 +157,7 @@
 		};
 
 		/**
-		 * Displays tooltip for hydrograph at a datapoint in addition to
+		 * Displays tooltip for hydrograph at a data point in addition to
 		 * corresponding map site tooltip.
 		 */
 		self.series_tooltip_show = function(d) {
@@ -175,7 +176,7 @@
 		};
 
 		/**
-		 * Removes a line from the hydrograph. This re sizes data
+		 * Removes a line from the hydrograph. This resizes data
 		 * appropriately and removes accents from the corresponding
 		 * site on the map.
 		 */

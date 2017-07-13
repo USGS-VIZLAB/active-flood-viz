@@ -85,7 +85,7 @@
 		};
 		
 		/**
-		 * Initalize the Map
+		 * Initialize the Map
 		 */
 		self.init = function() {
 			
