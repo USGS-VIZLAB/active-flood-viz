@@ -2,7 +2,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 	"use strict";
 
-	// Map figure 
+
+
+
+	// Map figure
 	var map_options = {'height': FV.mapinfo.height,
 						'width': FV.mapinfo.width,
 						'proj': proj4(FV.mapinfo.proj4string), 
@@ -18,8 +21,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	map_figure.init();
 
 	
-	/* Hydrograph Setup */
 
+
+	/* Hydrograph Setup */
 	/**
 	 	* Remove/Add accent for a svg circle representing a site.
 	 	* Used by hydromodule for cross figure interactions.

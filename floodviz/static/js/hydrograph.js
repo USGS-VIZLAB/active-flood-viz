@@ -14,9 +14,9 @@
 	 	*		'site_remove_accent' - function to remove accent from map site svg circle.
 		*
 		* hydromodule is a module for creating hydrographs using d3. Pass it a javascript object 
-		* specifying config options for the graph. Call init() to create the graph. Optional options keys
-	 	* map to functions that can be used for cross figure interactions
-		* 
+		* specifying config options for the graph. Call init() to create the graph. Other public functions
+		* handle user events and link to other modules.
+		*
 		*
 	*/
 	FV.hydromodule = function (options) {
