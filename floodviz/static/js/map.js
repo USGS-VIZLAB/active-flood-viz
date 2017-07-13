@@ -125,20 +125,6 @@
 		 */
 		self.site_tooltip_remove = function () {
 			maptip.style("display", "none");
-			// Link interactions with hydrograph here
-		};
-		/**
-		 * Remove accent for a svg circle representing a site. 
-		 * Used primarily by hydromodule for cross figure interactions. 
-		 */
-		self.site_remove_accent = function(sitekey) {
-			var point = document.getElementById('map' + sitekey);
-			point.classList.remove('accent');
-			// Link interactions with hydrograph here
-		};
-		self.site_add_accent = function(sitekey) {
-			var map_site = document.getElementById('map' + sitekey);
-			map_site.classList.add('accent');
 		};
 
 		return self 

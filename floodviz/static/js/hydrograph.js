@@ -91,7 +91,7 @@
 				.entries(graph_data);
 			// Loop through each symbol / key
 			dataNest.forEach(function (d) {
-				FV.map_figure.site_add_accent(d.key);
+				options.site_add_accent(d.key);
 				svg.append("g")
 					.attr('class', 'gages')
 					.append("path")
@@ -127,15 +127,15 @@
 						return d ? "M" + d.join("L") + "Z" : null;
 					})
 					.on("mouseover", function(d) {
-						FV.map_figure.site_tooltip_show(d.data.name, d.data.key);
+						options.show_map_tooltip(d.data.name, d.data.key);
 						return self.series_tooltip_show(d);
 					})
 					.on("mouseout", function(d) {
-						FV.map_figure.site_tooltip_remove();
+						options.remove_map_tooltip;
 						return self.series_tooltip_remove;
 					})
 					.on("click", function(d) {
-						FV.map_figure.site_remove_accent(d.data.key);
+						options.site_remove_accent(d.data.key);
 						return self.remove_series(d.data.key, graph_data);
 					})
 		};
@@ -153,7 +153,7 @@
 
 		/**
 		 * Displays tooltip for hydrograph at a datapoint in addition to
-		 * corresponding map site tooltip
+		 * corresponding map site tooltip.
 		 */
 		self.series_tooltip_show = function(d) {
 			d3.select(d.data.name).classed("gage--hover", true);
