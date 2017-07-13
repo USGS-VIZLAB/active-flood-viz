@@ -91,7 +91,7 @@
 				.entries(graph_data);
 			// Loop through each symbol / key
 			dataNest.forEach(function (d) {
-				FV.map_figure.siteaddaccent(d.key);
+				FV.map_figure.site_add_accent(d.key);
 				svg.append("g")
 					.attr('class', 'gages')
 					.append("path")
