@@ -92,14 +92,16 @@
 				.attr("transform",
 					"translate(" + margin.left + "," + margin.top + ")");
 
-			var graph_data = data.map(function(d) {
-				return  { "date": d.date,
-				"key": d.key,
-				"name": d.name,
-				"time": d.time,
-				"time_mili": d.time_mili,
-				"timezone": d.timezone,
-				"value": Number(d.value) };
+			var graph_data = data.map(function (d) {
+				return {
+					"date": d.date,
+					"key": d.key,
+					"name": d.name,
+					"time": d.time,
+					"time_mili": d.time_mili,
+					"timezone": d.timezone,
+					"value": Number(d.value)
+				};
 
 			});
 
