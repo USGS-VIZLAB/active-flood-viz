@@ -3,14 +3,14 @@
 	/**
 		* @param {Javascript Object} options - holds options for the configuration of the hydrograph
 		*	All keys are not optional.
-		*  Keys include: 	
-		*   'height' v(int) - height of the graph 
-		*	  'width' v(int) - width of the graph
-		*	  'data_path' v(string) - path to the data file for this graph
-		*	  'div_id' v(string) - id for the container for this graph
+		*	Keys include:
+		*		'height' v(int) - height of the graph
+		*		'width' v(int) - width of the graph
+		*		'data_path' v(string) - path to the data file for this graph
+		*		'div_id' v(string) - id for the container for this graph
 		*
 		* hydromodule is a module for creating hydrographs using d3. Pass it a javascript object 
-		* specifying config options for the graph. Call init() to create the graph. Other pulic fuctions
+		* specifying config options for the graph. Call init() to create the graph. Other public functions
 		* handle user events and link to other modules. 
 		* 
 		*
@@ -49,7 +49,7 @@
 		var x = d3.scaleTime().range([0, width]);
 		var y = d3.scaleLog().range([height, 0]);
 		
-    /**
+		/**
 			* @param {Array} data -- an array containing the json data to be drawn
 			*
 			* Draws the svg, scales the range of the data, and draws the line for each site
@@ -69,13 +69,12 @@
 			
 			var graph_data = data.map(function(d) {
 				return  { "date": d.date,
-				"key": d.key, 
-				"name": d.name, 
-				"time": d.time, 
-				"time_mili": d.time_mili,
-				"timezone": d.timezone,
-				"value": Number(d.value) };
-
+						"key": d.key,
+						"name": d.name,
+						"time": d.time,
+						"time_mili": d.time_mili,
+						"timezone": d.timezone,
+						"value": Number(d.value) };
 			});
 			// Scale the range of the data
 			x.domain(d3.extent(graph_data, function (d) {
@@ -92,8 +91,7 @@
 				.entries(graph_data);
 			// Loop through each symbol / key
 			dataNest.forEach(function (d) {
-				var map_site = document.getElementById('map' + d.key);
-				map_site.classList.add('accent');
+				FV.map_figure.siteaddaccent(d.key);
 				svg.append("g")
 					.attr('class', 'gages')
 					.append("path")
@@ -128,11 +126,11 @@
 					.attr("d", function (d) {
 						return d ? "M" + d.join("L") + "Z" : null;
 					})
-					.on("mouseover", self.mouseover)
-					.on("mouseout", self.mouseout)
-					.on("click", function(d) {return self.click(d.data.key, graph_data)})
+					.on("mouseover", self.series_tooltip_show)
+					.on("mouseout", self.series_tooltip_remove)
+					.on("click", function(d) {return self.remove_series(d.data.key, graph_data)})
 		};
-    
+
 		/**
 		 * Initalize the Hydrograph
 		 */
@@ -143,39 +141,43 @@
 				update(data);
 			});
 		};
-    
+
 		/**
-		 * Handle all mouse over movements for calling element. 
+		 * Displays tooltip for hydrograph at a datapoint in addition to
+		 * corresponding map site tooltip
 		 */
-		self.mouseover = function(d) {
+		self.series_tooltip_show = function(d) {
 			d3.select(d.data.name).classed("gage--hover", true);
 			focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
 			focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
-			// Interative linking with map
-			FV.map_figure.mousemove(d.data.name, d.data.key);
+			// Interactive linking with map
+			FV.map_figure.site_tooltip_show(d.data.name, d.data.key);
 		};
-    
+
 		/**
-		 * Handle all mouse out movements for calling element. 
+		 * Removes tooltip view from the hydrograph series
+		 * as well as the correspond mapsite tooltip.
 		 */
-		self.mouseout = function(d) {
+		self.series_tooltip_remove = function(d) {
 			d3.select(d.data.name).classed("gage--hover", false);
 			focus.attr("transform", "translate(-100,-100)");
-			// Interative linking with map
-			FV.map_figure.mouseout();
+			// Interactive linking with map
+			FV.map_figure.site_tooltip_remove();
 		};
-    
+
 		/**
-		 * Handle all click events for calling element. 
+		 * Removes a line from the hydrograph. This re sizes data
+		 * appropriately and removes accents from the corresponding
+		 * site on the map.
 		 */
-		self.click = function(key, data) {
+		self.remove_series = function(key, data) {
 			d3.select("svg").remove();
 			var new_data = data.filter(function(d) {
 				return d.key !== key;
 			});
 			update(new_data);
-			// Interative linking with map
-			FV.map_figure.removeaccent(key);
+			// Interactive linking with map
+			FV.map_figure.site_remove_accent(key);
 		};
 
 		return self
