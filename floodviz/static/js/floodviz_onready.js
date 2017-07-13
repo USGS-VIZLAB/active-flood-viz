@@ -13,28 +13,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
 						'ref_data': FV.mapinfo.ref_data, 
 						'site_data': FV.mapinfo.site_data,
 						'div_id': '#map'};
-	FV.map_figure = FV.mapmodule(map_options);
-	FV.map_figure.init();
+
+	var map_figure = FV.mapmodule(map_options);
+	map_figure.init();
 
 	
 	/* Hydrograph Setup */
 
-	// map interactions for hydrograph events
-	var maptip = d3.select('#maptip');
-	/**
-	 	* Shows/removes sitename tooltip on map figure at correct location.
-	 */
-	var show_map_tooltip = function(sitename, sitekey) {
-		var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
-		maptip.transition().duration(500);
-		maptip.style("display", "inline-block")
-			.style("left", (gage_point_cords.left) + 7 + "px")
-			.style("top", (gage_point_cords.top - 45) + "px")
-			.html((sitename));
-	}
-	var remove_map_tooltip = function () {
-		maptip.style("display", "none");
-	}
 	/**
 	 	* Remove/Add accent for a svg circle representing a site.
 	 	* Used by hydromodule for cross figure interactions.
@@ -52,8 +37,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 						'width': FV.chart_dimensions.width, 
 						'data_path': FV.hydrograph_data_path,
 						'div_id' :  '#hydrograph',
-						'show_map_tooltip' : show_map_tooltip,
-						'remove_map_tooltip': remove_map_tooltip,
+						'show_map_tooltip' : map_figure.site_tooltip_show,
+						'remove_map_tooltip': map_figure.site_tooltip_remove,
 						'site_add_accent' : site_add_accent,
 						'site_remove_accent' : site_remove_accent};
 

@@ -2,16 +2,20 @@
 	"use strict";
 	/**
 		* @param {Javascript Object} options - holds options for the configuration of the hydrograph
-		*	All keys are not optional.
-		*	Keys include:
+		*	Non-optional Keys include:
 		*		'height' v(int) - height of the graph
 		*		'width' v(int) - width of the graph
 		*		'data_path' v(string) - path to the data file for this graph
 		*		'div_id' v(string) - id for the container for this graph
+	 	*	Optional Keys include:
+	 	*		'show_map_tooltip' - function to show map tooltip.
+	 	*		'remove_map_tooltip' - function to remove map tooltip.
+	 	*		'site_add_accent' - function to add accent to map site svg circle.
+	 	*		'site_remove_accent' - function to remove accent from map site svg circle.
 		*
 		* hydromodule is a module for creating hydrographs using d3. Pass it a javascript object 
-		* specifying config options for the graph. Call init() to create the graph. Other public functions
-		* handle user events and link to other modules. 
+		* specifying config options for the graph. Call init() to create the graph. Optional options keys
+	 	* map to functions that can be used for cross figure interactions
 		* 
 		*
 	*/
