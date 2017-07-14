@@ -2,7 +2,7 @@
 	"use strict";
 	/**
 		* @param {Javascript Object} options - holds options for the configuration of the hydrograph
-		*	Non-optional Keys include:
+		*	Required Keys include:
 		*		'height' v(int) - height of the graph
 		*		'width' v(int) - width of the graph
 		*		'data_path' v(string) - path to the data file for this graph
