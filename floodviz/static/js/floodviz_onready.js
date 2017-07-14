@@ -1,20 +1,7 @@
 document.addEventListener("DOMContentLoaded", function (event) {
 	"use strict";
 
-	/**
-	 * Update the value of display_ids and call update to redraw the graph to match.
-	 * @param new_display_ids The new set of gages to be displayed.
-	 */
-	var change_lines = function (new_display_ids) {
-		display_ids = new_display_ids;
-		var new_data = full_data.filter(function (d) {
-			return display_ids.indexOf(d.key !== -1);
-		});
-		update(new_data);
-	};
-
-
-	// Map figure
+	// Map options
 	var map_options = {
 		'height': FV.mapinfo.height,
 		'width': FV.mapinfo.width,
@@ -27,35 +14,31 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		'site_data': FV.mapinfo.site_data,
 		'div_id': '#map'
 	};
-
-	var map_figure = FV.mapmodule(map_options);
-	map_figure.init();
-
-
-	/* Hydrograph Setup */
-	/**
-	 * Remove/Add accent for a svg circle representing a site.
-	 * Used by hydromodule for cross figure interactions.
-	 */
-	var site_remove_accent = function (sitekey) {
-		d3.select('#map' + sitekey).attr('class', 'gage-point');
-	};
-	var site_add_accent = function (sitekey) {
-		d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
-	};
-
+	// Hydrograph options
 	var hydro_options = {
 		'height': FV.hydrograph_dimensions.height,
 		'width': FV.hydrograph_dimensions.width,
 		'data_path': FV.hydrograph_data_path,
-		'div_id': '#hydrograph',
-		'show_map_tooltip': map_figure.site_tooltip_show,
-		'remove_map_tooltip': map_figure.site_tooltip_remove,
-		'site_add_accent': site_add_accent,
-		'site_remove_accent': site_remove_accent
+		'div_id': '#hydrograph'
 	};
 
+	var map_frame = FV.mapmodule(map_options);
+	var hydro_frame = FV.hydromodule(hydro_options);
+
+	// Use frames to link interactions
+	hydro_options['site_tooltip_show'] = map_frame.site_tooltip_show;
+	hydro_options['site_tooltip_remove'] = map_frame.site_tooltip_remove;
+	hydro_options['site_add_accent'] = map_frame.site_add_accent;
+	hydro_options['site_remove_accent'] = map_frame.site_remove_accent;
+
+	map_options['activate_line'] = hydro_frame.activate_line;
+	map_options['deactivate_line'] = hydro_frame.activate_line;
+	map_options['change_lines'] = hydro_frame.change_lines;
+
 	var hydro_figure = FV.hydromodule(hydro_options);
+	var map_figure = FV.mapmodule(map_options);
+
 	hydro_figure.init();
+	map_figure.init();
 
 });

@@ -120,7 +120,6 @@
 		 * Shows sitename tooltip on map figure at correct location.
 		 */
 		self.site_tooltip_show = function (sitename, sitekey) {
-			FV.hydro_figure.activate_line(sitekey);
 			var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
 			maptip.transition().duration(500);
 			maptip.style("display", "inline-block")
@@ -132,24 +131,32 @@
 		 * Removes tooltip style from map site.
 		 */
 		self.site_tooltip_remove = function () {
-			FV.hydro_figure.deactivate_line(sitekey);
 			maptip.style("display", "none");
 		};
 
+		/**
+		 * Remove/Add accent for a svg circle representing a site.
+		 * Used by hydromodule for cross figure interactions.
+		 */
+		self.site_remove_accent = function (sitekey) {
+			d3.select('#map' + sitekey).attr('class', 'gage-point');
+		};
+		self.site_add_accent = function (sitekey) {
+			d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
+		};
 		self.click = function (sitekey) {
-			var display_ids = FV.hydro_figure.get_display_ids();
-			var being_displayed = display_ids.indexOf(sitekey) !== -1;
+			var new_display_ids = FV.hydrograph_display_ids;
+			var being_displayed = new_display_ids.indexOf(sitekey) !== -1;
 			if (being_displayed === true) {
-				options.site_remove_accent(sitekey);
-				display_ids.splice(display_ids.indexOf(sitekey), 1)
+				self.site_remove_accent(sitekey);
+				new_display_ids.splice(new_display_ids.indexOf(sitekey), 1)
 			}
 			else {
-				options.site_add_accent(sitekey);
-				display_ids.push(sitekey);
+				self.site_add_accent(sitekey);
+				new_display_ids.push(sitekey);
 			}
-			// TODO
-			FV.hydro_figure.change_lines(display_ids);
-			FV.hydro_figure.activate_line(sitekey);
+			options.change_lines(new_display_ids);
+			options.activate_line(sitekey);
 		};
 
 		return self
