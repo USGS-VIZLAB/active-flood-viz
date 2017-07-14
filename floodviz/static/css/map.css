@@ -37,9 +37,9 @@
 
 #map {
 	float: right;
-	margin-right: 100px;
-	margin-top: 50px;
-	margin-bottom: 50px;
+	margin-right: 5px;
+	margin-top: 5px;
+	margin-bottom: 10px;
 }
 
 #map path.background{
