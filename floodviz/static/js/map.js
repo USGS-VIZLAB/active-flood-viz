@@ -36,10 +36,7 @@
 		//Define path generator
 		var path = d3.geoPath().projection(projection);
 		//Create SVG element
-		var svg = d3.select(options.div_id)
-			.append("svg")
-			.attr("width", options.width)
-			.attr("height", options.height);
+		var svg = null;
 		// Tooltip
 		var maptip = d3.select("body")
 			.append("div")
@@ -93,6 +90,14 @@
 		 * Initialize the Map
 		 */
 		self.init = function() {
+
+			if (svg !== null) {
+				d3.select(options.div_id).select('svg').remove();
+			}
+			svg = d3.select(options.div_id)
+			.append("svg")
+			.attr("width", options.width)
+			.attr("height", options.height);
 			
 			// set bounding box to values provided
 			var b = path.bounds(options.bounds);

@@ -26,7 +26,6 @@
 		};
 
 		var margin = {top: 30, right: 20, bottom: 30, left: 50};
-
 		var height = options.height - margin.top - margin.bottom;
 		var width = options.width - margin.left - margin.right;
 
@@ -82,8 +81,9 @@
 			// Cut the data down to sites we want to display
 			var data = subset_data();
 			// Remove the current version of the graph if one exists
-			if (svg !== null) {
-				d3.select(options.div_id + " svg").remove();
+			var current_svg = d3.select(options.div_id + " svg")
+			if (current_svg) {
+				current_svg.remove();
 			}
 			// recreate svg
 			svg = d3.select(options.div_id)
@@ -165,13 +165,13 @@
 				})
 				.on("mouseover", function (d) {
 					options.site_tooltip_show(d.data.name, d.data.key);
-					self.activate_line(d.data.key)
+					self.activate_line(d.data.key);
 					self.series_tooltip_show(d);
 				})
 				.on("mouseout", function (d) {
 					options.site_tooltip_remove();
-					self.deactivate_line(d.data.key)
-					self.series_tooltip_remove;
+					self.deactivate_line(d.data.key);
+					self.series_tooltip_remove(d.data.key);
 				})
 				.on("click", function (d) {
 					options.site_remove_accent(d.data.key);
@@ -197,7 +197,6 @@
 		 * corresponding map site tooltip.
 		 */
 		self.series_tooltip_show = function (d) {
-			d3.select(d.data.name).classed("gage--hover", true);
 			focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
 			focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
 		};
@@ -206,8 +205,7 @@
 		 * Removes tooltip view from the hydrograph series
 		 * as well as the correspond mapsite tooltip.
 		 */
-		self.series_tooltip_remove = function (d) {
-			d3.select(d.data.name).classed("gage--hover", false);
+		self.series_tooltip_remove = function (sitekey) {
 			focus.attr("transform", "translate(-100,-100)");
 		};
 
@@ -217,7 +215,7 @@
 		 * site on the map.
 		 */
 		self.remove_series = function (d) {
-			//FV.map_figure.removeaccent(d.data.key);
+			options.site_remove_accent(d.data.key);
 			var keep_ids = FV.hydrograph_display_ids;
 			keep_ids.splice(FV.hydrograph_display_ids.indexOf(d.data.key), 1);
 			self.change_lines(keep_ids);
