@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	hydro_options['site_remove_accent'] = map_frame.site_remove_accent;
 
 	map_options['activate_line'] = hydro_frame.activate_line;
-	map_options['deactivate_line'] = hydro_frame.activate_line;
+	map_options['deactivate_line'] = hydro_frame.deactivate_line;
 	map_options['change_lines'] = hydro_frame.change_lines;
 
 	var hydro_figure = FV.hydromodule(hydro_options);

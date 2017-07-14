@@ -21,9 +21,7 @@
 	 */
 	FV.hydromodule = function (options) {
 
-		var self = {
-			'full_data': []
-		};
+		var self = {};
 
 		var margin = {top: 30, right: 20, bottom: 30, left: 50};
 		var height = options.height - margin.top - margin.bottom;
@@ -60,9 +58,9 @@
 		 * Filters a set of data based on the ids listed in display_ids
 		 * @returns {Array} The entries of the original `data` whose `key` values are elements of display_ids.
 		 */
-		var subset_data = function () {
+		var subset_data = function (full_data) {
 			var toKeep = [];
-			self.full_data.forEach(function (d) {
+			full_data.forEach(function (d) {
 				if (FV.hydrograph_display_ids.indexOf(d.key) !== -1) {
 					toKeep.push(d);
 				}
@@ -78,119 +76,116 @@
 		 *
 		 */
 		var update = function () {
-			// Cut the data down to sites we want to display
-			var data = subset_data();
-			// Remove the current version of the graph if one exists
-			var current_svg = d3.select(options.div_id + " svg");
-			if (current_svg) {
-				current_svg.remove();
-			}
-			// recreate svg
-			svg = d3.select(options.div_id)
-				.append("svg")
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", height + margin.top + margin.bottom)
-				.append("g")
-				.attr("transform",
-					"translate(" + margin.left + "," + margin.top + ")");
+			d3.json(options.data_path, function (error, data) {
+				if (error) { console.error(error); }
+				// Cut the data down to sites we want to display
+				var sub_data = subset_data(data);
+				// Remove the current version of the graph if one exists
+				var current_svg = d3.select(options.div_id + " svg");
+				if (current_svg) {
+					current_svg.remove();
+				}
+				// recreate svg
+				svg = d3.select(options.div_id)
+					.append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+					.append("g")
+					.attr("transform",
+						"translate(" + margin.left + "," + margin.top + ")");
 
-			var graph_data = data.map(function (d) {
-				return {
-					"date": d.date,
-					"key": d.key,
-					"name": d.name,
-					"time": d.time,
-					"time_mili": d.time_mili,
-					"timezone": d.timezone,
-					"value": Number(d.value)
-				};
+				var graph_data = sub_data.map(function (d) {
+					return {
+						"date": d.date,
+						"key": d.key,
+						"name": d.name,
+						"time": d.time,
+						"time_mili": d.time_mili,
+						"timezone": d.timezone,
+						"value": Number(d.value)
+					};
 
-			});
-
-			// Scale the range of the data
-			x.domain(d3.extent(graph_data, function (d) {
-				return d.time_mili;
-			}));
-			y.domain([d3.min(graph_data, function (d) {
-				return d.value;
-			}), d3.max(graph_data, function (d) {
-				return d.value;
-			})]);
-			// Nest the entries by site number
-			var dataNest = d3.nest()
-				.key(function (d) {
-					return d.key;
-				})
-				.entries(graph_data);
-			// Loop through each symbol / key
-			dataNest.forEach(function (d) {
-				options.site_add_accent(d.key);
-				svg.append("g")
-					.attr('class', 'hydro-inactive')
-					.append("path")
-					.attr("id", "hydro" + d.key)
-					.attr("d", line(d.values));
-			});
-			// Add the X Axis
-			svg.append("g")
-				.attr("class", "axis")
-				.attr("transform", "translate(0," + height + ")")
-				.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%B %e")));
-
-			// Add the Y Axis
-			svg.append("g")
-				.attr("class", "axis")
-				.call(d3.axisLeft(y).ticks(10, ".0f"));
-
-			// Tooltip
-			focus = svg.append("g")
-				.attr("transform", "translate(-100,-100)")
-				.attr("class", "focus");
-			focus.append("circle")
-				.attr("r", 3.5);
-
-			focus.append("text")
-				.attr("y", -10);
-
-			// Voronoi Layer
-			voronoi_group = svg.append("g")
-				.attr("class", "voronoi");
-			voronoi_group.selectAll("path")
-				.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
-					return d.values
-				}))))
-				.enter().append("path")
-				.attr("d", function (d) {
-					return d ? "M" + d.join("L") + "Z" : null;
-				})
-				.on("mouseover", function (d) {
-					options.site_tooltip_show(d.data.name, d.data.key);
-					self.activate_line(d.data.key);
-					self.series_tooltip_show(d);
-				})
-				.on("mouseout", function (d) {
-					options.site_tooltip_remove();
-					self.deactivate_line(d.data.key);
-					self.series_tooltip_remove(d.data.key);
-				})
-				.on("click", function (d) {
-					options.site_remove_accent(d.data.key);
-					return self.remove_series(d.data.key, graph_data);
 				});
+
+				// Scale the range of the data
+				x.domain(d3.extent(graph_data, function (d) {
+					return d.time_mili;
+				}));
+				y.domain([d3.min(graph_data, function (d) {
+					return d.value;
+				}), d3.max(graph_data, function (d) {
+					return d.value;
+				})]);
+				// Nest the entries by site number
+				var dataNest = d3.nest()
+					.key(function (d) {
+						return d.key;
+					})
+					.entries(graph_data);
+				// Loop through each symbol / key
+				dataNest.forEach(function (d) {
+					options.site_add_accent(d.key);
+					svg.append("g")
+						.attr('class', 'hydro-inactive')
+						.append("path")
+						.attr("id", "hydro" + d.key)
+						.attr("d", line(d.values));
+				});
+				// Add the X Axis
+				svg.append("g")
+					.attr("class", "axis")
+					.attr("transform", "translate(0," + height + ")")
+					.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%B %e")));
+
+				// Add the Y Axis
+				svg.append("g")
+					.attr("class", "axis")
+					.call(d3.axisLeft(y).ticks(10, ".0f"));
+
+				// Tooltip
+				focus = svg.append("g")
+					.attr("transform", "translate(-100,-100)")
+					.attr("class", "focus");
+				focus.append("circle")
+					.attr("r", 3.5);
+
+				focus.append("text")
+					.attr("y", -10);
+
+				// Voronoi Layer
+				voronoi_group = svg.append("g")
+					.attr("class", "voronoi");
+				voronoi_group.selectAll("path")
+					.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
+						return d.values
+					}))))
+					.enter().append("path")
+					.attr("d", function (d) {
+						return d ? "M" + d.join("L") + "Z" : null;
+					})
+					.on("mouseover", function (d) {
+						options.site_tooltip_show(d.data.name, d.data.key);
+						self.activate_line(d.data.key);
+						self.series_tooltip_show(d);
+					})
+					.on("mouseout", function (d) {
+						options.site_tooltip_remove();
+						self.deactivate_line(d.data.key);
+						self.series_tooltip_remove(d.data.key);
+					})
+					.on("click", function (d) {
+						options.site_remove_accent(d.data.key);
+						return self.remove_series(d.data.key, graph_data);
+					});
+
+			});
 		};
 
 		/**
 		 * Initialize the Hydrograph
 		 */
 		self.init = function () {
-			var data_path = options.data_path;
-			// Get the data
-			d3.json(data_path, function (error, data) {
-				if (error) { console.error(error); }
-				// Used to store the entire data set before any filtering. This is used to produce new data sets.
-				self.full_data = data;
-				update();
-			});
+			update();
 		};
 		/**
 		 * Displays tooltip for hydrograph at a data point in addition to

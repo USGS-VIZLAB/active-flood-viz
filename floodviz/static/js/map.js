@@ -112,8 +112,14 @@
 			// Add sites and bind events for site hovers
 			var sites = add_circles(options.site_data, "gage-point", 3, 'id');
 			sites.selectAll("circle")
-				.on('mousemove', function (d) {return self.site_tooltip_show(d.properties.name, d.properties.id)})
-				.on("mouseout", function (d) {return self.site_tooltip_remove(d.properties.id)})
+				.on('mousemove', function (d) {
+					self.site_tooltip_show(d.properties.name, d.properties.id);
+					options.activate_line(d.properties.id);
+				})
+				.on("mouseout", function (d) {
+					self.site_tooltip_remove(d.properties.id);
+					options.deactivate_line(d.properties.id);
+				})
 				.on('click', function (d) { return self.click(d.properties.id)});
 			// Debug points
 			if (FV.config.debug) {
@@ -155,15 +161,15 @@
 			if (being_displayed === true) {
 				self.site_remove_accent(sitekey);
 				new_display_ids.splice(new_display_ids.indexOf(sitekey), 1)
+				options.deactivate_line(sitekey);
 			}
 			else {
 				self.site_add_accent(sitekey);
 				new_display_ids.push(sitekey);
+				options.activate_line(sitekey);
 			}
 			options.change_lines(new_display_ids);
-			options.activate_line(sitekey);
 		};
-
 		return self
 	};
 
