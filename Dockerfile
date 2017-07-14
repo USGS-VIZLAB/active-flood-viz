@@ -32,5 +32,7 @@ RUN python3 run.py --config=instance_config.py --freeze --norun
 
 EXPOSE 5050
 
-ENTRYPOINT ["python3"]
-CMD ["run.py" ,"--host", "0.0.0.0"]
+EXPOSE 80 443
+
+ENTRYPOINT ["nginx"]
+CMD ["-g", "daemon off;"]
