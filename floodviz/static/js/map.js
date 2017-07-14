@@ -4,16 +4,16 @@
 	 * @param {Object} options - holds options for the configuration of the map.
 	 * All keys are not optional.
 	 * Keys include:
-	 *    'height' v(int) - height of the map
-	 *    'width' v(int) - width of the map
-	 *    'proj' v(proj4) - map projection
-	 *    'bounds' v(javascript object) - bounding box
-	 *    'scale' v(int) - scale for map
-	 *    'bg_data' v(javascript object) - background data
-	 *    'rivers_data' v(geojson) - rivers data
-	 *    'ref_data' v(javascript object) - reference data
-	 *    'site_data' v(javascript object) - site data
-	 *    'div_id' v(string) - id for the container for this graph
+	 *    @prop 'height' v(int) - height of the map
+	 *    @prop 'width' v(int) - width of the map
+	 *    @prop 'proj' v(proj4) - map projection
+	 *    @prop 'bounds' v(javascript object) - bounding box
+	 *    @prop 'scale' v(int) - scale for map
+	 *    @prop 'bg_data' v(javascript object) - background data
+	 *    @prop 'rivers_data' v(geojson) - rivers data
+	 *    @prop 'ref_data' v(javascript object) - reference data
+	 *    @prop 'site_data' v(javascript object) - site data
+	 *    @prop 'div_id' v(string) - id for the container for this graph
 	 *
 	 * mapmodule is a module for creating maps using d3. Pass it a javascript object
 	 * specifying config options for the map. Call init() to create the map. Other pulic fuctions
@@ -67,6 +67,9 @@
 					if (property_for_id && d.properties[property_for_id]) {
 						return 'map' + d.properties[property_for_id];
 					}
+					else{
+						return '';
+					}
 				})
 				.attr("class", classname);
 			return (group);
@@ -105,7 +108,7 @@
 				.on("mouseout", function (d) {return self.mouseout(d.properties.id)})
 				.on('click', function (d) { return self.click(d.properties.id)});
 			// Debug points
-			if (FV.mapinfo.debug) {
+			if (FV.config.debug) {
 				add_circles(options.bounds, "debug-point", 3)
 			}
 		};

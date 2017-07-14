@@ -1,4 +1,4 @@
-DEBUG = False
+DEBUG = True
 
 # Site IDs available for charting
 SITE_IDS = ['05463500', '05471050', '05420680', '05479000',
@@ -39,8 +39,7 @@ RIVERS_FILE = 'floodviz/static/geojson/rivers.json'
 MAP_CONFIG = {
     'width': 750,
     'height': 450,
-    'scale': 1,
-    'debug': DEBUG,
+    'scale': 1
 }
 
 REFERENCE_DATA = {
