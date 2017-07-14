@@ -2,18 +2,18 @@
 	"use strict";
 	/**
 		* @param {Javascript Object} options - holds options for the configuration of the map.
-		* All keys are not optional.
-		* Keys include: 	
-		* 	'height' v(int) - height of the map 
-		*	'width' v(int) - width of the map
-		*	'proj' v(proj4) - map projection
-		*	'bounds' v(javascript object) - bounding box
-		*	'scale' v(int) - scale for map
-		*	'bg_data' v(javascript object) - background data
-		*	'rivers_data' v(geojson) - rivers data
-		*	'ref_data' v(javascript object) - reference data
-		*	'site_data' v(javascript object) - site data
-		*	'div_id' v(string) - id for the container for this graph
+		* 	All keys are not optional.
+		* 	Keys include:
+		* 		'height' v(int) - height of the map
+		*		'width' v(int) - width of the map
+		*		'proj' v(proj4) - map projection
+		*		'bounds' v(javascript object) - bounding box
+		*		'scale' v(int) - scale for map
+		*		'bg_data' v(javascript object) - background data
+		*		'rivers_data' v(geojson) - rivers data
+		*		'ref_data' v(javascript object) - reference data
+		*		'site_data' v(javascript object) - site data
+		*		'div_id' v(string) - id for the container for this graph
 		*
 		* mapmodule is a module for creating maps using d3. Pass it a javascript object 
 		* specifying config options for the map. Call init() to create the map. Other pulic fuctions
@@ -85,7 +85,7 @@
 		};
 		
 		/**
-		 * Initalize the Map
+		 * Initialize the Map
 		 */
 		self.init = function() {
 			
@@ -102,42 +102,31 @@
 			// Add sites and bind events for site hovers
 			var sites = add_circles(options.site_data, "gage-point", 3);
 			sites.selectAll("circle")
-				.on('mousemove', function(d) {return self.mousemove(d.properties.name, d.properties.id)})
-				.on("mouseout", function() {return self.mouseout()});
+				.on('mousemove', function(d) {return self.site_tooltip_show(d.properties.name, d.properties.id)})
+				.on("mouseout", function() {return self.site_tooltip_remove()});
 			// Debug points
 			if (FV.mapinfo.debug) {
 				add_circles(options.bounds, "debug-point", 3)
 			}
 		};
 		/**
-		 * Handle all mouse over movements for calling element. 
+		 * Shows sitename tooltip on map figure at correct location.
 		 */
-		self.mousemove = function (sitename, sitekey) {
+		self.site_tooltip_show = function (sitename, sitekey) {
 			var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
 			maptip.transition().duration(500);
 			maptip.style("display", "inline-block")
 				.style("left", (gage_point_cords.left) + 7 + "px")
 				.style("top", (gage_point_cords.top - 45) + "px")
 				.html((sitename));
-			// Link interactions with hydrograph here
-
 		};
 		/**
-		 * Handle all mouse out movements for calling element. 
+		 * Removes tooltip style from map site.
 		 */
-		self.mouseout = function () {
+		self.site_tooltip_remove = function () {
 			maptip.style("display", "none");
-			// Link interactions with hydrograph here
 		};
-		/**
-		 * Remove accent for a svg circle representing a site. 
-		 * Used primarily by hydromodule for cross figure interactions. 
-		 */
-		self.removeaccent = function(sitekey) {
-			var point = document.getElementById('map' + sitekey);
-			point.classList.remove('accent');
-			// Link interactions with hydrograph here
-		};
+
 		return self 
 	};
 
