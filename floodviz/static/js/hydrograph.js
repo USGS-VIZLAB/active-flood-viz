@@ -81,7 +81,7 @@
 			// Cut the data down to sites we want to display
 			var data = subset_data();
 			// Remove the current version of the graph if one exists
-			var current_svg = d3.select(options.div_id + " svg")
+			var current_svg = d3.select(options.div_id + " svg");
 			if (current_svg) {
 				current_svg.remove();
 			}
