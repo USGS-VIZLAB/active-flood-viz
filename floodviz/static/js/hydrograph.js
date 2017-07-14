@@ -214,10 +214,10 @@
 		 * appropriately and removes accents from the corresponding
 		 * site on the map.
 		 */
-		self.remove_series = function (d) {
-			options.site_remove_accent(d.data.key);
+		self.remove_series = function (key) {
+			options.site_remove_accent(key);
 			var keep_ids = FV.hydrograph_display_ids;
-			keep_ids.splice(FV.hydrograph_display_ids.indexOf(d.data.key), 1);
+			keep_ids.splice(FV.hydrograph_display_ids.indexOf(key), 1);
 			self.change_lines(keep_ids);
 		};
 		/**
