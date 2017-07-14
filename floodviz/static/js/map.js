@@ -136,30 +136,18 @@
 			maptip.style("display", "none");
 		};
 
-		self.addaccent = function (sitekey) {
-			d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
-		};
-
-		/**
-		 * Remove accent for a svg circle representing a site.
-		 * Used primarily by hydromodule for cross figure interactions.
-		 */
-		self.removeaccent = function (sitekey) {
-			d3.select('#map' + sitekey).attr('class', 'gage-point');
-		};
-
-
 		self.click = function (sitekey) {
 			var display_ids = FV.hydro_figure.get_display_ids();
 			var being_displayed = display_ids.indexOf(sitekey) !== -1;
 			if (being_displayed === true) {
-				self.removeaccent(sitekey);
+				options.site_remove_accent(sitekey);
 				display_ids.splice(display_ids.indexOf(sitekey), 1)
 			}
 			else {
-				self.addaccent(sitekey);
+				options.site_add_accent(sitekey);
 				display_ids.push(sitekey);
 			}
+			// TODO
 			FV.hydro_figure.change_lines(display_ids);
 			FV.hydro_figure.activate_line(sitekey);
 		};
