@@ -83,7 +83,7 @@
 			var data = subset_data();
 			// Remove the current version of the graph if one exists
 			if (svg !== null) {
-				d3.select(options.div_id).select('svg').remove();
+				d3.select(options.div_id + " svg").remove();
 			}
 			// recreate svg
 			svg = d3.select(options.div_id)
@@ -165,11 +165,13 @@
 				})
 				.on("mouseover", function (d) {
 					options.site_tooltip_show(d.data.name, d.data.key);
-					return self.series_tooltip_show(d);
+					self.activate_line(d.data.key)
+					self.series_tooltip_show(d);
 				})
-				.on("mouseout", function () {
+				.on("mouseout", function (d) {
 					options.site_tooltip_remove();
-					return self.series_tooltip_remove;
+					self.deactivate_line(d.data.key)
+					self.series_tooltip_remove;
 				})
 				.on("click", function (d) {
 					options.site_remove_accent(d.data.key);
