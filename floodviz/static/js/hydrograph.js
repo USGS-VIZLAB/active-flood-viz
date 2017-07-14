@@ -1,20 +1,24 @@
 (function () {
 	"use strict";
 	/**
-	 * @param {Object} options - holds options for the configuration of the hydrograph
-	 * All keys are not optional.
-	 * Keys include:
-	 *    @prop 'height' v(int) - height of the graph
-	 *    @prop 'width' v(int) - width of the graph
-	 *    @prop 'data_path' v(string) - path to the data file for this graph
-	 *    @prop 'div_id' v(string) - id for the container for this graph
-	 *
-	 * hydromodule is a module for creating hydrographs using d3. Pass it a javascript object
-	 * specifying config options for the graph. Call init() to create the graph. Other public functions
-	 * handle user events and link to other modules.
-	 *
-	 *
-	 */
+		* @param {Javascript Object} options - holds options for the configuration of the hydrograph
+		*	Non-optional Keys include:
+		*		'height' v(int) - height of the graph
+		*		'width' v(int) - width of the graph
+		*		'data_path' v(string) - path to the data file for this graph
+		*		'div_id' v(string) - id for the container for this graph
+	 	*	Optional Keys include:
+	 	*		'show_map_tooltip' - function to show map tooltip.
+	 	*		'remove_map_tooltip' - function to remove map tooltip.
+	 	*		'site_add_accent' - function to add accent to map site svg circle.
+	 	*		'site_remove_accent' - function to remove accent from map site svg circle.
+		*
+		* hydromodule is a module for creating hydrographs using d3. Pass it a javascript object
+		* specifying config options for the graph. Call init() to create the graph. Other public functions
+		* handle user events and link to other modules.
+		*
+		*
+	*/
 	FV.hydromodule = function (options) {
 
 		var self = {};
@@ -73,9 +77,13 @@
 		};
 
 		/**
-		 * Updates the SVG figure.
-		 * @param data: list of data objects
-		 */
+			* @param {Array} data -- an array containing the json data to be drawn
+			*
+			* Draws the svg, scales the range of the data, and draws the line for each site
+			* all based on the data set as it was passed in. Called as needed
+			* when data changes (as in removal of a line).
+			*
+		*/
 		var update = function (data) {
 			// Cut the data down to sites we want to display
 			data = subset_data(data);
@@ -117,10 +125,10 @@
 				.key(function (d) {
 					return d.key;
 				})
-				.entries(data);
+				.entries(graph_data);
 			// Loop through each symbol / key
 			dataNest.forEach(function (d) {
-				FV.map_figure.addaccent(d.key);
+				options.site_add_accent(d.key);
 				svg.append("g")
 					.attr('class', 'hydro-inactive')
 					.append("path")
@@ -140,9 +148,8 @@
 
 			// Tooltip
 			focus = svg.append("g")
-				.attr("transform", "translate(-100,-100)")
-				.attr("class", "focus");
-
+					.attr("transform", "translate(-100,-100)")
+					.attr("class", "focus");
 			focus.append("circle")
 				.attr("r", 3.5);
 
@@ -153,22 +160,30 @@
 			voronoi_group = svg.append("g")
 				.attr("class", "voronoi");
 			voronoi_group.selectAll("path")
-				.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
-					return d.values
-				}))))
-				.enter().append("path")
-				.attr("d", function (d) {
-					return d ? "M" + d.join("L") + "Z" : null;
-				})
-				.on("mouseover", self.mouseover)
-				.on("mouseout", self.mouseout)
-				.on("click", function (d) {return self.click(d)})
-		};
+					.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
+						return d.values
+					}))))
+					.enter().append("path")
+					.attr("d", function (d) {
+						return d ? "M" + d.join("L") + "Z" : null;
+					})
+					.on("mouseover", function(d) {
+						options.show_map_tooltip(d.data.name, d.data.key);
+						return self.series_tooltip_show(d);
+					})
+					.on("mouseout", function() {
+						options.remove_map_tooltip();
+						return self.series_tooltip_remove;
+					})
+					.on("click", function(d) {
+						options.site_remove_accent(d.data.key);
+						return self.remove_series(d.data.key, graph_data);
+					});
 
 		/**
-		 * Initalize the Hydrograph
+		 * Initialize the Hydrograph
 		 */
-		self.init = function () {
+		self.init = function() {
 			var data_path = options.data_path;
 			// Get the data
 			d3.json(data_path, function (error, data) {
@@ -180,30 +195,30 @@
 		};
 
 		/**
-		 * Handle all mouse over movements for calling element.
+		 * Displays tooltip for hydrograph at a data point in addition to
+		 * corresponding map site tooltip.
 		 */
-		self.mouseover = function (d) {
-			self.activate_line(d.data.key);
+		self.series_tooltip_show = function(d) {
+			d3.select(d.data.name).classed("gage--hover", true);
 			focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
 			focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
-			// Interative linking with map
-			FV.map_figure.mousemove(d.data.name, d.data.key);
 		};
 
 		/**
-		 * Handle all mouse out movements for calling element.
+		 * Removes tooltip view from the hydrograph series
+		 * as well as the correspond mapsite tooltip.
 		 */
-		self.mouseout = function (d) {
-			self.deactivate_line(d.data.key);
+		self.series_tooltip_remove = function(d) {
+			d3.select(d.data.name).classed("gage--hover", false);
 			focus.attr("transform", "translate(-100,-100)");
-			// Interative linking with map
-			FV.map_figure.mouseout();
 		};
 
 		/**
-		 * Handle all click events for calling element.
+		 * Removes a line from the hydrograph. This resizes data
+		 * appropriately and removes accents from the corresponding
+		 * site on the map.
 		 */
-		self.click = function (d) {
+		self.remove_series = function (d) {
 			FV.map_figure.removeaccent(d.data.key);
 			var keep_ids = display_ids;
 			keep_ids.splice(display_ids.indexOf(d.data.key), 1);
@@ -243,7 +258,5 @@
 			d3.select('#hydro' + sitekey).attr('class', 'hydro-inactive');
 		};
 		return self
-
 	};
 }());
-

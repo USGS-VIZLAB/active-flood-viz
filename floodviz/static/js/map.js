@@ -1,4 +1,4 @@
-(function () {
+(function() {
 	"use strict";
 	/**
 	 * @param {Object} options - holds options for the configuration of the map.
@@ -88,9 +88,12 @@
 				.attr("d", path)
 				.attr("class", classname);
 		};
-
-		self.init = function () {
-
+		
+		/**
+		 * Initialize the Map
+		 */
+		self.init = function() {
+			
 			// set bounding box to values provided
 			var b = path.bounds(options.bounds);
 			var s = options.scale / Math.max((b[1][0] - b[0][0]) / options.width, (b[1][1] - b[0][1]) / options.height);
@@ -104,8 +107,8 @@
 			// Add sites and bind events for site hovers
 			var sites = add_circles(options.site_data, "gage-point", 3, 'id');
 			sites.selectAll("circle")
-				.on('mousemove', function (d) {return self.mousemove(d.properties.name, d.properties.id)})
-				.on("mouseout", function (d) {return self.mouseout(d.properties.id)})
+				.on('mousemove', function (d) {return self.site_tooltip_show(d.properties.name, d.properties.id)})
+				.on("mouseout", function (d) {return self.site_tooltip_remove(d.properties.id)})
 				.on('click', function (d) { return self.click(d.properties.id)});
 			// Debug points
 			if (FV.config.debug) {
@@ -114,11 +117,11 @@
 		};
 
 		/**
-		 * Handle all mouse over movements for calling element.
+		 * Shows sitename tooltip on map figure at correct location.
 		 */
-		self.mousemove = function (sitename, sitekey) {
+		self.site_tooltip_show = function (sitename, sitekey) {
 			FV.hydro_figure.activate_line(sitekey);
-			var gage_point_cords = document.getElementById('map' + sitekey).getBoundingClientRect();
+			var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
 			maptip.transition().duration(500);
 			maptip.style("display", "inline-block")
 				.style("left", (gage_point_cords.left) + 7 + "px")
@@ -126,9 +129,9 @@
 				.html((sitename));
 		};
 		/**
-		 * Handle all mouse out movements for calling element.
+		 * Removes tooltip style from map site.
 		 */
-		self.mouseout = function (sitekey) {
+		self.site_tooltip_remove = function () {
 			FV.hydro_figure.deactivate_line(sitekey);
 			maptip.style("display", "none");
 		};
