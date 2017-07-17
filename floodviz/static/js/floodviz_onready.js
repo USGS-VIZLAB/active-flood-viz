@@ -21,22 +21,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		'div_id': '#hydrograph'
 	};
 
-	var map_frame = FV.mapmodule(map_options);
-	var hydro_frame = FV.hydromodule(hydro_options);
-
-
-	// Use frames to link interactions
-	hydro_options['site_tooltip_show'] = map_frame.site_tooltip_show;
-	hydro_options['site_tooltip_remove'] = map_frame.site_tooltip_remove;
-	hydro_options['site_add_accent'] = map_frame.site_add_accent;
-	hydro_options['site_remove_accent'] = map_frame.site_remove_accent;
-
-	map_options['activate_line'] = hydro_frame.activate_line;
-	map_options['deactivate_line'] = hydro_frame.deactivate_line;
-	map_options['change_lines'] = hydro_frame.change_lines;
-
-	var hydro_figure = FV.hydromodule(hydro_options);
 	var map_figure = FV.mapmodule(map_options);
+	var hydro_figure = FV.hydromodule(hydro_options);
+	
+	// Use frames to link interactions
+	hydro_options['hover_in'] = map_figure.site_tooltip_show;
+	hydro_options['hover_out'] = map_figure.site_tooltip_remove;
+	hydro_options['click_on'] = map_figure.site_add_accent;
+	hydro_options['click_off'] = map_figure.site_remove_accent;
+
+	map_options['hover_in'] = hydro_figure.activate_line;
+	map_options['hover_out'] = hydro_figure.deactivate_line;
+	map_options['click_toggle'] = hydro_figure.change_lines;
 
 	map_figure.init();
 	//data for hydrograph

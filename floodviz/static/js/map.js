@@ -68,7 +68,14 @@
 						return '';
 					}
 				})
-				.attr("class", classname);
+				.attr("class", classname)
+				.each(function (d) {
+					if (property_for_id && d.properties[property_for_id]) {
+						if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
+							self.site_add_accent(d.properties.id);
+						}
+					}
+				});
 			return (group);
 		};
 		/**
@@ -114,11 +121,11 @@
 			sites.selectAll("circle")
 				.on('mouseover', function (d) {
 					self.site_tooltip_show(d.properties.name, d.properties.id);
-					options.activate_line(d.properties.id);
+					options.hover_in(d.properties.id);
 				})
 				.on("mouseout", function (d) {
 					self.site_tooltip_remove(d.properties.id);
-					options.deactivate_line(d.properties.id);
+					options.hover_out(d.properties.id);
 				})
 				.on('click', function (d) { return self.click(d.properties.id)});
 			// Debug points
@@ -161,15 +168,15 @@
 			if (being_displayed === true) {
 				self.site_remove_accent(sitekey);
 				new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
-				options.deactivate_line(sitekey);
+				options.hover_out(sitekey);
 			}
 			else {
 				self.site_add_accent(sitekey);
 				new_display_ids.push(sitekey);
-				options.activate_line(sitekey);
+				options.hover_in(sitekey);
 			}
-			options.change_lines(new_display_ids);
-			options.activate_line(sitekey);
+			options.click_toggle(new_display_ids);
+			options.hover_in(sitekey);
 		};
 		return self
 	};

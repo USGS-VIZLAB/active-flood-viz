@@ -8,10 +8,10 @@
 	 *        'data' v(list) - A list of objects representing data points
 	 *        'div_id' v(string) - id for the container for this graph
 	 *    Optional Keys include:
-	 *        'show_map_tooltip' - function to show map tooltip.
-	 *        'remove_map_tooltip' - function to remove map tooltip.
-	 *        'site_add_accent' - function to add accent to map site svg circle.
-	 *        'site_remove_accent' - function to remove accent from map site svg circle.
+	 *        'hover_in' - linked function for hover_in.
+	 *        'hover_out' - linked function for hover_out.
+	 *        'click_on' - linked function for clicking on hydrograph to accent mapsite.
+	 *        'click_off' - linked function for clicking hydrograph to unaccent mapsite.
 	 *
 	 * hydromodule is a module for creating hydrographs using d3. Pass it a javascript object
 	 * specifying config options for the graph. Call init() to create the graph. Other public functions
@@ -123,7 +123,7 @@
 					.entries(graph_data);
 				// Loop through each symbol / key
 				dataNest.forEach(function (d) {
-					options.site_add_accent(d.key);
+					//options.accent_mapsite(d.key);
 					svg.append("g")
 						.attr('class', 'hydro-inactive')
 						.append("path")
@@ -163,17 +163,17 @@
 						return d ? "M" + d.join("L") + "Z" : null;
 					})
 					.on("mouseover", function (d) {
-						options.site_tooltip_show(d.data.name, d.data.key);
+						options.hover_in(d.data.name, d.data.key);
 						self.activate_line(d.data.key);
 						self.series_tooltip_show(d);
 					})
 					.on("mouseout", function (d) {
-						options.site_tooltip_remove();
+						options.hover_out();
 						self.deactivate_line(d.data.key);
 						self.series_tooltip_remove(d.data.key);
 					})
 					.on("click", function (d) {
-						options.site_remove_accent(d.data.key);
+						options.click_off(d.data.key);
 						return self.remove_series(d.data.key);
 					});
 
@@ -208,7 +208,6 @@
 		 * site on the map.
 		 */
 		self.remove_series = function (sitekey) {
-			options.site_remove_accent(sitekey);
 			var keep_ids = FV.hydrograph_display_ids;
 			keep_ids.splice(FV.hydrograph_display_ids.indexOf(sitekey), 1);
 			self.change_lines(keep_ids);
