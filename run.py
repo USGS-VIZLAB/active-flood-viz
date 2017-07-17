@@ -15,7 +15,7 @@ if __name__ == '__main__':
     host_val = args.host
     port_val = args.port
     do_freeze = args.freeze
-    no_run = args.norun
+    run = not args.norun
     config = args.config
 
     if config is not None:
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         print("freezing")
         freezer.freeze()
         print("frozen")
-        if not no_run:
+        if run:
             freezer.serve(host=host, port=port, threaded=True)
     else:
         application.run(host=host, port=port, threaded=True)
