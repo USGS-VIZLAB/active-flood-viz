@@ -1,5 +1,8 @@
 FROM debian:stretch
 MAINTAINER James McFeeters "jmcfeeters@usgs.gov"
+
+ARG config
+
 RUN apt-get update && apt-get install -y \
     python3-pip \
     nginx-light \
@@ -30,7 +33,7 @@ RUN node_modules/bower/bin/bower install --allow-root
 
 RUN nosetests --all-modules --exe
 
-RUN python3 run.py --config=examples/iowa.py --freeze --norun
+RUN python3 run.py --config=$config --freeze --norun
 
 EXPOSE 80
 
