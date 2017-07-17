@@ -112,7 +112,7 @@
 			// Add sites and bind events for site hovers
 			var sites = add_circles(options.site_data, "gage-point", 3, 'id');
 			sites.selectAll("circle")
-				.on('mousemove', function (d) {
+				.on('mouseover', function (d) {
 					self.site_tooltip_show(d.properties.name, d.properties.id);
 					options.activate_line(d.properties.id);
 				})
