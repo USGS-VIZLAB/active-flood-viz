@@ -23,6 +23,9 @@
 		FV.mapmodule = function (options) {
 
 			var self = {};
+
+			var state = {};
+
 			var project = function (lambda, phi) {
 				return options.proj.forward([lambda, phi].map(radiansToDegrees));
 			};
@@ -137,6 +140,19 @@
 					})
 					.on('click', function (d) { return self.click(d.properties.id)});
 
+				state.gages = [];
+				options.site_data.forEach(function (g) {
+					var position = projection(g.geometry.coordinates);
+					var info = {
+						name: g.properties.name,
+						x: position[0],
+						y: position[1],
+						active: false,
+						id: g.properties.id
+					};
+					state.gages.push(info);
+				});
+
 				// Debug points
 				if (FV.config.debug) {
 					add_circles(options.bounds, "debug-point", 3)
@@ -197,22 +213,29 @@
 					.attr('height', 0)
 					.attr('width', 0)
 					.attr('class', 'select-box')
-					.attr('id', 'map-select-box')
+					.attr('id', 'map-select-box');
+
+				state.box = {
+					x: p[0],
+					y: p[1],
+					height: 0,
+					width: 0
+				};
 			};
 
 			var select_box_drag = function (p) {
 				var box = d3.select('#map-select-box');
 				if (!box.empty()) {
-						var d = {
-							x: parseInt(box.attr("x"), 10),
-							y: parseInt(box.attr("y"), 10),
-							width: parseInt(box.attr("width"), 10),
-							height: parseInt(box.attr("height"), 10)
-						};
-						var move = {
-							x: p[0] - d.x,
-							y: p[1] - d.y
-						};
+					var d = {
+						x: parseInt(box.attr("x"), 10),
+						y: parseInt(box.attr("y"), 10),
+						width: parseInt(box.attr("width"), 10),
+						height: parseInt(box.attr("height"), 10)
+					};
+					var move = {
+						x: p[0] - d.x,
+						y: p[1] - d.y
+					};
 
 					if (move.x < 1 || (move.x * 2 < d.width)) {
 						d.x = p[0];
@@ -232,12 +255,20 @@
 						.attr('y', d.y)
 						.attr('width', d.width)
 						.attr('height', d.height);
+
+					state.box = {
+						x: d.x,
+						y: d.y,
+						height: d.height,
+						width: d.width
+					};
 				}
 			};
 
 			var select_box_end = function () {
-				var gages_not_displayed = d3.selectAll('.gage-point');
-				var gages_displayed = d3.selectAll('.gage-point-accent');
+				// x and y always denote the NW corner, height denotes how far south
+				// and width how far east the box extends.
+
 				svg.select('#map-select-box').remove();
 			};
 
