@@ -52,6 +52,16 @@ def _peakflow_helper():
 
 def _map_helper():
     site_data = map_utils.site_dict(app.config['SITE_IDS'], app.config['NWIS_SITE_SERVICE_ENDPOINT'])
+    # test_dict = {
+    #     'sites': ['05420680', '05463500'],
+    #     'site_query': '&sites=',
+    #     'site_status': '&siteStatus=all',
+    #     'format': '?format=rdb',
+    #     'extra': 'site/'
+    # }
+    # site_data = utils.url_construct(url_nwis_prefix, test_dict)
+
+
     site_data = map_utils.create_geojson(site_data)
     projection = map_utils.projection_info(app.config['PROJECTION_EPSG_CODE'], app.config['SPATIAL_REFERENCE_ENDPOINT'])
     

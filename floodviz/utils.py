@@ -1,11 +1,47 @@
 import requests
 
+"""
+    Takes a valid url and a dictionary of expected column header strings as keys (values do not matter).
+    parse_rdb then requests data from the service at url, and extracts data matching any header values.
+     
+    Data is returned as a list of dict objects, where each object represents a data point. 
+
+"""
 
 
-def parse_rdb(endpoint, params):
-    pass
-
-
+def parse_rdb(url, header_values):
+    content = None
+    try:
+        r = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        print('- Bad URL -')
+    else:
+        if r.status_code is 200:
+            content = r.text.splitlines()
+    if content:
+        all_data = []
+        keep_headers = {}
+        found_headers = False
+        for line in content:
+            if line.startswith('#'):
+                continue
+            # should run once. Used to map column headers to line split indices.
+            if not found_headers:
+                raw_headers = line.split('\t')
+                for idx, key in enumerate(raw_headers):
+                    if header_values.get(key) is not None:
+                        keep_headers[key] = idx
+                found_headers = True
+                continue
+            else:
+                if line.startswith('USGS'):
+                    line = line.split('\t')
+                    data_point = {}
+                    for key, value in keep_headers.items():
+                        data_point[key] = line[value]
+                    all_data.append(data_point)
+        content = all_data
+    return content
 
 """ 
     Takes a web service endpoint, a dictionary of key/value pairs for the query parameters
@@ -30,6 +66,8 @@ def parse_rdb(endpoint, params):
     RETURNS:
         url - url to request for data 
 """
+
+
 def url_construct(endpoint, params):
     # Construct request URL
     sites = ','.join(params['sites'])
