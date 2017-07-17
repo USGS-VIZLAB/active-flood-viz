@@ -169,6 +169,7 @@
 				options.activate_line(sitekey);
 			}
 			options.change_lines(new_display_ids);
+			options.activate_line(sitekey);
 		};
 		return self
 	};
