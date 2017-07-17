@@ -160,7 +160,7 @@
 			var being_displayed = new_display_ids.indexOf(sitekey) !== -1;
 			if (being_displayed === true) {
 				self.site_remove_accent(sitekey);
-				new_display_ids.splice(new_display_ids.indexOf(sitekey), 1)
+				new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
 				options.deactivate_line(sitekey);
 			}
 			else {

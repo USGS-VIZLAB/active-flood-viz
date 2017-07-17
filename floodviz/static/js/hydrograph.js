@@ -5,7 +5,7 @@
 	 *    Non-optional Keys include:
 	 *        'height' v(int) - height of the graph
 	 *        'width' v(int) - width of the graph
-	 *        'data_path' v(string) - path to the data file for this graph
+	 *        'data' v(list) - A list of objects representing data points
 	 *        'div_id' v(string) - id for the container for this graph
 	 *    Optional Keys include:
 	 *        'show_map_tooltip' - function to show map tooltip.
@@ -174,7 +174,7 @@
 					})
 					.on("click", function (d) {
 						options.site_remove_accent(d.data.key);
-						return self.remove_series(d.data.key, graph_data);
+						return self.remove_series(d.data.key);
 					});
 
 		};
@@ -207,10 +207,10 @@
 		 * appropriately and removes accents from the corresponding
 		 * site on the map.
 		 */
-		self.remove_series = function (key) {
-			options.site_remove_accent(key);
+		self.remove_series = function (sitekey) {
+			options.site_remove_accent(sitekey);
 			var keep_ids = FV.hydrograph_display_ids;
-			keep_ids.splice(FV.hydrograph_display_ids.indexOf(key), 1);
+			keep_ids.splice(FV.hydrograph_display_ids.indexOf(sitekey), 1);
 			self.change_lines(keep_ids);
 		};
 		/**
