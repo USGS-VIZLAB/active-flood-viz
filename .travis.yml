@@ -2,5 +2,10 @@ dist: trusty
 language: python
 python:
     "3.5"
+
+before_install: "touch instance/config.py"
+
 install: "pip install -r requirements.txt"
+
+
 script: "nosetests"
