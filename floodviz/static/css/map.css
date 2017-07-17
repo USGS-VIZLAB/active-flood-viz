@@ -53,3 +53,10 @@
 	fill: blue;
 }
 
+rect.select-box {
+	stroke: red;
+	stroke-dasharray: 1, 1;
+	fill: red;
+	fill-opacity: 0.1;
+}
+
