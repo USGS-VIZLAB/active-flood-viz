@@ -1,4 +1,5 @@
 # active-flood-viz
+[![Build Status](https://travis-ci.org/jameeters/active-flood-viz.svg?branch=travis_setup_FV-51)](https://travis-ci.org/jameeters/active-flood-viz)
 
 ### Configuration Files
 
