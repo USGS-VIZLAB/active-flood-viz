@@ -13,6 +13,8 @@ WORKDIR /app
 RUN cp DOIRootCA2.cer /etc/ssl/certs/DOIRootCA2.pem \
 && cat DOIRootCA2.cer >> /etc/ssl/certs/ca-certificates.crt
 
+RUN cp nginx.conf /etc/nginx
+
 RUN rm -f /etc/apt/sources.list.d/chris-lea-node_js-jessie.list \
 && curl --cacert DOIRootCA2.cer https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
 && echo 'deb https://deb.nodesource.com/node_6.x jessie main' > /etc/apt/sources.list.d/nodesource.list \
@@ -30,9 +32,7 @@ RUN nosetests --all-modules --exe
 
 RUN python3 run.py --config=instance_config.py --freeze --norun
 
-EXPOSE 5050
-
-EXPOSE 80 443
+EXPOSE 80
 
 ENTRYPOINT ["nginx"]
 CMD ["-g", "daemon off;"]
