@@ -76,10 +76,9 @@
 		 *
 		 */
 		var update = function () {
-			d3.json(options.data_path, function (error, data) {
-				if (error) { console.error(error); }
+
 				// Cut the data down to sites we want to display
-				var sub_data = subset_data(data);
+				var sub_data = subset_data(options.data);
 				// Remove the current version of the graph if one exists
 				var current_svg = d3.select(options.div_id + " svg");
 				if (current_svg) {
@@ -178,7 +177,6 @@
 						return self.remove_series(d.data.key, graph_data);
 					});
 
-			});
 		};
 
 		/**
