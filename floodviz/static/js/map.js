@@ -96,7 +96,7 @@
 		/**
 		 * Initialize the Map
 		 */
-		self.init = function(linked) {
+		self.init = function() {
 
 			if (svg !== null) {
 				d3.select(options.div_id).select('svg').remove();
@@ -121,13 +121,13 @@
 			sites.selectAll("circle")
 				.on('mouseover', function (d) {
 					self.site_tooltip_show(d.properties.name, d.properties.id);
-					linked.hover_in(d.properties.id);
+					options.hover_in(d.properties.id);
 				})
 				.on("mouseout", function (d) {
 					self.site_tooltip_remove(d.properties.id);
-					linked.hover_out(d.properties.id);
+					options.hover_out(d.properties.id);
 				})
-				.on('click', function (d) { return self.click(d.properties.id, linked) });
+				.on('click', function (d) { return self.click(d.properties.id) });
 			// Debug points
 			if (FV.config.debug) {
 				add_circles(options.bounds, "debug-point", 3)
@@ -162,21 +162,21 @@
 		self.site_add_accent = function (sitekey) {
 			d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
 		};
-		self.click = function (sitekey, linked_interactions ) {
+		self.click = function (sitekey) {
 			var new_display_ids = FV.hydrograph_display_ids;
 			var being_displayed = new_display_ids.indexOf(sitekey) !== -1;
 			if (being_displayed === true) {
 				self.site_remove_accent(sitekey);
 				new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
-				linked_interactions.hover_out(sitekey);
+				options.hover_out(sitekey);
 			}
 			else {
 				self.site_add_accent(sitekey);
 				new_display_ids.push(sitekey);
-				linked_interactions.hover_in(sitekey);
+				options.hover_in(sitekey);
 			}
-			linked_interactions.click_toggle(new_display_ids);
-			linked_interactions.hover_in(sitekey);
+			options.click_toggle(new_display_ids);
+			options.hover_in(sitekey);
 		};
 		return self
 	};
