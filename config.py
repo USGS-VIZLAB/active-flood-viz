@@ -11,6 +11,9 @@ NWIS_PEAK_STREAMFLOW_SERVICE_ENDPOINT = 'https://nwis.waterdata.usgs.gov/nwis/pe
 # Site IDs available for charting. Expects a list of valid site IDs.
 SITE_IDS = []
 
+# the subset of site_ids to be displayed in the hydrograph by default.
+HYDRO_DISPLAY_IDS = []
+
 # Start and end of time series data for Flood Event. Format for dates: YYYY-MM-DD #
 EVENT_START_DT = ''
 EVENT_END_DT = ''
