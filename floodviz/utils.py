@@ -37,64 +37,46 @@ def parse_rdb(endpoint, params):
     # Needed
     if params.get('site_query'):
         url += params['site_query'] + sites
-
     # Can have one or the other or both for a valid url
     if params.get('start_date_query'):
         url += params['start_date_query'] + params['start_date']
     if params.get('end_date_query'):
         url += params['end_date_query'] + params['end_date']
-
     # One or the other here. Not both. 'site_status' and 'agency' keys should not be in the same params dict.
     if params.get('site_status'):
         url += params['site_status']
     elif params.get('agency'):
         url += params['agency']
-
     # request url
     try:
         r = requests.get(url)
-    except requests.exception.RequestException as e:
+    except requests.exceptions.RequestException as e:
         print(e)
         print('- bad webservice url -')
     else:
         if r.status_code is 200:
             content = r.text.splitlines()
-
-
-
-
-
-
-def parse_rdb(url, header_values):
-    content = None
-    try:
-        r = requests.get(url)
-    except requests.exceptions.RequestException as e:
-        print('- Bad URL -')
-    else:
-        if r.status_code is 200:
-            content = r.text.splitlines()
-    if content:
-        all_data = []
-        keep_headers = {}
-        found_headers = False
-        for line in content:
-            if line.startswith('#'):
-                continue
-            # should run once. Used to map column headers to line split indices.
-            if not found_headers:
-                raw_headers = line.split('\t')
-                for idx, key in enumerate(raw_headers):
-                    if key in header_values.keys():
-                        keep_headers[key] = idx
-                found_headers = True
-                continue
-            else:
+            headers = None
+            for line in content:
+                # Skip commented lines
+                if line.startswith('#'):
+                    continue
                 if line.startswith('USGS'):
+                    # extraction procedure
                     line = line.split('\t')
                     data_point = {}
-                    for key, value in keep_headers.items():
-                        data_point[key] = line[value]
-                    all_data.append(data_point)
-        content = all_data
-    return content
+                    # sanity check that headers has been filled
+                    if headers is not None:
+                        for idx, data in enumerate(line):
+                            data_point[headers[idx]] = data
+                        all_data.append(data_point)
+                # Should run before above if block
+                elif headers is None:
+                    # header procedure
+                    line = line.split('\t')
+                    headers = line
+        else:
+            all_data = None
+
+    return all_data
+
