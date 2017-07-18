@@ -1,5 +1,8 @@
 FROM debian:stretch
 MAINTAINER James McFeeters "jmcfeeters@usgs.gov"
+
+ARG config
+
 RUN apt-get update && apt-get install -y \
     python3-pip \
     nginx-light \
@@ -12,6 +15,8 @@ WORKDIR /app
 
 RUN cp DOIRootCA2.cer /etc/ssl/certs/DOIRootCA2.pem \
 && cat DOIRootCA2.cer >> /etc/ssl/certs/ca-certificates.crt
+
+RUN cp nginx.conf /etc/nginx
 
 RUN rm -f /etc/apt/sources.list.d/chris-lea-node_js-jessie.list \
 && curl --cacert DOIRootCA2.cer https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
@@ -28,7 +33,9 @@ RUN node_modules/bower/bin/bower install --allow-root
 
 RUN nosetests --all-modules --exe
 
-EXPOSE 5050
+RUN python3 run.py --config=$config --freeze --norun
 
-ENTRYPOINT ["python3"]
-CMD ["run.py" ,"--host", "0.0.0.0", "--freeze"]
+EXPOSE 80
+
+ENTRYPOINT ["nginx"]
+CMD ["-g", "daemon off;"]
