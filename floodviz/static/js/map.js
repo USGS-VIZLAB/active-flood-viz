@@ -144,10 +144,8 @@
 				options.site_data.features.forEach(function (g) {
 					var position = projection(g.geometry.coordinates);
 					var info = {
-						name: g.properties.name,
 						x: position[0],
 						y: position[1],
-						active: false,
 						id: g.properties.id
 					};
 					state.gages.push(info);
@@ -227,10 +225,10 @@
 				var box = d3.select('#map-select-box');
 				if (!box.empty()) {
 					var d = {
-						x: parseInt(box.attr("x"), 10),
-						y: parseInt(box.attr("y"), 10),
-						width: parseInt(box.attr("width"), 10),
-						height: parseInt(box.attr("height"), 10)
+						x: parseInt(box.attr("x")),
+						y: parseInt(box.attr("y")),
+						width: parseInt(box.attr("width")),
+						height: parseInt(box.attr("height"))
 					};
 					var move = {
 						x: p[0] - d.x,
@@ -240,14 +238,16 @@
 					if (move.x < 1 || (move.x * 2 < d.width)) {
 						d.x = p[0];
 						d.width -= move.x;
-					} else {
+					}
+					else {
 						d.width = move.x;
 					}
 
 					if (move.y < 1 || (move.y * 2 < d.height)) {
 						d.y = p[1];
 						d.height -= move.y;
-					} else {
+					}
+					else {
 						d.height = move.y;
 					}
 
