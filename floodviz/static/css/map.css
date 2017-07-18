@@ -1,45 +1,55 @@
 #map circle.gage-point{
-    stroke: green;
-    stroke-width: 2;
-    fill-opacity: 0;
+	stroke: #004500;
+	stroke-width: 2;
+	fill-opacity: 0;
+	opacity: .75;
 }
 
+#map circle.gage-point-accent {
+	stroke: #00d040 ;
+	stroke-width: 3;
+	fill-opacity: 0;
+	opacity: 1;
+}
+
+
 #map circle.ref-point{
-    fill: red;
+	fill: red;
 }
 
 #map circle.debug-point{
-    stroke: #ff00ff;
-    stroke-width: 2;
-    fill-opacity: 0;
+	stroke: #ff00ff;
+	stroke-width: 2;
+	fill-opacity: 0;
 }
 
-.maptip {
-	  position: absolute;
-  	display: none;
-  	min-width: 80px;
-  	height: auto;
-  	background-color: #ffffff00;
-  	border: 1px solid #7FFF00;
-  	padding: 14px;
-  	text-align: center;
-    opacity: 1;
+#maptip {
+	position: absolute;
+	display: none;
+	min-width: 80px;
+	height: auto;
+	background-color: rgba(71, 181, 176, 0.8);
+	border: none;
+	padding: 10px;
+	text-align: center;
+	opacity: 1;
 }
 
 #map {
 	float: right;
-	margin-right: 100px;
-	margin-top: 50px;
-	margin-bottom: 50px;
+	margin-right: 10px;
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
 
 #map path.background{
-    stroke: black;
-    fill: white;
-    fill-opacity: 0;
+	stroke: black;
+	fill: white;
+	fill-opacity: 0;
 }
 
 #map path.river{
-    stroke: blue;
+	stroke: blue;
+	fill: blue;
 }
 

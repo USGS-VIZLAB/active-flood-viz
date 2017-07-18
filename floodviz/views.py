@@ -40,8 +40,8 @@ def timeseries_data():
 def _peakflow_helper():
     # Peak Flow config vars #
     peak_site = app.config['PEAK_SITE']
-    peak_start_date = app.config['PEAK_START_DT']
-    peak_end_date = app.config['PEAK_END_DT']
+    peak_start_date = app.config['EVENT_START_DT']
+    peak_end_date = app.config['EVENT_END_DT']
     peak_dv_date = app.config['PEAK_DV_DT']
     url_peak_prefix = app.config['NWIS_PEAK_STREAMFLOW_SERVICE_ENDPOINT']
     content = peak_flow_utils.req_peak_data(peak_site, peak_start_date, peak_end_date, url_peak_prefix)

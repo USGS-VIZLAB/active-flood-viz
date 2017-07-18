@@ -1,8 +1,14 @@
 #hydrograph {
 	margin-top: 50px;
-	margin-left: 100px;
-	margin-bottom: 50px;
+	margin-left: 10px;
+	margin-bottom: 10px;
 	float: left;
+}
+
+#hydrograph .voronoi path {
+	fill: none;
+	stroke: none;
+	pointer-events: all;
 }
 
 #hydrograph .axis path,
@@ -14,23 +20,10 @@
 
 /* Voronoi Stuff */
 
-.gages {
-	fill: none;
-	stroke: steelblue;
-	stroke-linejoin: round;
-	stroke-linecap: round;
-	stroke-width: 1.5px;
-}
 
 .focus text {
 	text-anchor: middle;
 	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
-}
-
-.voronoi path {
-	fill: none;
-	stroke: none;
-	pointer-events: all;
 }
 
 .toolTip {
@@ -42,4 +35,21 @@
 	border: 1px solid #7FFF00;
 	padding: 14px;
 	text-align: center;
+}
+
+.hydro-active{
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	fill: none;
+	stroke-width: 2;
+	stroke: blue;
+	opacity: 1;
+}
+.hydro-inactive{
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	fill: none;
+	stroke-width: 1;
+	stroke: steelblue;
+	opacity: 0.8;
 }
