@@ -173,7 +173,7 @@
 					})
 					.on("click", function (d) {
 						options.click_off(d.data.key);
-						self.remove_series(d.data.key, linked_interactions);
+						self.remove_series(d.data.key);
 					});
 
 		};
