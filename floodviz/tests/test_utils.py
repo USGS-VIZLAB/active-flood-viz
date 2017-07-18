@@ -414,5 +414,3 @@ class TestMapUtilsRDBparse(unittest.TestCase):
             m.get(self.mock_url, text=self.response)
             self.assertEqual(parse_rdb(self.endpoint_mock, self.test_dict), self.valid_data)
 
-            # for item in data:
-            #     self.assertIn(item, {})
