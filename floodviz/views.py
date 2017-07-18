@@ -6,7 +6,6 @@ from . import app
 from . import hydrograph_utils
 from . import map_utils
 from . import peak_flow_utils
-from . import utils
 
 url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 
