@@ -10,6 +10,11 @@ SITE_IDS = ['05463500', '05471050', '05420680', '05479000',
             '05471200', '05476750', '05411850', '05454220',
             '05481950', '05416900', '05464500', '05487470']
 
+# Sites to be displayed on the hydrograph by default.
+HYDRO_DISPLAY_IDS = ['05471200', '05476750', '05411850', '05454220',
+                     '05481950', '05416900', '05464500', '05487470']
+
+
 # Start and end of time series data #
 EVENT_START_DT = '2008-06-26'
 EVENT_END_DT = '2008-07-05'
@@ -34,8 +39,7 @@ RIVERS_FILE = 'floodviz/static/geojson/rivers.json'
 MAP_CONFIG = {
     'width': 750,
     'height': 450,
-    'scale': 1,
-    'debug': DEBUG,
+    'scale': 1
 }
 
 REFERENCE_DATA = {
