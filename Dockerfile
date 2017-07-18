@@ -3,6 +3,8 @@ MAINTAINER James McFeeters "jmcfeeters@usgs.gov"
 
 ARG config
 
+COPY $config /app
+
 RUN apt-get update && apt-get install -y \
     python3-pip \
     nginx-light \
