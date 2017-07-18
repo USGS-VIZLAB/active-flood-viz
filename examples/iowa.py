@@ -1,4 +1,4 @@
-DEBUG = True
+DEBUG = False
 
 # Site IDs available for charting
 SITE_IDS = ['05463500', '05471050', '05420680', '05479000',

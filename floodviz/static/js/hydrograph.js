@@ -8,10 +8,10 @@
 	 *        'data' v(list) - A list of objects representing data points
 	 *        'div_id' v(string) - id for the container for this graph
 	 *    Optional Keys include:
-	 *        'show_map_tooltip' - function to show map tooltip.
-	 *        'remove_map_tooltip' - function to remove map tooltip.
-	 *        'site_add_accent' - function to add accent to map site svg circle.
-	 *        'site_remove_accent' - function to remove accent from map site svg circle.
+	 *        'hover_in' - linked function for hover_in.
+	 *        'hover_out' - linked function for hover_out.
+	 *        'click_on' - linked function for clicking on hydrograph to accent mapsite.
+	 *        'click_off' - linked function for clicking hydrograph to unaccent mapsite.
 	 *
 	 * hydromodule is a module for creating hydrographs using d3. Pass it a javascript object
 	 * specifying config options for the graph. Call init() to create the graph. Other public functions
@@ -123,7 +123,6 @@
 					.entries(graph_data);
 				// Loop through each symbol / key
 				dataNest.forEach(function (d) {
-					options.site_add_accent(d.key);
 					svg.append("g")
 						.attr('class', 'hydro-inactive')
 						.append("path")
@@ -163,18 +162,18 @@
 						return d ? "M" + d.join("L") + "Z" : null;
 					})
 					.on("mouseover", function (d) {
-						options.site_tooltip_show(d.data.name, d.data.key);
+						options.hover_in(d.data.name, d.data.key);
 						self.activate_line(d.data.key);
 						self.series_tooltip_show(d);
 					})
 					.on("mouseout", function (d) {
-						options.site_tooltip_remove();
+						options.hover_out();
 						self.deactivate_line(d.data.key);
 						self.series_tooltip_remove(d.data.key);
 					})
 					.on("click", function (d) {
-						options.site_remove_accent(d.data.key);
-						return self.remove_series(d.data.key);
+						options.click_off(d.data.key);
+						self.remove_series(d.data.key);
 					});
 
 		};
@@ -182,8 +181,8 @@
 		/**
 		 * Initialize the Hydrograph
 		 */
-		self.init = function () {
-			update();
+		self.init = function (linked_interactions) {
+			update(linked_interactions);
 		};
 		/**
 		 * Displays tooltip for hydrograph at a data point in addition to
@@ -207,19 +206,19 @@
 		 * appropriately and removes accents from the corresponding
 		 * site on the map.
 		 */
-		self.remove_series = function (sitekey) {
-			options.site_remove_accent(sitekey);
+		self.remove_series = function (sitekey, linked_interactions) {
 			var keep_ids = FV.hydrograph_display_ids;
 			keep_ids.splice(FV.hydrograph_display_ids.indexOf(sitekey), 1);
-			self.change_lines(keep_ids);
+			self.change_lines(keep_ids, linked_interactions);
+			options.hover_out();
 		};
 		/**
 		 * Update the value of display_ids and call update to redraw the graph to match.
 		 * @param new_display_ids The new set of gages to be displayed.
 		 */
-		self.change_lines = function (new_display_ids) {
+		self.change_lines = function (new_display_ids, linked_interactions) {
 			FV.hydrograph_display_ids = new_display_ids;
-			update();
+			update(linked_interactions);
 		};
 		/**
 		 * Highlight a line.

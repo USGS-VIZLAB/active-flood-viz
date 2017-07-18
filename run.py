@@ -9,10 +9,19 @@ if __name__ == '__main__':
     parser.add_argument('--host', '-ht', type=str)
     parser.add_argument('--port', '-p', type=str)
     parser.add_argument('--freeze', '-f', action='store_true', default=False)
+    parser.add_argument('--norun', '-n', action='store_true', default=False)
+    parser.add_argument('--config', '-c', type=str)
     args = parser.parse_args()
     host_val = args.host
     port_val = args.port
     do_freeze = args.freeze
+    run = not args.norun
+    config = args.config
+
+    if config is not None:
+        with open(config, "r") as config_file:
+            with open("instance/config.py", "w") as instance_config:
+                instance_config.write(config_file.read())
 
     if host_val is not None:
         host = host_val
@@ -28,7 +37,8 @@ if __name__ == '__main__':
         print("freezing")
         freezer.freeze()
         print("frozen")
-        freezer.serve(host=host, port=port, threaded=True)
+        if run:
+            freezer.serve(host=host, port=port, threaded=True)
     else:
         application.run(host=host, port=port, threaded=True)
     # run from the command line as follows
