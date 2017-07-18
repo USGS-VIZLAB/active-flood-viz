@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	peakflow_bar.style.height = FV.peakmeta['height'];
 	peakflow_bar.style.width = FV.peakmeta['width'];
 
-	var margin = {bottom: 100, right: 120, left: 120, top: 150};
+	var margin = {bottom: 100, right: 50, left: 50, top: 150};
 	var width = parseInt(FV.peakmeta['width']);
 	var height = parseInt(FV.peakmeta['height']);
 	var data = FV.peakinfo;

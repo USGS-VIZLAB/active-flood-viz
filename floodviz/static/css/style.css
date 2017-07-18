@@ -19,7 +19,13 @@ body {
 
 #pic1, #pic2, #textbox {
 	border: 1px solid black;
-	width: 320px;
-	height: 200px;
+	width: 400px;
+	height: 400px;
+	font-size: 20px;
+}
+
+.header, .subheader, .footer {
+	text-align: center;
+	border: 1px solid black;
 }
 
