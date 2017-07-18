@@ -25,7 +25,7 @@ PROJECTION_EPSG_CODE = '2289'
 BOUNDING_BOX = [-88.45, 43.1, -87.64, 42.55]
 
 BACKGROUND_FILE = 'floodviz/static/geojson/states.json'
-RIVERS_FILE = 'instance/rivers_SE_WI_2.json'
+RIVERS_FILE = 'floodviz/static/geojson/rivers_SE_WI_2.json'
 
 MAP_CONFIG = {
     'width': 750,

@@ -116,4 +116,7 @@ node_modules/
 # Data files #
 *floodviz/static/data/*
 !*floodviz/static/data/.gitkeep
-rivers.json
+
+*floodviz/static/geojson/*
+!states.json
+
