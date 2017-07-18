@@ -75,7 +75,7 @@
 		 * when data changes (as in removal of a line).
 		 *
 		 */
-		var update = function () {
+		var update = function (linked_interactions) {
 
 				// Cut the data down to sites we want to display
 				var sub_data = subset_data(options.data);
@@ -123,7 +123,6 @@
 					.entries(graph_data);
 				// Loop through each symbol / key
 				dataNest.forEach(function (d) {
-					//options.accent_mapsite(d.key);
 					svg.append("g")
 						.attr('class', 'hydro-inactive')
 						.append("path")
@@ -163,17 +162,17 @@
 						return d ? "M" + d.join("L") + "Z" : null;
 					})
 					.on("mouseover", function (d) {
-						options.hover_in(d.data.name, d.data.key);
+						linked_interactions.hover_in(d.data.name, d.data.key);
 						self.activate_line(d.data.key);
 						self.series_tooltip_show(d);
 					})
 					.on("mouseout", function (d) {
-						options.hover_out();
+						linked_interactions.hover_out();
 						self.deactivate_line(d.data.key);
 						self.series_tooltip_remove(d.data.key);
 					})
 					.on("click", function (d) {
-						options.click_off(d.data.key);
+						linked_interactions.click_off(d.data.key);
 						return self.remove_series(d.data.key);
 					});
 
@@ -182,8 +181,8 @@
 		/**
 		 * Initialize the Hydrograph
 		 */
-		self.init = function () {
-			update();
+		self.init = function (linked_interactions) {
+			update(linked_interactions);
 		};
 		/**
 		 * Displays tooltip for hydrograph at a data point in addition to
