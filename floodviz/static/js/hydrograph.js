@@ -210,7 +210,7 @@
 			var keep_ids = FV.hydrograph_display_ids;
 			keep_ids.splice(FV.hydrograph_display_ids.indexOf(sitekey), 1);
 			self.change_lines(keep_ids, linked_interactions);
-			options.site_tooltip_remove(sitekey);
+			options.hover_out();
 		};
 		/**
 		 * Update the value of display_ids and call update to redraw the graph to match.
