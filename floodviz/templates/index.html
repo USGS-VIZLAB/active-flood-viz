@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}"/>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
@@ -17,6 +17,16 @@
 <body>
 
 	<div class="main-content container-fluid">
+		<div class ="row">
+			<div class="col-sm-12 header">
+				<h1>Title</h1>
+			</div>
+		</div>
+		<div class ="row">
+			<div class="col-sm-12 subheader">
+				<h3>subtitle</h3>
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-sm-6">
 				<div id="hydrograph"></div>
@@ -24,7 +34,9 @@
 			<div class="col-sm-6">
 				<div id="map"></div>
 			</div>
-			<div class="w-100"></div>
+		</div>
+		<div class="w-100"></div>
+		<div class="row">
 			<div class="col-sm-6">
 				<div id="textbox">
 					<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
@@ -33,7 +45,9 @@
 			<div class="col-sm-6">
 				<div id="peakflow_bar"></div>
 			</div>
+		</div>
 			<div class="w-100"></div>
+		<div class="row">
 			<div class="col-sm-6">
 				<div id="pic1"></div>
 			</div>

@@ -19,4 +19,7 @@ body {
 
 #pic1, #pic2, #textbox {
 	border: 1px solid black;
+	width: 320px;
+	height: 200px;
 }
+
