@@ -113,17 +113,14 @@
 				// Define the drag behavior to be used for the selection box
 				var drag = d3.drag()
 					.on('start', function () {
-						console.log('start');
 						var p = d3.mouse(this);
 						select_box_start(p);
 					})
 					.on('drag', function () {
-						console.log('move');
 						var p = d3.mouse(this);
 						select_box_drag(p);
 					})
 					.on('end', function(){
-						console.log('end');
 						select_box_end();
 					});
 
