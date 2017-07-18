@@ -18,6 +18,8 @@ RUN cp DOIRootCA2.cer /etc/ssl/certs/DOIRootCA2.pem \
 
 RUN cp nginx.conf /etc/nginx
 
+RUN cp $config instance/config.py
+
 RUN rm -f /etc/apt/sources.list.d/chris-lea-node_js-jessie.list \
 && curl --cacert DOIRootCA2.cer https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
 && echo 'deb https://deb.nodesource.com/node_6.x jessie main' > /etc/apt/sources.list.d/nodesource.list \
@@ -33,7 +35,7 @@ RUN node_modules/bower/bin/bower install --allow-root
 
 RUN nosetests --all-modules --exe
 
-RUN python3 run.py --config=$config --freeze --norun
+RUN python3 run.py --freeze --norun
 
 EXPOSE 80
 
