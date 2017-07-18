@@ -141,7 +141,7 @@
 					.on('click', function (d) { return self.click(d.properties.id)});
 
 				state.gages = [];
-				options.site_data.forEach(function (g) {
+				options.site_data.features.forEach(function (g) {
 					var position = projection(g.geometry.coordinates);
 					var info = {
 						name: g.properties.name,
@@ -268,10 +268,30 @@
 			var select_box_end = function () {
 				// x and y always denote the NW corner, height denotes how far south
 				// and width how far east the box extends.
+				var NW = {
+					x: state.box.x,
+					y: state.box.y
+				};
+				var SE = {
+					x: NW.x + state.box.width,
+					y: NW.y + state.box.height
+				};
+				var selected = [];
+				FV.hydrograph_display_ids.forEach(function(key) {
+					self.site_remove_accent(key);
+				});
 
+				state.gages.forEach(function(g) {
+					if (
+						g.x > NW.x && g.x < SE.x &&
+						g.y > NW.y && g.y < SE.y
+					){
+						selected.push(g.id);
+					}
+				});
+				options.change_lines(selected);
 				svg.select('#map-select-box').remove();
 			};
-
 			return self;
 		};
 	}()
