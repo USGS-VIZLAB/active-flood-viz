@@ -73,12 +73,12 @@
 					})
 					.attr("class", classname)
 					.each(function (d) {
-					if (property_for_id && d.properties[property_for_id]) {
-						if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
-							self.site_add_accent(d.properties.id);
+						if (property_for_id && d.properties[property_for_id]) {
+							if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
+								self.site_add_accent(d.properties.id);
+							}
 						}
-					}
-				});
+					});
 				return (group);
 			};
 			/**
@@ -94,6 +94,7 @@
 					.append("path")
 					.attr("d", path)
 					.attr("class", classname);
+				return group;
 			};
 
 			/**
@@ -109,19 +110,22 @@
 					.attr("width", options.width)
 					.attr("height", options.height);
 
-				svg.on('mousedown', function () {
-					var p = d3.mouse(this);
-					select_box_start(p);
-				});
-
-				svg.on("mousemove", function () {
-					var p = d3.mouse(this);
-					select_box_drag(p);
-				});
-
-				svg.on('mouseup', function () {
-					select_box_end();
-				});
+				// Define the drag behavior to be used for the selection box
+				var drag = d3.drag()
+					.on('start', function () {
+						console.log('start');
+						var p = d3.mouse(this);
+						select_box_start(p);
+					})
+					.on('drag', function () {
+						console.log('move');
+						var p = d3.mouse(this);
+						select_box_drag(p);
+					})
+					.on('end', function(){
+						console.log('end');
+						select_box_end();
+					});
 
 
 				// set bounding box to values provided
@@ -131,8 +135,10 @@
 				// Update the projection
 				projection.scale(s).translate(t);
 				// Add layers
-				add_paths(options.bg_data, "background");
-				add_paths(options.rivers_data, "river");
+				var bg =add_paths(options.bg_data, "background");
+				bg.call(drag);
+				var rivers = add_paths(options.rivers_data, "river");
+				rivers.call(drag);
 				add_circles(options.ref_data, "ref-point", 2);
 				// Add sites and bind events for site hovers
 				var sites = add_circles(options.site_data, "gage-point", 3, 'id');
@@ -145,7 +151,7 @@
 						self.site_tooltip_remove(d.properties.id);
 						options.hover_out(d.properties.id);
 					})
-					.on('click', function (d) { return self.click(d.properties.id)});
+					.on('click', function (d) { self.click(d.properties.id)});
 
 				state.gages = [];
 				options.site_data.features.forEach(function (g) {
@@ -272,30 +278,41 @@
 			};
 
 			var select_box_end = function () {
-				// x and y always denote the NW corner, height denotes how far south
-				// and width how far east the box extends.
-				var NW = {
-					x: state.box.x,
-					y: state.box.y
-				};
-				var SE = {
-					x: NW.x + state.box.width,
-					y: NW.y + state.box.height
-				};
-				var selected = [];
-				FV.hydrograph_display_ids.forEach(function(key) {
-					self.site_remove_accent(key);
-				});
+				// Check if the box has a reasonable area to make sure it isn't a click by mistake
+				var area = state.box.width * state.box.height;
+				if (area >= 100) {
 
-				state.gages.forEach(function(g) {
-					if (
-						g.x > NW.x && g.x < SE.x &&
-						g.y > NW.y && g.y < SE.y
-					){
-						selected.push(g.id);
-					}
-				});
-				options.change_lines(selected);
+
+
+					// x and y always denote the NW corner, height denotes how far south
+					// and width how far east the box extends.
+					var NW = {
+						x: state.box.x,
+						y: state.box.y
+					};
+					var SE = {
+						x: NW.x + state.box.width,
+						y: NW.y + state.box.height
+					};
+					var selected = [];
+					FV.hydrograph_display_ids.forEach(function (key) {
+						self.site_remove_accent(key);
+					});
+
+					state.gages.forEach(function (g) {
+						if (
+							g.x > NW.x && g.x < SE.x &&
+							g.y > NW.y && g.y < SE.y
+						) {
+							selected.push(g.id);
+						}
+					});
+					options.click_toggle(selected);
+					selected.forEach(function (key) {
+						self.site_add_accent(key);
+					});
+				}
+				state.box = {};
 				svg.select('#map-select-box').remove();
 			};
 			return self;
