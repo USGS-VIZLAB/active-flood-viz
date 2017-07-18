@@ -24,36 +24,43 @@ def parse_rdb(endpoint, params):
         RETURNS:
             url - url to request for data
     """
-    ret = None
+    all_data = []
     sites = None
     url = endpoint
-    if params.get('sites') != None:
+    data_format = '?format=rdb'
+    if params.get('sites') is not None:
         sites = ','.join(params['sites'])
-    if sites:
-
-
-
-
-def url_construct(endpoint, params):
-    # Construct request URL
-    sites = ','.join(params['sites'])
-    url = endpoint
-    if params.get('extra'):
-        url += params['extra'] + params['format']
-    else:
-        url += params['format']
+        if params.get('extra'):
+            url += params['extra'] + data_format
+        else:
+            url += data_format
+    # Needed
     if params.get('site_query'):
         url += params['site_query'] + sites
+
+    # Can have one or the other or both for a valid url
     if params.get('start_date_query'):
         url += params['start_date_query'] + params['start_date']
     if params.get('end_date_query'):
         url += params['end_date_query'] + params['end_date']
-    # one or the other. Not both. 'site_status' and 'agency' keys should not be in the same params dict.
+
+    # One or the other here. Not both. 'site_status' and 'agency' keys should not be in the same params dict.
     if params.get('site_status'):
         url += params['site_status']
     elif params.get('agency'):
         url += params['agency']
-    return url
+
+    # request url
+    try:
+        r = requests.get(url)
+    except requests.exception.RequestException as e:
+        print(e)
+        print('- bad webservice url -')
+    else:
+        if r.status_code is 200:
+            content = r.text.splitlines()
+
+
 
 
 
