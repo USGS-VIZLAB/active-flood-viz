@@ -33,9 +33,9 @@ RUN npm config set cafile "/app/DOIRootCA2.cer" \
 
 RUN node_modules/bower/bin/bower install --allow-root
 
-#RUN nosetests --all-modules --exe
+RUN nosetests --all-modules --exe
 
-RUN python3 run.py --config=$config --freeze --norun
+RUN python3 run.py --freeze --norun
 
 EXPOSE 80
 
