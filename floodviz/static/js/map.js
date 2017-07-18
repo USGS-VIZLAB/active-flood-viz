@@ -1,5 +1,5 @@
-(function() {
-	"use strict";
+(function () {
+	'use strict';
 	/**
 	 * @param {Object} options - holds options for the configuration of the map.
 	 * All keys are not optional.
@@ -38,9 +38,9 @@
 		//Create SVG element
 		var svg = null;
 		// Tooltip
-		var maptip = d3.select("body")
-			.append("div")
-			.attr("id", "maptip");
+		var maptip = d3.select('body')
+			.append('div')
+			.attr('id', 'maptip');
 
 		/**
 		 * Add circles to the map.
@@ -51,24 +51,24 @@
 		 *                            If null, or not provided, no id will be given.
 		 */
 		var add_circles = function (data, classname, radius, property_for_id) {
-			var group = svg.append("g");
-			group.selectAll("circle")
+			var group = svg.append('g');
+			group.selectAll('circle')
 				.data(data.features)
 				.enter()
-				.append("circle")
-				.attr("r", radius)
-				.attr("transform", function (d) {
-					return "translate(" + projection(d.geometry.coordinates) + ")";
+				.append('circle')
+				.attr('r', radius)
+				.attr('transform', function (d) {
+					return 'translate(' + projection(d.geometry.coordinates) + ')';
 				})
-				.attr("id", function (d) {
+				.attr('id', function (d) {
 					if (property_for_id && d.properties[property_for_id]) {
 						return 'map' + d.properties[property_for_id];
 					}
-					else{
+					else {
 						return '';
 					}
 				})
-				.attr("class", classname)
+				.attr('class', classname)
 				.each(function (d) {
 					if (property_for_id && d.properties[property_for_id]) {
 						if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
@@ -84,28 +84,28 @@
 		 * @param classname The class to be given to each element for use in CSS
 		 */
 		var add_paths = function (data, classname) {
-			var group = svg.append("g");
-			group.selectAll("path")
+			var group = svg.append('g');
+			group.selectAll('path')
 				.data(data.features)
 				.enter()
-				.append("path")
-				.attr("d", path)
-				.attr("class", classname);
+				.append('path')
+				.attr('d', path)
+				.attr('class', classname);
 		};
-		
+
 		/**
 		 * Initialize the Map
 		 */
-		self.init = function() {
+		self.init = function () {
 
 			if (svg !== null) {
 				d3.select(options.div_id).select('svg').remove();
 			}
 			svg = d3.select(options.div_id)
-			.append("svg")
-			.attr("width", options.width)
-			.attr("height", options.height);
-			
+				.append('svg')
+				.attr('width', options.width)
+				.attr('height', options.height);
+
 			// set bounding box to values provided
 			var b = path.bounds(options.bounds);
 			var s = options.scale / Math.max((b[1][0] - b[0][0]) / options.width, (b[1][1] - b[0][1]) / options.height);
@@ -113,24 +113,24 @@
 			// Update the projection
 			projection.scale(s).translate(t);
 			// Add layers
-			add_paths(options.bg_data, "background");
-			add_paths(options.rivers_data, "river");
-			add_circles(options.ref_data, "ref-point", 2);
+			add_paths(options.bg_data, 'background');
+			add_paths(options.rivers_data, 'river');
+			add_circles(options.ref_data, 'ref-point', 2);
 			// Add sites and bind events for site hovers
-			var sites = add_circles(options.site_data, "gage-point", 3, 'id');
-			sites.selectAll("circle")
+			var sites = add_circles(options.site_data, 'gage-point', 3, 'id');
+			sites.selectAll('circle')
 				.on('mouseover', function (d) {
 					self.site_tooltip_show(d.properties.name, d.properties.id);
 					options.hover_in(d.properties.id);
 				})
-				.on("mouseout", function (d) {
+				.on('mouseout', function (d) {
 					self.site_tooltip_remove(d.properties.id);
 					options.hover_out(d.properties.id);
 				})
 				.on('click', function (d) { return self.click(d.properties.id) });
 			// Debug points
 			if (FV.config.debug) {
-				add_circles(options.bounds, "debug-point", 3)
+				add_circles(options.bounds, 'debug-point', 3)
 			}
 		};
 
@@ -138,18 +138,18 @@
 		 * Shows sitename tooltip on map figure at correct location.
 		 */
 		self.site_tooltip_show = function (sitename, sitekey) {
-			var gage_point_cords = document.getElementById('map'+sitekey).getBoundingClientRect();
+			var gage_point_cords = document.getElementById('map' + sitekey).getBoundingClientRect();
 			maptip.transition().duration(500);
-			maptip.style("display", "inline-block")
-				.style("left", (gage_point_cords.left) + 7 + "px")
-				.style("top", (gage_point_cords.top - 30) + "px")
+			maptip.style('display', 'inline-block')
+				.style('left', (gage_point_cords.left) + 7 + 'px')
+				.style('top', (gage_point_cords.top - 30) + 'px')
 				.html((sitename));
 		};
 		/**
 		 * Removes tooltip style from map site.
 		 */
 		self.site_tooltip_remove = function () {
-			maptip.style("display", "none");
+			maptip.style('display', 'none');
 		};
 
 		/**
@@ -185,11 +185,11 @@
 
 // Define helper functions
 function degreesToRadians(degrees) {
-	"use strict";
+	'use strict';
 	return degrees * Math.PI / 180;
 }
 
 function radiansToDegrees(radians) {
-	"use strict";
+	'use strict';
 	return radians * 180 / Math.PI;
 }
