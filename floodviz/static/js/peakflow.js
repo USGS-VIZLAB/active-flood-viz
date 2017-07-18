@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	var padding = lb_x - slb_x;
 	var lolli_pos_x = ((lb_x + padding + ((1/2) * x.bandwidth())).toString())
 	var lolli_pos_y = (y(lolli_data['value'])).toString()
-	var path_string = "M " + lolli_pos_x +"," + 300 + " " + lolli_pos_x + "," + lolli_pos_y;
+	var path_string = "M " + lolli_pos_x +"," + FV.peakmeta['height'] + " " + lolli_pos_x + "," + lolli_pos_y;
 	svg.append("path")
 		.attr('id', 'lollipop')
 		.attr("stroke-width", 2)
