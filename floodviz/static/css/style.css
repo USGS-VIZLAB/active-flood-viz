@@ -16,3 +16,7 @@ body {
 	font: 10px sans-serif;
 	stroke-width: 1;
 }
+
+#pic1, #pic2, #textbox {
+	border: 1px solid black;
+}
