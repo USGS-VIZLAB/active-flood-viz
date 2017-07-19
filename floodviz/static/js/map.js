@@ -267,6 +267,8 @@
 						select_box_end();
 					});
 
+				svg.call(drag);
+
 
 				// set bounding box to values provided
 				var b = path.bounds(options.bounds);
@@ -275,10 +277,8 @@
 				// Update the projection
 				projection.scale(s).translate(t);
 				// Add layers
-				var bg = add_paths(options.bg_data, "background");
-				bg.call(drag);
-				var rivers = add_paths(options.rivers_data, "river");
-				rivers.call(drag);
+				add_paths(options.bg_data, "background");
+				add_paths(options.rivers_data, "river");
 				add_circles(options.ref_data, "ref-point", 2);
 				// Add sites and bind events for site hovers
 				var sites = add_circles(options.site_data, "gage-point", 3, 'id');
