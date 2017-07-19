@@ -135,7 +135,6 @@
 			 * @param point Location of the mouse on the svg
 			 */
 			var select_box_start = function (point) {
-				if (d3.event.defaultPrevented) return;
 				svg.append('rect')
 					.attr('x', point[0])
 					.attr('y', point[1])
@@ -218,23 +217,19 @@
 						x: NW.x + state.box.width,
 						y: NW.y + state.box.height
 					};
-					var selected = [];
-					FV.hydrograph_display_ids.forEach(function (key) {
-						self.site_remove_accent(key);
-					});
+					var selected = FV.hydrograph_display_ids;
 
 					state.gages.forEach(function (g) {
 						if (
+							selected.indexOf(g.id) === -1 &&
 							g.x > NW.x && g.x < SE.x &&
 							g.y > NW.y && g.y < SE.y
 						) {
 							selected.push(g.id);
+							self.site_add_accent(g.id);
 						}
 					});
 					options.click_toggle(selected);
-					selected.forEach(function (key) {
-						self.site_add_accent(key);
-					});
 				}
 				state.box = {};
 				svg.select('#map-select-box').remove();
@@ -291,7 +286,12 @@
 						self.site_tooltip_remove(d.properties.id);
 						options.hover_out(d.properties.id);
 					})
-					.on('click', function (d) { toggle_hydrograph_display(d.properties.id)});
+					.on('click', function (d) {
+						toggle_hydrograph_display(d.properties.id)
+					})
+					.on('mousedown', function () {
+						d3.event.stopPropagation();
+					});
 
 				// Save locations of gages in SVG for later use with selection box
 				state.gages = [];
