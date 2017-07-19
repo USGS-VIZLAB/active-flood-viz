@@ -49,14 +49,13 @@
 }
 
 #map path.river{
-	stroke: blue;
-	fill: blue;
+	stroke: steelblue;
+	fill: steelblue;
 }
 
 rect.select-box {
-	stroke: red;
-	stroke-dasharray: 1, 1;
-	fill: red;
+	stroke: #b47846;
+	fill: #b47846;
 	fill-opacity: 0.1;
 }
 
