@@ -2,7 +2,7 @@
 		"use strict";
 		/**
 		 * @param {Object} options - holds options for the configuration of the map.
-		 * All keys are not optional.
+		 * All keys are required.
 		 * Keys include:
 		 *    @prop 'height' v(int) - height of the map
 		 *    @prop 'width' v(int) - width of the map
@@ -16,8 +16,16 @@
 		 *    @prop 'div_id' v(string) - id for the container for this graph
 		 *
 		 * mapmodule is a module for creating maps using d3. Pass it a javascript object
-		 * specifying config options for the map. Call init() to create the map. Other pulic fuctions
+		 * specifying config options for the map. Call init() to create the map. Other public functions
 		 * handle user events and link to other modules.
+		 *
+		 * @return {Object} self - Holder for public functions.
+		 *    See functions for specific documentation.
+		 *    @function init
+		 *    @function site_tooltip_show
+		 *    @function site_tooltip_remove
+		 *    @function site_add_accent
+		 *    @function site_remove_accent
 		 *
 		 */
 		FV.mapmodule = function (options) {
@@ -53,6 +61,8 @@
 			 * @param radius The radius of each circle. This cannot be set from CSS
 			 * @param property_for_id The name of a field in the 'properties' of each feature, to be used for ID
 			 *                            If null, or not provided, no id will be given.
+			 *
+			 * @return group The group that has been appended to the SVG
 			 */
 			var add_circles = function (data, classname, radius, property_for_id) {
 				var group = svg.append("g");
@@ -86,6 +96,8 @@
 			 * Add paths to the map
 			 * @param data The geojson to be added to the svg
 			 * @param classname The class to be given to each element for use in CSS
+			 *
+			 * @return group The group that has been appended to the SVG
 			 */
 			var add_paths = function (data, classname) {
 				var group = svg.append("g");
@@ -96,6 +108,26 @@
 					.attr("d", path)
 					.attr("class", classname);
 				return group;
+			};
+
+			/**
+			 * Add or remove the line corresponding to a gage from the hydrograph
+			 * @param sitekey THe ID of the gage in question
+			 */
+			var toggle_hydrograph_display = function (sitekey) {
+				var new_display_ids = FV.hydrograph_display_ids;
+				var being_displayed = new_display_ids.indexOf(sitekey) !== -1;
+				if (being_displayed === true) {
+					self.site_remove_accent(sitekey);
+					new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
+					options.hover_out(sitekey);
+				}
+				else {
+					self.site_add_accent(sitekey);
+					new_display_ids.push(sitekey);
+				}
+				options.click_toggle(new_display_ids);
+				options.hover_in(sitekey);
 			};
 
 			/**
@@ -259,7 +291,7 @@
 						self.site_tooltip_remove(d.properties.id);
 						options.hover_out(d.properties.id);
 					})
-					.on('click', function (d) { self.click(d.properties.id)});
+					.on('click', function (d) { toggle_hydrograph_display(d.properties.id)});
 
 				// Save locations of gages in SVG for later use with selection box
 				state.gages = [];
@@ -307,21 +339,7 @@
 			self.site_add_accent = function (sitekey) {
 				d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
 			};
-			self.click = function (sitekey) {
-				var new_display_ids = FV.hydrograph_display_ids;
-				var being_displayed = new_display_ids.indexOf(sitekey) !== -1;
-				if (being_displayed === true) {
-					self.site_remove_accent(sitekey);
-					new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
-					options.hover_out(sitekey);
-				}
-				else {
-					self.site_add_accent(sitekey);
-					new_display_ids.push(sitekey);
-				}
-				options.click_toggle(new_display_ids);
-				options.hover_in(sitekey);
-			};
+
 			return self;
 		};
 	}()
