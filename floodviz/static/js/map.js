@@ -24,6 +24,7 @@
 
 			var self = {};
 
+			// Stores SVG coordinates of gages and the size and location of the selection box
 			var state = {};
 
 			var project = function (lambda, phi) {
@@ -98,6 +99,116 @@
 			};
 
 			/**
+			 * Starts a click-and-drag box to select gages
+			 * @param point Location of the mouse on the svg
+			 */
+			var select_box_start = function (point) {
+				if (d3.event.defaultPrevented) return;
+				svg.append('rect')
+					.attr('x', point[0])
+					.attr('y', point[1])
+					.attr('height', 0)
+					.attr('width', 0)
+					.attr('class', 'select-box')
+					.attr('id', 'map-select-box');
+
+				state.box = {
+					x: point[0],
+					y: point[1],
+					height: 0,
+					width: 0
+				};
+			};
+
+			/**
+			 * Change the size and shape of the selection box based on new mouse location
+			 * @param point Location of the mouse on the svg
+			 */
+			var select_box_drag = function (point) {
+				var box = d3.select('#map-select-box');
+				if (!box.empty()) {
+					var d = {
+						x: parseInt(box.attr("x")),
+						y: parseInt(box.attr("y")),
+						width: parseInt(box.attr("width")),
+						height: parseInt(box.attr("height"))
+					};
+					var move = {
+						x: point[0] - d.x,
+						y: point[1] - d.y
+					};
+
+					if (move.x < 1 || (move.x * 2 < d.width)) {
+						d.x = point[0];
+						d.width -= move.x;
+					}
+					else {
+						d.width = move.x;
+					}
+
+					if (move.y < 1 || (move.y * 2 < d.height)) {
+						d.y = point[1];
+						d.height -= move.y;
+					}
+					else {
+						d.height = move.y;
+					}
+
+					box.attr('x', d.x)
+						.attr('y', d.y)
+						.attr('width', d.width)
+						.attr('height', d.height);
+
+					state.box = {
+						x: d.x,
+						y: d.y,
+						height: d.height,
+						width: d.width
+					};
+				}
+			};
+
+			/**
+			 * End the selection box, get rid of the box in state and on the svg,
+			 * update the hydrograph and map if necessary
+			 */
+			var select_box_end = function () {
+				// Check if the box has a reasonable area to make sure it isn't a click by mistake
+				var area = state.box.width * state.box.height;
+				if (area >= 100) {
+					// x and y always denote the NW corner, height denotes how far south
+					// and width how far east the box extends.
+					var NW = {
+						x: state.box.x,
+						y: state.box.y
+					};
+					var SE = {
+						x: NW.x + state.box.width,
+						y: NW.y + state.box.height
+					};
+					var selected = [];
+					FV.hydrograph_display_ids.forEach(function (key) {
+						self.site_remove_accent(key);
+					});
+
+					state.gages.forEach(function (g) {
+						if (
+							g.x > NW.x && g.x < SE.x &&
+							g.y > NW.y && g.y < SE.y
+						) {
+							selected.push(g.id);
+						}
+					});
+					options.click_toggle(selected);
+					selected.forEach(function (key) {
+						self.site_add_accent(key);
+					});
+				}
+				state.box = {};
+				svg.select('#map-select-box').remove();
+			};
+
+			/**
 			 * Initialize the Map
 			 */
 			self.init = function () {
@@ -120,7 +231,7 @@
 						var p = d3.mouse(this);
 						select_box_drag(p);
 					})
-					.on('end', function(){
+					.on('end', function () {
 						select_box_end();
 					});
 
@@ -132,7 +243,7 @@
 				// Update the projection
 				projection.scale(s).translate(t);
 				// Add layers
-				var bg =add_paths(options.bg_data, "background");
+				var bg = add_paths(options.bg_data, "background");
 				bg.call(drag);
 				var rivers = add_paths(options.rivers_data, "river");
 				rivers.call(drag);
@@ -150,6 +261,7 @@
 					})
 					.on('click', function (d) { self.click(d.properties.id)});
 
+				// Save locations of gages in SVG for later use with selection box
 				state.gages = [];
 				options.site_data.features.forEach(function (g) {
 					var position = projection(g.geometry.coordinates);
@@ -209,108 +321,6 @@
 				}
 				options.click_toggle(new_display_ids);
 				options.hover_in(sitekey);
-			};
-
-
-			var select_box_start = function (p) {
-				if (d3.event.defaultPrevented) return;
-				svg.append('rect')
-					.attr('x', p[0])
-					.attr('y', p[1])
-					.attr('height', 0)
-					.attr('width', 0)
-					.attr('class', 'select-box')
-					.attr('id', 'map-select-box');
-
-				state.box = {
-					x: p[0],
-					y: p[1],
-					height: 0,
-					width: 0
-				};
-			};
-
-			var select_box_drag = function (p) {
-				var box = d3.select('#map-select-box');
-				if (!box.empty()) {
-					var d = {
-						x: parseInt(box.attr("x")),
-						y: parseInt(box.attr("y")),
-						width: parseInt(box.attr("width")),
-						height: parseInt(box.attr("height"))
-					};
-					var move = {
-						x: p[0] - d.x,
-						y: p[1] - d.y
-					};
-
-					if (move.x < 1 || (move.x * 2 < d.width)) {
-						d.x = p[0];
-						d.width -= move.x;
-					}
-					else {
-						d.width = move.x;
-					}
-
-					if (move.y < 1 || (move.y * 2 < d.height)) {
-						d.y = p[1];
-						d.height -= move.y;
-					}
-					else {
-						d.height = move.y;
-					}
-
-					box.attr('x', d.x)
-						.attr('y', d.y)
-						.attr('width', d.width)
-						.attr('height', d.height);
-
-					state.box = {
-						x: d.x,
-						y: d.y,
-						height: d.height,
-						width: d.width
-					};
-				}
-			};
-
-			var select_box_end = function () {
-				// Check if the box has a reasonable area to make sure it isn't a click by mistake
-				var area = state.box.width * state.box.height;
-				if (area >= 100) {
-
-
-
-					// x and y always denote the NW corner, height denotes how far south
-					// and width how far east the box extends.
-					var NW = {
-						x: state.box.x,
-						y: state.box.y
-					};
-					var SE = {
-						x: NW.x + state.box.width,
-						y: NW.y + state.box.height
-					};
-					var selected = [];
-					FV.hydrograph_display_ids.forEach(function (key) {
-						self.site_remove_accent(key);
-					});
-
-					state.gages.forEach(function (g) {
-						if (
-							g.x > NW.x && g.x < SE.x &&
-							g.y > NW.y && g.y < SE.y
-						) {
-							selected.push(g.id);
-						}
-					});
-					options.click_toggle(selected);
-					selected.forEach(function (key) {
-						self.site_add_accent(key);
-					});
-				}
-				state.box = {};
-				svg.select('#map-select-box').remove();
 			};
 			return self;
 		};
