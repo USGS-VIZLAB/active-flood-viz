@@ -1,5 +1,5 @@
 (function () {
-	"use strict";
+	'use strict';
 	/**
 	 * @param {Object} options - holds options for the configuration of the hydrograph
 	 *    Non-optional Keys include:
@@ -77,104 +77,104 @@
 		 */
 		var update = function () {
 
-				// Cut the data down to sites we want to display
-				var sub_data = subset_data(options.data);
-				// Remove the current version of the graph if one exists
-				var current_svg = d3.select(options.div_id + " svg");
-				if (current_svg) {
-					current_svg.remove();
-				}
-				// recreate svg
-				svg = d3.select(options.div_id)
-					.append("svg")
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-					.append("g")
-					.attr("transform",
-						"translate(" + margin.left + "," + margin.top + ")");
+			// Cut the data down to sites we want to display
+			var sub_data = subset_data(options.data);
+			// Remove the current version of the graph if one exists
+			var current_svg = d3.select(options.div_id + ' svg');
+			if (current_svg) {
+				current_svg.remove();
+			}
+			// recreate svg
+			svg = d3.select(options.div_id)
+				.append('svg')
+				.attr('width', width + margin.left + margin.right)
+				.attr('height', height + margin.top + margin.bottom)
+				.append('g')
+				.attr('transform',
+					'translate(' + margin.left + ',' + margin.top + ')');
 
-				var graph_data = sub_data.map(function (d) {
-					return {
-						"date": d.date,
-						"key": d.key,
-						"name": d.name,
-						"time": d.time,
-						"time_mili": d.time_mili,
-						"timezone": d.timezone,
-						"value": Number(d.value)
-					};
+			var graph_data = sub_data.map(function (d) {
+				return {
+					'date': d.date,
+					'key': d.key,
+					'name': d.name,
+					'time': d.time,
+					'time_mili': d.time_mili,
+					'timezone': d.timezone,
+					'value': Number(d.value)
+				};
 
+			});
+
+			// Scale the range of the data
+			x.domain(d3.extent(graph_data, function (d) {
+				return d.time_mili;
+			}));
+			y.domain([d3.min(graph_data, function (d) {
+				return d.value;
+			}), d3.max(graph_data, function (d) {
+				return d.value;
+			})]);
+			// Nest the entries by site number
+			var dataNest = d3.nest()
+				.key(function (d) {
+					return d.key;
+				})
+				.entries(graph_data);
+			// Loop through each symbol / key
+			dataNest.forEach(function (d) {
+				svg.append('g')
+					.attr('class', 'hydro-inactive')
+					.append('path')
+					.attr('id', 'hydro' + d.key)
+					.attr('d', line(d.values));
+			});
+			// Add the X Axis
+			svg.append('g')
+				.attr('class', 'axis')
+				.attr('transform', 'translate(0,' + height + ')')
+				.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%B %e')));
+
+			// Add the Y Axis
+			svg.append('g')
+				.attr('class', 'axis')
+				.call(d3.axisLeft(y).ticks(10, '.0f'));
+
+			// Tooltip
+			focus = svg.append('g')
+				.attr('transform', 'translate(-100,-100)')
+				.attr('class', 'focus');
+			focus.append('circle')
+				.attr('r', 3.5);
+
+			focus.append('text')
+				.attr('y', -10);
+
+			// Voronoi Layer
+			voronoi_group = svg.append('g')
+				.attr('class', 'voronoi');
+			voronoi_group.selectAll('path')
+				.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
+					return d.values
+				}))))
+				.enter().append('path')
+				.attr('d', function (d) {
+					return d ? 'M' + d.join('L') + 'Z' : null;
+				})
+				.on('mouseover', function (d) {
+					options.hover_in(d.data.name, d.data.key);
+					self.activate_line(d.data.key);
+					self.series_tooltip_show(d);
+				})
+				.on('mouseout', function (d) {
+					options.hover_out();
+					self.deactivate_line(d.data.key);
+					self.series_tooltip_remove(d.data.key);
+				})
+				.on('click', function (d) {
+					options.click_off(d.data.key);
+					self.remove_series(d.data.key);
 				});
-
-				// Scale the range of the data
-				x.domain(d3.extent(graph_data, function (d) {
-					return d.time_mili;
-				}));
-				y.domain([d3.min(graph_data, function (d) {
-					return d.value;
-				}), d3.max(graph_data, function (d) {
-					return d.value;
-				})]);
-				// Nest the entries by site number
-				var dataNest = d3.nest()
-					.key(function (d) {
-						return d.key;
-					})
-					.entries(graph_data);
-				// Loop through each symbol / key
-				dataNest.forEach(function (d) {
-					svg.append("g")
-						.attr('class', 'hydro-inactive')
-						.append("path")
-						.attr("id", "hydro" + d.key)
-						.attr("d", line(d.values));
-				});
-				// Add the X Axis
-				svg.append("g")
-					.attr("class", "axis")
-					.attr("transform", "translate(0," + height + ")")
-					.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%B %e")));
-
-				// Add the Y Axis
-				svg.append("g")
-					.attr("class", "axis")
-					.call(d3.axisLeft(y).ticks(10, ".0f"));
-
-				// Tooltip
-				focus = svg.append("g")
-					.attr("transform", "translate(-100,-100)")
-					.attr("class", "focus");
-				focus.append("circle")
-					.attr("r", 3.5);
-
-				focus.append("text")
-					.attr("y", -10);
-
-				// Voronoi Layer
-				voronoi_group = svg.append("g")
-					.attr("class", "voronoi");
-				voronoi_group.selectAll("path")
-					.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
-						return d.values
-					}))))
-					.enter().append("path")
-					.attr("d", function (d) {
-						return d ? "M" + d.join("L") + "Z" : null;
-					})
-					.on("mouseover", function (d) {
-						options.hover_in(d.data.name, d.data.key);
-						self.activate_line(d.data.key);
-						self.series_tooltip_show(d);
-					})
-					.on("mouseout", function (d) {
-						options.hover_out();
-						self.deactivate_line(d.data.key);
-						self.series_tooltip_remove(d.data.key);
-					})
-					.on("click", function (d) {
-						options.click_off(d.data.key);
-						self.remove_series(d.data.key);
-					});
 
 		};
 
@@ -189,8 +189,8 @@
 		 * corresponding map site tooltip.
 		 */
 		self.series_tooltip_show = function (d) {
-			focus.attr("transform", "translate(" + x(d.data.time_mili) + "," + y(d.data.value) + ")");
-			focus.select("text").html(d.data.key + ": " + d.data.value + " cfs " + " " + d.data.time + " " + d.data.timezone);
+			focus.attr('transform', 'translate(' + x(d.data.time_mili) + ',' + y(d.data.value) + ')');
+			focus.select('text').html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone);
 		};
 
 		/**
@@ -198,7 +198,7 @@
 		 * as well as the correspond mapsite tooltip.
 		 */
 		self.series_tooltip_remove = function (sitekey) {
-			focus.attr("transform", "translate(-100,-100)");
+			focus.attr('transform', 'translate(-100,-100)');
 		};
 
 		/**

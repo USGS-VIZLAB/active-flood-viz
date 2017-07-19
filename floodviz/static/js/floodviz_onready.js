@@ -1,5 +1,5 @@
-document.addEventListener("DOMContentLoaded", function (event) {
-	"use strict";
+document.addEventListener('DOMContentLoaded', function (event) {
+	'use strict';
 
 	// Map options
 	var map_options = {
@@ -18,8 +18,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var hydro_options = {
 		'height': FV.hydrograph_dimensions.height,
 		'width': FV.hydrograph_dimensions.width,
-		'div_id': '#hydrograph',
-
+		'div_id': '#hydrograph'
 	};
 
 	var map_figure = FV.mapmodule(map_options);
