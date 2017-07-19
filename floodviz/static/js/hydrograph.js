@@ -76,7 +76,6 @@
 		 *
 		 */
 		var update = function () {
-
 				// Cut the data down to sites we want to display
 				var sub_data = subset_data(options.data);
 				// Remove the current version of the graph if one exists
@@ -103,7 +102,6 @@
 						"timezone": d.timezone,
 						"value": Number(d.value)
 					};
-
 				});
 
 				// Scale the range of the data
@@ -162,17 +160,17 @@
 						return d ? "M" + d.join("L") + "Z" : null;
 					})
 					.on("mouseover", function (d) {
-						options.hover_in(d.data.name, d.data.key);
+						self.linked_interactions.hover_in(d.data.name, d.data.key);
 						self.activate_line(d.data.key);
 						self.series_tooltip_show(d);
 					})
 					.on("mouseout", function (d) {
-						options.hover_out();
+						self.linked_interactions.hover_out();
 						self.deactivate_line(d.data.key);
 						self.series_tooltip_remove(d.data.key);
 					})
 					.on("click", function (d) {
-						options.click_off(d.data.key);
+						self.linked_interactions.click_off(d.data.key);
 						self.remove_series(d.data.key);
 					});
 
@@ -182,7 +180,8 @@
 		 * Initialize the Hydrograph
 		 */
 		self.init = function (linked_interactions) {
-			update(linked_interactions);
+			self.linked_interactions = linked_interactions;
+			update();
 		};
 		/**
 		 * Displays tooltip for hydrograph at a data point in addition to
@@ -206,19 +205,19 @@
 		 * appropriately and removes accents from the corresponding
 		 * site on the map.
 		 */
-		self.remove_series = function (sitekey, linked_interactions) {
+		self.remove_series = function (sitekey) {
 			var keep_ids = FV.hydrograph_display_ids;
 			keep_ids.splice(FV.hydrograph_display_ids.indexOf(sitekey), 1);
-			self.change_lines(keep_ids, linked_interactions);
-			options.hover_out();
+			self.change_lines(keep_ids);
+			self.linked_interactions.hover_out();
 		};
 		/**
 		 * Update the value of display_ids and call update to redraw the graph to match.
 		 * @param new_display_ids The new set of gages to be displayed.
 		 */
-		self.change_lines = function (new_display_ids, linked_interactions) {
+		self.change_lines = function (new_display_ids) {
 			FV.hydrograph_display_ids = new_display_ids;
-			update(linked_interactions);
+			update();
 		};
 		/**
 		 * Highlight a line.
