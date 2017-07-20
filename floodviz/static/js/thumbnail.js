@@ -1,43 +1,42 @@
-// Run me with and pass me variables:
-// $ WIDTH=800 ITEM="world-1e3" node mapIt.node.js
-/* ***************************************************************** */
-//Nodejs code:
-var jsdom = require('jsdom/lib/old-api.js');  		// npm install jsdom
-var fs = require('fs'); 			// natively in nodejs.
+
+var jsdom = require('jsdom/lib/old-api.js');
+var fs = require('fs');
+
+var data_hydro = require('./hydrograph_data.json');
 
 jsdom.env(
+	"<html><body><div id='hydrograph'></div><script></script></body></html>",     // CREATE DOM HOOK
 
-		"<html><body><div id='hydrograph'></div></body></html>",     // CREATE DOM HOOK
-		// load assets into window environment (!)
-		["{{ url_for('static', filename='bower_components/d3/d3.js') }}",
-			"{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}",
-			"{{ url_for('static', filename='js/hydrograph.js')}}"
-		],
+	// load assets into window environment (!)
+	[
+		'./floodviz/static/bower_components/d3/d3.js',
+		'./floodviz/static/bower_components/jquery/dist/jquery.min.js',
+		'./floodviz/static/js/hydro_thumbnail.js',
+	],
 
-		function (err, window) {
-			/* ***************************************************************** */
-			/* Check availability of loaded assets in window scope. ************ */
-			console.log(typeof window.hydromodule);       // expect: 'function',  because exist in script.js !
-			console.log(typeof window.doesntExist);
+	function (err, window) {
+		var hydro_figure = window.thumbnail(
+			{
+				'height': 200,
+				'width': 200,
+				'div_id': '#hydrograph',
+				'data': data_hydro,
+				"site_display_ids": ['05471200', '05476750', '05411850', '05454220',
+                     '05481950', '05416900', '05464500', '05487470']
+			}
+		);
 
-			/* ***************************************************************** */
-			/* D3js FUNCTION *************************************************** */
-			var hydro_figure = window.hydromodule(
-				{'height': FV.hydrograph_dimensions.height,
-					'width': FV.hydrograph_dimensions.width,
-					'div_id': '#hydrograph',
-				}
-			);
-			hydro_figure.init();
+		hydro_figure.init(undefined);
 
-			/* ***************************************************************** */
-			/* SVG PRINT ******************************************************* */
-			setTimeout(
-				function () {
-					fs.writeFileSync('hydrograph.svg', window.d3.select("body").html());
-				},
-				7000
-			);
-		}
+		// PRINT THAT SVG
+		setTimeout(
+			function () {
+				fs.writeFileSync('hydrograph_thumbnail.svg', window.d3.select("body").html());
+			},
+			7000
+		);
+	}
 );
+
+
 
