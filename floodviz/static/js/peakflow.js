@@ -30,12 +30,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('class', 'toolTip');
 
 	// For custom X axis ticks
-	var ticks = []
+	var ticks = [];
 	data.forEach(function (d, i) {
 		if (i % 4 === 0) {
 			ticks.push(d.label);
 		}
-	})
+	});
 	xAxis.tickValues(ticks);
 
 	x.domain(data.map(function (d) {return d.label; }));
