@@ -132,6 +132,7 @@
 			if (FV.config.debug) {
 				add_circles(options.bounds, "debug-point", 3)
 			}
+			console.log(svg._groups[0][0].innerHTML);
 		};
 
 		/**

@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		'height': FV.hydrograph_dimensions.height,
 		'width': FV.hydrograph_dimensions.width,
 		'div_id': '#hydrograph',
-
 	};
 
 	var map_figure = FV.mapmodule(map_options);
