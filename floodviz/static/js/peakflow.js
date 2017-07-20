@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	peakflow_bar.style.height = FV.peakmeta['height'];
 	peakflow_bar.style.width = FV.peakmeta['width'];
 
-	var margin = {bottom: 100, right: 50, left: 50, top: 150};
+	var margin = {bottom: 40, right: 40, left: 40, top: 75};
 	var width = parseInt(FV.peakmeta['width']);
 	var height = parseInt(FV.peakmeta['height']);
 	var data = FV.peakinfo;
@@ -72,12 +72,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		.on("mousemove", function(d) {mouseover(tooltip, d, d3.event)})
 		.on("mouseout", function() {mouseout(tooltip)});
 	
-	var title = "Peak Annual Discharge";
-	svg.append("text")
-		.attr("x", (width/2))
-		.attr("y", 0 - (margin.top / 2))
-		.attr("text-anchor", "middle")
-		.text(title);
+	// var description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+	// svg.append("text")
+	// 	.attr("x", (width/2))
+	// 	.attr("y", height + 50)
+	// 	.attr("text-anchor", "middle")
+	// 	.text(description);
 
 	// create lollipop Stroke and Circle
 	var bars = d3.select('#peakflow_bar svg').selectAll('.bar')['_groups'][0];

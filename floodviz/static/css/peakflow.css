@@ -1,11 +1,11 @@
 #peakflow_bar {
 	margin: 0 auto;
-	width: 80%;
+	/*width: 80%;*/
 }
 
 #peakflow_bar svg {
 	display: block;
-	margin: auto;
+	/*margin: auto;*/
 }
 
 #lollipop {
