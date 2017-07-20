@@ -23,7 +23,7 @@
 
 		var self = {};
 
-		var margin = {top: 30, right: 20, bottom: 30, left: 50};
+		var margin = {top: 60, right: 20, bottom: 30, left: 50};
 		var height = options.height - margin.top - margin.bottom;
 		var width = options.width - margin.left - margin.right;
 
