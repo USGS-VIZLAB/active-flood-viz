@@ -18,8 +18,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var hydro_options = {
 		'height': FV.hydrograph_dimensions.height,
 		'width': FV.hydrograph_dimensions.width,
-		'div_id': '#hydrograph',
-
+		'div_id': '#hydrograph'
 	};
 
 	var map_figure = FV.mapmodule(map_options);
@@ -30,12 +29,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		'hover_in': map_figure.site_tooltip_show,
 		'hover_out': map_figure.site_tooltip_remove,
 		'click_off': map_figure.site_remove_accent,
-	}
+	};
 	var hydro_to_map = {
 		'hover_in': hydro_figure.activate_line,
 		'hover_out': hydro_figure.deactivate_line,
 		'click_toggle' : hydro_figure.change_lines
-	}
+	};
 
 	map_figure.init(hydro_to_map);
 	//data for hydrograph
