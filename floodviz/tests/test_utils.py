@@ -11,11 +11,11 @@ class TestPeakUtilsRDBparse(unittest.TestCase):
         self.peak_start_date = '2008-05-20'
         self.peak_end_date = '2008-07-05'
         self.endpoint_peak = 'https://nwis.waterdata.usgs.gov/nwis/peak'
-        self.endpoint_dv = 'https://waterservices.usgs.gov/nwis/'
+        self.endpoint_dv = 'https://waterservices.usgs.gov/nwis/dv'
         self.endpoint_mock = 'http://somethingfake.notadomain/noob/'
         self.mock_url_peak = 'http://somethingfake.notadomain/noob/?format=rdb&site_no=05481950&start_date='\
             '2008-05-20&end_date=2008-07-05&agency_cd=USGS'
-        self.mock_url_dv = 'http://somethingfake.notadomain/noob/dv?format=rdb&sites=05481950&startDT='\
+        self.mock_url_dv = 'http://somethingfake.notadomain/noob/?format=rdb&sites=05481950&startDT='\
             '2008-07-05&endDT=2008-07-05&siteStatus=all'
         self.header_values_peak = {'site_no': 0, 'peak_dt': 0, 'peak_va': 0}
         self.header_values_dv = {'site_no': 0, 'datetime': 0, '43051_00060_00003': 0}
@@ -24,25 +24,18 @@ class TestPeakUtilsRDBparse(unittest.TestCase):
         self.url_valid_dv = self.endpoint_dv + 'dv?format=rdb' + '&sites=' + self.peak_site + \
             '&startDT=' + self.peak_dv_date + '&endDT=' + self.peak_dv_date + '&siteStatus=all'
         self.test_dict_peak = {
-            'sites': [self.peak_site],
-            'site_query': '&site_no=',
+            'format': 'rdb',
+            'site_no': self.peak_site,
             'start_date': self.peak_start_date,
-            'start_date_query': '&start_date=',
             'end_date': self.peak_end_date,
-            'end_date_query': '&end_date=',
-            'format': '?format=rdb',
-            'agency': '&agency_cd=USGS'
+            'agency_cd': 'USGS'
         }
         self.test_dict_dv = {
-            'sites': [self.peak_site],
-            'site_query': '&sites=',
-            'start_date': self.peak_dv_date,
-            'start_date_query': '&startDT=',
-            'end_date': self.peak_dv_date,
-            'end_date_query': '&endDT=',
-            'format': '?format=rdb',
-            'site_status': '&siteStatus=all',
-            'extra': 'dv'
+            'format': 'rdb',
+            'sites': self.peak_site,
+            'startDT': self.peak_dv_date,
+            'endDT': self.peak_dv_date,
+            'siteStatus': 'all',
         }
         self.valid_return_peak = [
             {'agency_cd': 'USGS', 'site_no': '05481950', 'peak_dt': '1960-05-26', 'peak_tm': '', 'peak_va': '5480',
@@ -357,9 +350,9 @@ class TestPeakUtilsRDBparse(unittest.TestCase):
 class TestMapUtilsRDBparse(unittest.TestCase):
 
     def setUp(self):
-        self.mock_url = 'http://somethingfake.notadomain/noob/site/?format=rdb&sites=05420680,05463500&siteStatus=all'
+        self.mock_url = 'http://somethingfake.notadomain/noob/?format=rdb&sites=05420680,05463500&siteStatus=all'
         self.sites = ['05420680', '05463500']
-        self.endpoint = 'https://waterservices.usgs.gov/nwis/'
+        self.endpoint = 'https://waterservices.usgs.gov/nwis/site/'
         self.endpoint_mock = 'http://somethingfake.notadomain/noob/'
         self.header_values = {'site_no': 0,
                               'station_nm': 0,
@@ -368,12 +361,10 @@ class TestMapUtilsRDBparse(unittest.TestCase):
                               'huc_cd': 0
                               }
         self.test_dict = {
-                 'sites': self.sites,
-                 'site_query': '&sites=',
-                 'site_status': '&siteStatus=all',
-                 'format': '?format=rdb',
-                 'extra': 'site/'
-                }
+            'format': 'rdb',
+            'sites': ','.join(self.sites),
+            'siteStatus': 'all'
+        }
 
         self.valid_data = [
             {'agency_cd': 'USGS', 'site_no': '05420680', 'station_nm': 'Wapsipinicon River near Tripoli, IA',
