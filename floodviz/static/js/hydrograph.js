@@ -164,7 +164,7 @@
 					self.series_tooltip_remove(d.data.key);
 				})
 				.on('click', function (d) {
-					self.linked_interactions.click_off(d.data.key);
+					self.linked_interactions.click(d.data.key);
 					self.remove_series(d.data.key);
 				});
 
@@ -177,7 +177,7 @@
 		 *                                        Pass null if there are no such interactions to link.
 		 *        @prop 'hover_in' - linked interaction function for hover_in events on this figure.
 		 *        @prop 'hover_out' - linked interaction function for hover_out events on this figure.
-		 *        @prop 'click_off' - linked interaction function for click_off events on this figure.
+		 *        @prop 'click' - linked interaction function for click events on this figure.
 		 *
 		 *
 		 */

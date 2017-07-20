@@ -28,12 +28,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	var map_to_hydro = {
 		'hover_in': map_figure.site_tooltip_show,
 		'hover_out': map_figure.site_tooltip_remove,
-		'click_off': map_figure.site_remove_accent
+		'click': map_figure.site_remove_accent
 	};
 	var hydro_to_map = {
 		'hover_in': hydro_figure.activate_line,
 		'hover_out': hydro_figure.deactivate_line,
-		'click_toggle': hydro_figure.change_lines
+		'click': hydro_figure.change_lines
 	};
 
 	map_figure.init(hydro_to_map);

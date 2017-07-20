@@ -127,7 +127,7 @@
 					new_display_ids.push(sitekey);
 					self.linked_interactions.hover_in(sitekey);
 				}
-				self.linked_interactions.click_toggle(new_display_ids);
+				self.linked_interactions.click(new_display_ids);
 				self.linked_interactions.hover_in(sitekey);
 			};
 
@@ -230,7 +230,7 @@
 							self.site_add_accent(g.id);
 						}
 					});
-					self.linked_interactions.click_toggle(selected);
+					self.linked_interactions.click(selected);
 				}
 				state.box = {};
 				svg.select('#map-select-box').remove();
@@ -243,7 +243,7 @@
 			 *                                        Pass null if there are no such interactions to link.
 			 *        @prop 'hover_in' - linked interaction function for hover_in events on this figure.
 			 *        @prop 'hover_out' - linked interaction function for hover_out events on this figure.
-			 *        @prop 'click_toggle' - linked interaction function for click events on this figure.
+			 *        @prop 'click' - linked interaction function for click events on this figure.
 			 *
 			 */
 			self.init = function (linked_interactions) {
