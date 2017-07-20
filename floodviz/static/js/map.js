@@ -17,7 +17,7 @@
 		 *
 		 * mapmodule is a module for creating maps using d3. Pass it a javascript object
 		 * specifying config options for the map. Call init() to create the map. Linked
-	 * interaction functions for other figures should be passed to init in and object.
+		 * interaction functions for other figures should be passed to init in and object.
 		 *
 		 * @return {Object} self - Holder for public functions.
 		 *    See functions for specific documentation.
@@ -120,14 +120,15 @@
 				if (being_displayed === true) {
 					self.site_remove_accent(sitekey);
 					new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
-					options.hover_out(sitekey);
+					self.linked_interactions.hover_out(sitekey);
 				}
 				else {
 					self.site_add_accent(sitekey);
 					new_display_ids.push(sitekey);
+					self.linked_interactions.hover_in(sitekey);
 				}
-				options.click_toggle(new_display_ids);
-				options.hover_in(sitekey);
+				self.linked_interactions.click_toggle(new_display_ids);
+				self.linked_interactions.hover_in(sitekey);
 			};
 
 			/**
@@ -229,26 +230,34 @@
 							self.site_add_accent(g.id);
 						}
 					});
-					options.click_toggle(selected);
+					self.linked_interactions.click_toggle(selected);
 				}
 				state.box = {};
 				svg.select('#map-select-box').remove();
 			};
 
 			/**
-			 * Initialize the Map
+			 * Initialize the Map.
+			 *
+			 *@param {Object} linked_interactions - Object holding functions that link to another figure's interactions.
+			 *                                        Pass null if there are no such interactions to link.
+			 *        @prop 'hover_in' - linked interaction function for hover_in events on this figure.
+			 *        @prop 'hover_out' - linked interaction function for hover_out events on this figure.
+			 *        @prop 'click_toggle' - linked interaction function for click events on this figure.
+			 *
 			 */
-			self.init = function () {
+			self.init = function (linked_interactions) {
+				self.linked_interactions = linked_interactions;
 
-			if (svg !== null) {
-				d3.select(options.div_id).select('svg').remove();
-			}
-			svg = d3.select(options.div_id)
-			.append("svg")
-			.attr("width", options.width)
-			.attr("height", options.height);
+				if (svg !== null) {
+					d3.select(options.div_id).select('svg').remove();
+				}
+				svg = d3.select(options.div_id)
+					.append("svg")
+					.attr("width", options.width)
+					.attr("height", options.height);
 
-			// Define the drag behavior to be used for the selection box
+				// Define the drag behavior to be used for the selection box
 				var drag = d3.drag()
 					.on('start', function () {
 						var p = d3.mouse(this);
@@ -264,35 +273,35 @@
 
 				svg.call(drag);
 
-			// set bounding box to values provided
-			var b = path.bounds(options.bounds);
-			var s = options.scale / Math.max((b[1][0] - b[0][0]) / options.width, (b[1][1] - b[0][1]) / options.height);
-			var t = [(options.width - s * (b[1][0] + b[0][0])) / 2, (options.height - s * (b[1][1] + b[0][1])) / 2];
-			// Update the projection
-			projection.scale(s).translate(t);
-			// Add layers
-			add_paths(options.bg_data, "background");
-			add_paths(options.rivers_data, "river");
-			add_circles(options.ref_data, "ref-point", 2);
-			// Add sites and bind events for site hovers
-			var sites = add_circles(options.site_data, "gage-point", 3, 'id');
-			sites.selectAll("circle")
-				.on('mouseover', function (d) {
-					self.site_tooltip_show(d.properties.name, d.properties.id);
-					self.linked_interactions.hover_in(d.properties.id);
-				})
-				.on("mouseout", function (d) {
-					self.site_tooltip_remove(d.properties.id);
-					self.linked_interactions.hover_out(d.properties.id);
-				})
-				.on('click', function (d) {
-					return self.click(d.properties.id);
-				})
-				.on('mousedown', function () {
+				// set bounding box to values provided
+				var b = path.bounds(options.bounds);
+				var s = options.scale / Math.max((b[1][0] - b[0][0]) / options.width, (b[1][1] - b[0][1]) / options.height);
+				var t = [(options.width - s * (b[1][0] + b[0][0])) / 2, (options.height - s * (b[1][1] + b[0][1])) / 2];
+				// Update the projection
+				projection.scale(s).translate(t);
+				// Add layers
+				add_paths(options.bg_data, "background");
+				add_paths(options.rivers_data, "river");
+				add_circles(options.ref_data, "ref-point", 2);
+				// Add sites and bind events for site hovers
+				var sites = add_circles(options.site_data, "gage-point", 3, 'id');
+				sites.selectAll("circle")
+					.on('mouseover', function (d) {
+						self.site_tooltip_show(d.properties.name, d.properties.id);
+						self.linked_interactions.hover_in(d.properties.id);
+					})
+					.on("mouseout", function (d) {
+						self.site_tooltip_remove(d.properties.id);
+						self.linked_interactions.hover_out(d.properties.id);
+					})
+					.on('click', function (d) {
+						toggle_hydrograph_display(d.properties.id);
+					})
+					.on('mousedown', function () {
 						d3.event.stopPropagation();
 					});
 
-			// Save locations of gages in SVG for later use with selection box
+				// Save locations of gages in SVG for later use with selection box
 				state.gages = [];
 				options.site_data.features.forEach(function (g) {
 					var position = projection(g.geometry.coordinates);
@@ -303,11 +312,11 @@
 					};
 					state.gages.push(info);
 				});
-			// Debug points
-			if (FV.config.debug) {
-				add_circles(options.bounds, "debug-point", 3)
-			}
-		};
+				// Debug points
+				if (FV.config.debug) {
+					add_circles(options.bounds, "debug-point", 3)
+				}
+			};
 
 			/**
 			 * Shows sitename tooltip on map figure at correct location.
@@ -342,35 +351,7 @@
 		};
 	}()
 );
-		/**
-		 * Remove/Add accent for a svg circle representing a site.
-		 * Used by hydromodule for cross figure interactions.
-		 */
-		self.site_remove_accent = function (sitekey) {
-			d3.select('#map' + sitekey).attr('class', 'gage-point');
-		};
-		self.site_add_accent = function (sitekey) {
-			d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
-		};
-		self.click = function (sitekey) {
-			var new_display_ids = FV.hydrograph_display_ids;
-			var being_displayed = new_display_ids.indexOf(sitekey) !== -1;
-			if (being_displayed === true) {
-				self.site_remove_accent(sitekey);
-				new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
-				self.linked_interactions.hover_out(sitekey);
-			}
-			else {
-				self.site_add_accent(sitekey);
-				new_display_ids.push(sitekey);
-				self.linked_interactions.hover_in(sitekey);
-			}
-			self.linked_interactions.click_toggle(new_display_ids);
-			self.linked_interactions.hover_in(sitekey);
-		};
-		return self
-	};
-}());
+
 
 // Define helper functions
 function degreesToRadians(degrees) {
