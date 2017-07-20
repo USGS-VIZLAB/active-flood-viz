@@ -18,7 +18,6 @@
 		var self = {};
 
 		var default_display_ids = null;
-		var timer = null;
 
 		var margin = {top: 30, right: 20, bottom: 30, left: 50};
 		var height = options.height - margin.top - margin.bottom;
@@ -167,22 +166,21 @@
 					self.series_tooltip_remove(d.data.key);
 				})
 				.on('click', function (d) {
-					timer = setTimeout(function () {
-						if(this.defaultPrevented) return;
-						self.linked_interactions.click(d.data.key);
-						self.remove_series(d.data.key);
-					}, 200)
-
+					if (d3.event.defaultPrevented) return;
+					self.linked_interactions.click(d.data.key);
+					self.linked_interactions.hover_out(d.data.key);
+					self.remove_series(d.data.key);
 				})
-				.on('dblclick', function () {
+				.on('dblclick', function (d) {
 					d3.event.preventDefault();
+					self.linked_interactions.hover_out(d.data.key);
 					FV.hydrograph_display_ids.forEach(function (id) {
 						if (default_display_ids.indexOf(id) === -1) {
 							self.linked_interactions.click(id);
+
 						}
 					});
-					clearTimeout(timer);
-					self.change_lines(default_display_ids);
+					self.change_lines(default_display_ids.slice());
 				});
 
 		};
@@ -236,8 +234,7 @@
 		 * @param new_display_ids The new set of gages to be displayed.
 		 */
 		self.change_lines = function (new_display_ids) {
-			// deep copy
-			FV.hydrograph_display_ids = new_display_ids.slice();
+			FV.hydrograph_display_ids = new_display_ids;
 			update();
 		};
 		/**
