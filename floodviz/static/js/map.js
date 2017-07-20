@@ -2,8 +2,7 @@
 	"use strict";
 	/**
 	 * @param {Object} options - holds options for the configuration of the map.
-	 * All keys are not optional.
-	 * Keys include:
+	 * Non-optional Keys include:
 	 *    @prop 'height' v(int) - height of the map
 	 *    @prop 'width' v(int) - width of the map
 	 *    @prop 'proj' v(proj4) - map projection
@@ -16,8 +15,8 @@
 	 *    @prop 'div_id' v(string) - id for the container for this graph
 	 *
 	 * mapmodule is a module for creating maps using d3. Pass it a javascript object
-	 * specifying config options for the map. Call init() to create the map. Other pulic fuctions
-	 * handle user events and link to other modules.
+	 * specifying config options for the map. Call init() to create the map. Linked
+	 * interaction functions for other figures should be passed to init in and object.
 	 *
 	 */
 	FV.mapmodule = function (options) {
@@ -94,7 +93,14 @@
 		};
 		
 		/**
-		 * Initialize the Map
+		 * Initialize the Map.
+		 *
+		 *@param {Object} linked_interactions - Object holding functions that link to another figure's interactions.
+		 *										Pass null if there are no such interactions to link.
+		 *		@prop 'hover_in' - linked interaction function for hover_in events on this figure.
+		 *		@prop 'hover_out' - linked interaction function for hover_out events on this figure.
+		 *		@prop 'click_toggle' - linked interaction function for click events on this figure.
+		 *
 		 */
 		self.init = function(linked_interactions) {
 			self.linked_interactions = linked_interactions;

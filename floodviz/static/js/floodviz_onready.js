@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var map_to_hydro = {
 		'hover_in': map_figure.site_tooltip_show,
 		'hover_out': map_figure.site_tooltip_remove,
-		'click_on': map_figure.site_add_accent,
 		'click_off': map_figure.site_remove_accent,
 	}
 	var hydro_to_map = {

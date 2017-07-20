@@ -3,20 +3,14 @@
 	/**
 	 * @param {Object} options - holds options for the configuration of the hydrograph
 	 *    Non-optional Keys include:
-	 *        'height' v(int) - height of the graph
-	 *        'width' v(int) - width of the graph
-	 *        'data' v(list) - A list of objects representing data points
-	 *        'div_id' v(string) - id for the container for this graph
-	 *    Optional Keys include:
-	 *        'hover_in' - linked function for hover_in.
-	 *        'hover_out' - linked function for hover_out.
-	 *        'click_on' - linked function for clicking on hydrograph to accent mapsite.
-	 *        'click_off' - linked function for clicking hydrograph to unaccent mapsite.
+	 *    	@prop 'height' v(int) - height of the graph
+	 *    	@prop 'width' v(int) - width of the graph
+	 *    	@prop 'data' v(list) - A list of objects representing data points
+	 *    	@prop 'div_id' v(string) - id for the container for this graph
 	 *
 	 * hydromodule is a module for creating hydrographs using d3. Pass it a javascript object
-	 * specifying config options for the graph. Call init() to create the graph. Other public functions
-	 * handle user events and link to other modules.
-	 *
+	 * specifying config options for the graph. Call init() to create the graph. Linked
+	 * interaction functions for other figures should be passed to init in and object.
 	 *
 	 */
 	FV.hydromodule = function (options) {
@@ -177,7 +171,15 @@
 		};
 
 		/**
-		 * Initialize the Hydrograph
+		 * Initialize the Hydrograph.
+		 *
+		 *@param {Object} linked_interactions - Object holding functions that link to another figure's interactions.
+		 *										Pass null if there are no such interactions to link.
+		 *		@prop 'hover_in' - linked interaction function for hover_in events on this figure.
+		 *		@prop 'hover_out' - linked interaction function for hover_out events on this figure.
+		 *		@prop 'click_off' - linked interaction function for click_off events on this figure.
+		 *
+		 *
 		 */
 		self.init = function (linked_interactions) {
 			self.linked_interactions = linked_interactions;
@@ -209,7 +211,6 @@
 			var keep_ids = FV.hydrograph_display_ids;
 			keep_ids.splice(FV.hydrograph_display_ids.indexOf(sitekey), 1);
 			self.change_lines(keep_ids);
-			self.linked_interactions.hover_out();
 		};
 		/**
 		 * Update the value of display_ids and call update to redraw the graph to match.
