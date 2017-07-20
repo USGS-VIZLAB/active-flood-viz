@@ -1,5 +1,5 @@
-document.addEventListener("DOMContentLoaded", function (event) {
-	"use strict";
+document.addEventListener('DOMContentLoaded', function (event) {
+	'use strict';
 
 	// Map options
 	var map_options = {
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var hydro_to_map = {
 		'hover_in': hydro_figure.activate_line,
 		'hover_out': hydro_figure.deactivate_line,
-		'click_toggle' : hydro_figure.change_lines
+		'click_toggle': hydro_figure.change_lines
 	};
 
 	map_figure.init(hydro_to_map);
