@@ -2,8 +2,7 @@
 	"use strict";
 	/**
 	 * @param {Object} options - holds options for the configuration of the map.
-	 * All keys are not optional.
-	 * Keys include:
+	 * Non-optional Keys include:
 	 *    @prop 'height' v(int) - height of the map
 	 *    @prop 'width' v(int) - width of the map
 	 *    @prop 'proj' v(proj4) - map projection
@@ -16,8 +15,8 @@
 	 *    @prop 'div_id' v(string) - id for the container for this graph
 	 *
 	 * mapmodule is a module for creating maps using d3. Pass it a javascript object
-	 * specifying config options for the map. Call init() to create the map. Other pulic fuctions
-	 * handle user events and link to other modules.
+	 * specifying config options for the map. Call init() to create the map. Linked
+	 * interaction functions for other figures should be passed to init in and object.
 	 *
 	 */
 	FV.mapmodule = function (options) {
@@ -94,9 +93,17 @@
 		};
 		
 		/**
-		 * Initialize the Map
+		 * Initialize the Map.
+		 *
+		 *@param {Object} linked_interactions - Object holding functions that link to another figure's interactions.
+		 *										Pass null if there are no such interactions to link.
+		 *		@prop 'hover_in' - linked interaction function for hover_in events on this figure.
+		 *		@prop 'hover_out' - linked interaction function for hover_out events on this figure.
+		 *		@prop 'click_toggle' - linked interaction function for click events on this figure.
+		 *
 		 */
-		self.init = function() {
+		self.init = function(linked_interactions) {
+			self.linked_interactions = linked_interactions;
 
 			if (svg !== null) {
 				d3.select(options.div_id).select('svg').remove();
@@ -121,11 +128,11 @@
 			sites.selectAll("circle")
 				.on('mouseover', function (d) {
 					self.site_tooltip_show(d.properties.name, d.properties.id);
-					options.hover_in(d.properties.id);
+					self.linked_interactions.hover_in(d.properties.id);
 				})
 				.on("mouseout", function (d) {
 					self.site_tooltip_remove(d.properties.id);
-					options.hover_out(d.properties.id);
+					self.linked_interactions.hover_out(d.properties.id);
 				})
 				.on('click', function (d) { return self.click(d.properties.id) });
 			// Debug points
@@ -168,19 +175,18 @@
 			if (being_displayed === true) {
 				self.site_remove_accent(sitekey);
 				new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
-				options.hover_out(sitekey);
+				self.linked_interactions.hover_out(sitekey);
 			}
 			else {
 				self.site_add_accent(sitekey);
 				new_display_ids.push(sitekey);
-				options.hover_in(sitekey);
+				self.linked_interactions.hover_in(sitekey);
 			}
-			options.click_toggle(new_display_ids);
-			options.hover_in(sitekey);
+			self.linked_interactions.click_toggle(new_display_ids);
+			self.linked_interactions.hover_in(sitekey);
 		};
 		return self
 	};
-
 }());
 
 // Define helper functions
