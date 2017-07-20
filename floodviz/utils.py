@@ -55,13 +55,19 @@ def parse_rdb(endpoint, params):
         print('- bad webservice url -')
     else:
         if r.status_code is 200:
-            content = r.text.splitlines()
+            content = iter(r.text.splitlines())
             headers = None
             for line in content:
                 # Skip commented lines
                 if line.startswith('#'):
                     continue
-                if line.startswith('USGS'):
+                if headers is None:
+                    # header procedure
+                    line = line.split('\t')
+                    headers = line
+                    # Skip weird '5s      15s     20d     14n     10s\n'\' which appears on next line after headers
+                    next(content)
+                else:
                     # extraction procedure
                     line = line.split('\t')
                     data_point = {}
@@ -70,11 +76,6 @@ def parse_rdb(endpoint, params):
                         for idx, data in enumerate(line):
                             data_point[headers[idx]] = data
                         all_data.append(data_point)
-                # Should run before above if block
-                elif headers is None:
-                    # header procedure
-                    line = line.split('\t')
-                    headers = line
         else:
             all_data = None
 
