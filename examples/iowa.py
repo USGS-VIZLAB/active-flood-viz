@@ -21,8 +21,8 @@ EVENT_END_DT = '2008-07-05'
 
 # dimensions for the hydrograph
 CHART_DIMENSIONS = {
-    'height': 400,
-    'width': 800
+    'height': 300,
+    'width': 600
 }
 
 # MAP SETTINGS
@@ -37,8 +37,8 @@ RIVERS_FILE = 'floodviz/static/geojson/rivers.json'
 
 
 MAP_CONFIG = {
-    'width': 750,
-    'height': 450,
+    'width': 550,
+    'height': 350,
     'scale': 1
 }
 
@@ -83,6 +83,6 @@ PEAK_DV_DT = '2008-07-05'
 # This dict holds aspect ratio data for the peak flow chart rendered in static/js/peakflow.js
 # NOTE: the height and width of the svg are modified beyond these values in peakflow.js
 PEAK_META = {
-    'height': '300',
-    'width': '900'
+    'height': '400',
+    'width': '850'
 }
