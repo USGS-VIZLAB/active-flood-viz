@@ -220,7 +220,10 @@
 					};
 					var selected = FV.hydrograph_display_ids;
 
-					state.gages.forEach(function (g) {
+					const keys = Object.keys(state.gages);
+
+					keys.forEach(function (key) {
+						const g = state.gages[key];
 						if (
 							selected.indexOf(g.id) === -1 &&
 							g.x > NW.x && g.x < SE.x &&
@@ -234,6 +237,31 @@
 				}
 				state.box = {};
 				svg.select('#map-select-box').remove();
+			};
+
+			var make_sites_bland = function () {
+				Object.keys(state.gages).forEach(function (key) {
+					const g = state.gages[key];
+					var style = 'gage-point';
+					if (g.accent) {
+						style += '-accent'
+					}
+					if (g.bland) {
+						style += '-bland';
+					}
+					d3.select('#map' + g.id).attr('class', style);
+				});
+			};
+
+			var make_sites_normal = function () {
+				Object.keys(state.gages).forEach(function (key) {
+					const g = state.gages[key];
+					var style = 'gage-point';
+					if (g.accent) {
+						style += '-accent'
+					}
+					d3.select('#map' + g.id).attr('class', style);
+				});
 			};
 
 			/**
@@ -287,6 +315,7 @@
 				var sites = add_circles(options.site_data, 'gage-point', 3, 'id');
 				sites.selectAll('circle')
 					.on('mouseover', function (d) {
+						state.gages[d.properties.id].bland = false;
 						self.site_tooltip_show(d.properties.name, d.properties.id);
 						self.linked_interactions.hover_in(d.properties.id);
 					})
@@ -302,15 +331,15 @@
 					});
 
 				// Save locations of gages in SVG for later use with selection box
-				state.gages = [];
+				state.gages = {};
 				options.site_data.features.forEach(function (g) {
 					var position = projection(g.geometry.coordinates);
-					var info = {
+					state.gages[g.properties.id] = {
 						x: position[0],
 						y: position[1],
-						id: g.properties.id
+						accent: false,
+						bland: true
 					};
-					state.gages.push(info);
 				});
 				// Debug points
 				if (FV.config.debug) {
@@ -322,6 +351,8 @@
 			 * Shows sitename tooltip on map figure at correct location.
 			 */
 			self.site_tooltip_show = function (sitename, sitekey) {
+				state.gages[sitekey].bland = false;
+				make_sites_bland();
 				var gage_point_cords = document.getElementById('map' + sitekey).getBoundingClientRect();
 				maptip.transition().duration(500);
 				maptip.style('display', 'inline-block')
@@ -333,6 +364,7 @@
 			 * Removes tooltip style from map site.
 			 */
 			self.site_tooltip_remove = function () {
+				make_sites_normal();
 				maptip.style('display', 'none');
 			};
 
@@ -341,9 +373,15 @@
 			 * Used by hydromodule for cross figure interactions.
 			 */
 			self.site_remove_accent = function (sitekey) {
+				if (state.gages !== undefined) {
+					state.gages[sitekey].accent = false;
+				}
 				d3.select('#map' + sitekey).attr('class', 'gage-point');
 			};
 			self.site_add_accent = function (sitekey) {
+				if (state.gages !== undefined) {
+					state.gages[sitekey].accent = true;
+				}
 				d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
 			};
 
