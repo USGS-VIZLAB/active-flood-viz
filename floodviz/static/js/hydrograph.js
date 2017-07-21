@@ -18,6 +18,8 @@
 		var self = {};
 
 		var default_display_ids = null;
+		var timer = null;
+		var dblclick_armed = false;
 
 		var margin = {top: 30, right: 20, bottom: 30, left: 50};
 		var height = options.height - margin.top - margin.bottom;
@@ -62,6 +64,18 @@
 				}
 			});
 			return toKeep;
+		};
+
+		var reset_hydrograph = function (d) {
+			if(d) {
+				self.linked_interactions.hover_out(d.data.key);
+			}
+			FV.hydrograph_display_ids.forEach(function (id) {
+				if (default_display_ids.indexOf(id) === -1) {
+					self.linked_interactions.click(id);
+				}
+			});
+			self.change_lines(default_display_ids.slice());
 		};
 
 		/**
@@ -166,21 +180,22 @@
 					self.series_tooltip_remove(d.data.key);
 				})
 				.on('click', function (d) {
-					if (d3.event.defaultPrevented) return;
-					self.linked_interactions.click(d.data.key);
-					self.linked_interactions.hover_out(d.data.key);
-					self.remove_series(d.data.key);
-				})
-				.on('dblclick', function (d) {
-					d3.event.preventDefault();
-					self.linked_interactions.hover_out(d.data.key);
-					FV.hydrograph_display_ids.forEach(function (id) {
-						if (default_display_ids.indexOf(id) === -1) {
-							self.linked_interactions.click(id);
-
-						}
-					});
-					self.change_lines(default_display_ids.slice());
+					if (dblclick_armed) {
+						dblclick_armed = false;
+						reset_hydrograph(d);
+						clearTimeout(timer);
+						console.log('dblclick');
+					}
+					else {
+						timer = setTimeout(function () {
+							console.log('click');
+							self.linked_interactions.click(d.data.key);
+							self.linked_interactions.hover_out(d.data.key);
+							self.remove_series(d.data.key);
+							dblclick_armed = false;
+						}, 150);
+						dblclick_armed = true;
+					}
 				});
 
 		};
