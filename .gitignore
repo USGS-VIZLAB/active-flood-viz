@@ -55,7 +55,8 @@ coverage.xml
 local_settings.py
 
 # Flask stuff:
-instance/config.py
+*instance/*
+!*instance/.gitkeep
 .webassets-cache
 
 # Scrapy stuff:
@@ -119,4 +120,3 @@ node_modules/
 
 *floodviz/static/geojson/*
 !states.json
-
