@@ -64,12 +64,16 @@
 			return toKeep;
 		};
 
+		/**
+		 * Show only the default set of lines on the hydrograph.
+		 */
 		var reset_hydrograph = function () {
 			FV.hydrograph_display_ids.forEach(function (id) {
 				if (default_display_ids.indexOf(id) === -1) {
 					self.linked_interactions.click(id);
 				}
 			});
+			// use array.slice() with no parameters to deep copy
 			self.change_lines(default_display_ids.slice());
 		};
 
@@ -205,7 +209,7 @@
 		 *
 		 */
 		self.init = function (linked_interactions) {
-			// deep copy
+			// use array.slice() to deep copy
 			default_display_ids = FV.hydrograph_display_ids.slice();
 			self.linked_interactions = linked_interactions;
 			update();
