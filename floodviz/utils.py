@@ -8,7 +8,7 @@ def parse_rdb(endpoint, params):
 
         ARGS:
             endpoint - String specifying the web service url
-            params - dictionary holding url parameters
+            params - dictionary holding query parameters
                 * keys for params should be the value you variable name for the query parameter
                   you want to specify. Values for these keys should be the query parameter value
                   you wish to use.
@@ -16,7 +16,7 @@ def parse_rdb(endpoint, params):
                   i.e {'site_no' : '056777781'} -> '&site_no=056777781'
 
         RETURNS:
-            url - url to request for data
+            list of data point dicts extracted from webservice.
     """
     all_data = []
     try:
@@ -30,25 +30,23 @@ def parse_rdb(endpoint, params):
             headers = None
             for line in content:
                 # Skip commented lines
-                if line.startswith('#'):
+                if line.startswith('#') and headers is None:
                     continue
                 if headers is None:
                     # header procedure
                     line = line.split('\t')
                     headers = line
-                    # Skip weird '5s      15s     20d     14n     10s\n'\' which appears on next line after headers
                     next(content)
                 else:
                     # extraction procedure
                     line = line.split('\t')
-                    data_point = {}
                     # sanity check that headers has been filled
                     if headers is not None:
-                        for idx, data in enumerate(line):
-                            data_point[headers[idx]] = data
-                        all_data.append(data_point)
+                        data_point = zip(headers, line)
+                        all_data.append(dict(data_point))
         else:
             all_data = None
 
+    print(all_data)
     return all_data
 
