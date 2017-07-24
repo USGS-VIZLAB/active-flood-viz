@@ -3,12 +3,9 @@ html, body, .main-content {
 	margin: 0 auto;
 }
 
-.main-content {
-	max-width: 1200px;
-}
-
-.header, .footer-icons	 {
-	background-color: steelblue;
+.header, .footer	 {
+	background-color: rgb(0,51,102);
+	color: white;
 }
 
 .footer-icons {
@@ -28,10 +25,6 @@ body {
 	stroke-width: 1;
 }
 
-.col-sm-6 {
-	min-width: 500px;
-}
-
 #hydrograph_text {
 	margin-left: 50px;
 	text-align: center;
@@ -39,14 +32,14 @@ body {
 
 #map_text {
 	text-align: center;
-	width: 500px;
-	margin-left: 100px;
+	/*width: 500px;*/
+	margin-left: 50px;
 }
 
 #peakflow_text {
-	width: 800px;
+	/*width: 800px;*/
 	text-align: center;
-	margin-left: 65px;
+	margin-left: 20px;
 }
 
 #map, #hydrograph {
@@ -55,38 +48,46 @@ body {
 }
 
 #pic1, #pic2 {
-	width: 500px;
-	height: 400px;
+	height: 300px;
 	margin-top: 50px;
-	margin-bottom: 50px;
 	border: 1px solid black;
 }
 
-.header, .subheader, .footer-icons {
+#pic3, #pic4 {
+	height: 150px;
+	border: 1px solid white;
+}
+
+#pic1_text, #pic2_text {
+	margin-bottom: 50px;
+	margin-top: 10px;
+}
+
+.header, .subheader, .footer {
 	text-align: center;
 	border: 1px solid black;
 }
 
-#textbox1 {
-	max-width: 1200px;
-}
 
 #textbox1 {
 	margin-top: 50px;
 }
 
-#pic2 {
-	margin-left: 100px;
-}
-
 .icon {
-	margin-top: 100px;
-	margin-bottom: 100px;
+	/*margin-top: 100px;*/
+	margin-bottom: 10px;
 	height: 25px;
 	width: 25px;
 }
 
-#icons {
-	margin-left: 25px;
+.icon-div:hover {
+	opacity: 1.0;
+}
+
+.icon-div {
+	position: fixed;
+	right: 0;
+	width: 25px;
+	opacity: 0.1;
 }
 

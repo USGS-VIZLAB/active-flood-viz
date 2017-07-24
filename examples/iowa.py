@@ -1,5 +1,9 @@
 DEBUG = False
 
+TITLE = 'Lorem Ipsum'
+SUBTITLE = 'Lorem ipsum dolor sit amet'
+FOOTER = 'Lorem Ipsum'
+
 # Site IDs available for charting
 SITE_IDS = ['05463500', '05471050', '05420680', '05479000',
             '05484000', '05481000', '05486000', '05421000',
@@ -21,8 +25,8 @@ EVENT_END_DT = '2008-07-05'
 
 # dimensions for the hydrograph
 CHART_DIMENSIONS = {
-    'height': 300,
-    'width': 600
+    'height': 350,
+    'width': 550
 }
 
 # MAP SETTINGS
@@ -37,7 +41,7 @@ RIVERS_FILE = 'floodviz/static/geojson/rivers.json'
 
 
 MAP_CONFIG = {
-    'width': 550,
+    'width': 450,
     'height': 350,
     'scale': 1
 }
@@ -84,5 +88,5 @@ PEAK_DV_DT = '2008-07-05'
 # NOTE: the height and width of the svg are modified beyond these values in peakflow.js
 PEAK_META = {
     'height': '400',
-    'width': '850'
+    'width': '750'
 }
