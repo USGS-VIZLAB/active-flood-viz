@@ -16,7 +16,7 @@ WORKDIR /app
 
 RUN cp nginx.conf /etc/nginx
 
-RUN cp $config instance/config.py
+#RUN cp $config instance/config.py
 
 RUN rm -f /etc/apt/sources.list.d/chris-lea-node_js-jessie.list \
 && curl https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \

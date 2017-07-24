@@ -2,6 +2,8 @@ import argparse
 from floodviz import app as application
 from flask_frozen import Freezer
 
+import json
+
 freezer = Freezer(application)
 
 if __name__ == '__main__':
@@ -15,6 +17,30 @@ if __name__ == '__main__':
     port_val = args.port
     do_freeze = args.freeze
     run = not args.norun
+
+    with open('floodviz/static/reference/reference.json', 'r') as f:
+        data = json.load(f)
+
+        # print(data)
+        epsg = data['target_epsg'][5:]
+        site_ids = data['site_ids']
+        display_sites = data['display_sites']
+        bbox = data['bbox']
+        start_date = data['startDate']
+        end_date = data['endDate']
+        peak_dv_date = data['endDate']
+        peak_site = data['peak']['site']
+        # peak_start_date = data['peak']['startDate']
+        # peak_end_date = data['peak']['endDate']
+        # print(data['reference']['features'][0])
+
+    for i in range(0, len(data['reference']['features'])):
+        if data['reference']['features'][i]['properties']['reftype'] == 'rivers':
+            print('river')
+        if data['reference']['features'][i]['properties']['reftype'] == 'city':
+            print('city')
+        if data['reference']['features'][i]['properties']['reftype'] == 'politicalBoundaries':
+            print('border')
 
     if host_val is not None:
         host = host_val

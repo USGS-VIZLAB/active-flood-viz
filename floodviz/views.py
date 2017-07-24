@@ -9,28 +9,7 @@ from . import peak_flow_utils
 
 url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 
-with open('floodviz/static/reference/reference.json', 'r') as f:
-    data = json.load(f)
 
-print(data)
-print(data['target_epsg'][5:])
-print(data['site_ids'])
-print(data['display_sites'])
-print(data['bbox'])
-print(data['startDate'])
-print(data['endDate'])
-print(data['peak']['site'])
-print(data['peak']['startDate'])
-print(data['peak']['endDate'])
-print(data['reference']['features'][0])
-
-for i in range(0, len(data['reference']['features'])):
-    if data['reference']['features'][i]['properties']['reftype'] == 'rivers':
-        print('river')
-    if data['reference']['features'][i]['properties']['reftype'] == 'city':
-        print('city')
-    if data['reference']['features'][i]['properties']['reftype'] == 'politicalBoundaries':
-        print('border')
 
 
 
