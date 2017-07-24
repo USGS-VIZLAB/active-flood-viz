@@ -254,8 +254,6 @@
 				}
 				svg = d3.select(options.div_id)
 					.append('svg')
-					// .attr('width', '100%')
-					// .attr('height', options.height);
 					.attr("preserveAspectRatio", "xMinYMin meet")
 					.attr("viewBox", "0 0 " + options.width + " " + options.height);
 

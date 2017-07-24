@@ -32,12 +32,10 @@ body {
 
 #map_text {
 	text-align: center;
-	/*width: 500px;*/
 	margin-left: 50px;
 }
 
 #peakflow_text {
-	/*width: 800px;*/
 	text-align: center;
 	margin-left: 20px;
 }
@@ -51,11 +49,6 @@ body {
 	height: 300px;
 	margin-top: 50px;
 	border: 1px solid black;
-}
-
-#pic3, #pic4 {
-	height: 150px;
-	border: 1px solid white;
 }
 
 #pic1_text, #pic2_text {
@@ -74,20 +67,16 @@ body {
 }
 
 .icon {
-	/*margin-top: 100px;*/
 	margin-bottom: 10px;
 	height: 25px;
 	width: 25px;
 }
 
-.icon-div:hover {
-	opacity: 1.0;
-}
-
 .icon-div {
+	margin-top: 50px;
 	position: fixed;
 	right: 0;
 	width: 25px;
-	opacity: 0.1;
+	opacity: 1.0;
 }
 

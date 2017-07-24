@@ -19,8 +19,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	var yAxis = d3.axisLeft().scale(y).ticks(8);
 
 	var svg = d3.select('#peakflow_bar').append('svg')
-		// .attr('width', '100%')
-		// .attr('height', height + margin.top + margin.bottom)
 		.attr("preserveAspectRatio", "xMinYMin meet")
 		.attr("viewBox", "0 0 " + (width + margin.right) + " " + (height+ margin.top + margin.bottom))
 		.append('g')

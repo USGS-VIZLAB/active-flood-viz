@@ -81,9 +81,7 @@
 			svg = d3.select(options.div_id)
 				.append('svg')
 				.attr("preserveAspectRatio", "xMinYMin meet")
-				.attr("viewBox", "0 0 " + (width+50) + " " + (height+100))
-				// .attr('width', '100%')
-				// .attr('height', height + margin.top + margin.bottom)
+				.attr("viewBox", "0 0 " + (width + margin.left + margin.right ) + " " + (height + margin.top + margin.bottom ))
 				.append('g')
 				.attr('transform',
 					'translate(' + margin.left + ',' + margin.top + ')');
