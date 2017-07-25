@@ -31,8 +31,6 @@
 	</div>
 
 	<div class="main-content container">
-
-
 		<div class="col-xs-offset-11">
 			<div class="icon-div">
 				<img src="static/images/facebook.png" class="icon"/>
@@ -116,7 +114,7 @@
 		};
 
 		FV.hydrograph_data_path = "{{ url_for('timeseries_data', filename='data/hydrograph_data.json') }}";
-		FV.hydrograph_dimensions = {{ config.CHART_DIMENSIONS | safe }};
+		FV.hydrograph_dimensions = {{ config.HYDROGRAPH_ASPECT_RATIO | safe }};
 		FV.hydrograph_display_ids = {{ config.HYDRO_DISPLAY_IDS | safe }};
 
 		FV.peakmeta = {{ config.PEAK_META | safe }};

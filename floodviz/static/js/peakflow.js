@@ -2,15 +2,16 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	'use strict';
 
+	var margin = {bottom: 40, right: 40, left: 40, top: 50};
+	var width = parseInt(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
+	var height = parseInt(400);
+	var data = FV.peakinfo;
+
 	// Collect and set peakflow bar chart aspect ratio data
 	var peakflow_bar = document.getElementById('peakflow_bar');
-	peakflow_bar.style.height = FV.peakmeta['height'];
-	peakflow_bar.style.width = FV.peakmeta['width'];
+	peakflow_bar.style.height = height;
+	peakflow_bar.style.width =  width;
 
-	var margin = {bottom: 40, right: 40, left: 40, top: 50};
-	var width = parseInt(FV.peakmeta['width']);
-	var height = parseInt(FV.peakmeta['height']);
-	var data = FV.peakinfo;
 
 	var x = d3.scaleBand().rangeRound([0, width]).padding(.5);
 	var y = d3.scaleLinear().range([height, 0]);
@@ -81,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	var padding = lb_x - slb_x;
 	var lolli_pos_x = ((lb_x + padding + ((1 / 2) * x.bandwidth())).toString())
 	var lolli_pos_y = (y(lolli_data['value'])).toString()
-	var path_string = 'M ' + lolli_pos_x + ',' + FV.peakmeta['height'] + ' ' + lolli_pos_x + ',' + lolli_pos_y;
+	var path_string = 'M ' + lolli_pos_x + ',' + height + ' ' + lolli_pos_x + ',' + lolli_pos_y;
 	svg.append('path')
 		.attr('id', 'lollipop')
 		.attr('stroke-width', 2)
