@@ -19,8 +19,7 @@
 		 * specifying config options for the map. Call init() to create the map. Linked
 		 * interaction functions for other figures should be passed to init in and object.
 		 *
-		 * @return {Object} self - Holde
-		 * r for public functions.
+		 * @return {Object} self - Holder for public functions.
 		 *    See functions for specific documentation.
 		 *    @function init
 		 *    @function site_tooltip_show
