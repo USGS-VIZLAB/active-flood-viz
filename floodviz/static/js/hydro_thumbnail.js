@@ -13,7 +13,7 @@
  * interaction functions for other figures should be passed to init in and object.
  *
  */
-var thumbnail = function (options) {
+var thumbnail = function(options) {
 
 	var self = {};
 
@@ -185,12 +185,14 @@ var thumbnail = function (options) {
 	self.init = function (linked_interactions) {
 		self.linked_interactions = linked_interactions;
 		update();
+		return self;
 	};
 
 	/**
 	 */
-	self.svg_string = function() {
-		return d3.select(options.div_id).html();
+	self.svg_elem = function() {
+		return d3.select(options.div_id);
+		//return d3.select(options.div_id).html();
 	};
 	/**
 	 * Displays tooltip for hydrograph at a data point in addition to
