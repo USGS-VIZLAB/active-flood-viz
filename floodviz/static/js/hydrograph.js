@@ -19,9 +19,9 @@
 
 		var default_display_ids = null;
 
-		var margin = {top: 30, right: 20, bottom: 30, left: 50};
-		var height = options.height - margin.top - margin.bottom;
-		var width = options.width - margin.left - margin.right;
+		var margin = {top: 60, right: 30, bottom: 30, left: 50};
+		var height = 500 * (options.height / options.width) - margin.top - margin.bottom;
+		var width = 500 - margin.left - margin.right;
 
 		// Adds the svg canvas
 		var svg = null;
@@ -95,8 +95,8 @@
 			// recreate svg
 			svg = d3.select(options.div_id)
 				.append('svg')
-				.attr('width', width + margin.left + margin.right)
-				.attr('height', height + margin.top + margin.bottom)
+				.attr("preserveAspectRatio", "xMinYMin meet")
+				.attr("viewBox", "0 0 " + (width + margin.left + margin.right ) + " " + (height + margin.top + margin.bottom ))
 				.append('g')
 				.attr('transform',
 					'translate(' + margin.left + ',' + margin.top + ')')
