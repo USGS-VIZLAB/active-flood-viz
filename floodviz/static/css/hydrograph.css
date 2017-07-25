@@ -4,6 +4,11 @@
 	margin-bottom: 10px;
 }
 
+#hydro-background {
+	fill-opacity: 0;
+	fill: white;
+}
+
 #hydrograph .voronoi path {
 	fill: none;
 	stroke: none;
