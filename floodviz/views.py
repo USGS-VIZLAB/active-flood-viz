@@ -10,10 +10,6 @@ from . import peak_flow_utils
 url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 
 
-
-
-
-
 @app.route('/')
 def root():
     peakinfo = _peakflow_helper()
