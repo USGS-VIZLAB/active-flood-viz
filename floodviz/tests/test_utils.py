@@ -163,12 +163,7 @@ class TestRdbParseMap(unittest.TestCase):
         self.sites = ['05420680', '05463500']
         self.endpoint = 'https://waterservices.usgs.gov/nwis/site/'
         self.endpoint_mock = 'http://somethingfake.notadomain/noob/'
-        self.header_values = {'site_no': 0,
-                              'station_nm': 0,
-                              'dec_long_va': 0,
-                              'dec_lat_va': 0,
-                              'huc_cd': 0
-                              }
+
         self.test_dict = {
             'format': 'rdb',
             'sites': ','.join(self.sites),
