@@ -62,12 +62,17 @@ def _map_helper():
         bg_data = json.load(bg_file)
     bg_data = map_utils.filter_background(ref.bbox, bg_data)
 
-    with open(app.config['RIVERS_FILE'], 'r') as rivers_file:
-        rivers = json.load(rivers_file)
+    # with open(app.config['RIVERS_FILE'], 'r') as rivers_file:
+    #     rivers = json.load(rivers_file)
+
+    print(ref.river_data)
+    rivers = json.loads(ref.river_data)
+
+    for feature in rivers['features']:
+        del(feature["id"])
 
     ref_data = ref.reference_data
     print(ref_data)
-
 
     mapinfo = app.config['MAP_CONFIG']
     mapinfo.update({

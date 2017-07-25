@@ -51,6 +51,7 @@
 #map path.river{
 	stroke: steelblue;
 	fill: steelblue;
+	fill-opacity: 0;
 }
 
 rect.select-box {
