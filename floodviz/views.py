@@ -57,22 +57,16 @@ def _map_helper():
     site_data = map_utils.site_dict(ref.site_ids, app.config['NWIS_SITE_SERVICE_ENDPOINT'])
     site_data = map_utils.create_geojson(site_data)
     projection = map_utils.projection_info(ref.epsg, app.config['SPATIAL_REFERENCE_ENDPOINT'])
-    
-    with open(app.config['BACKGROUND_FILE'], 'r') as bg_file:
-        bg_data = json.load(bg_file)
+
+    bg_data = json.loads(ref.background_data)
     bg_data = map_utils.filter_background(ref.bbox, bg_data)
 
-    # with open(app.config['RIVERS_FILE'], 'r') as rivers_file:
-    #     rivers = json.load(rivers_file)
-
-    print(ref.river_data)
     rivers = json.loads(ref.river_data)
 
     for feature in rivers['features']:
         del(feature["id"])
 
-    ref_data = ref.reference_data
-    print(ref_data)
+    ref_data = ref.city_data
 
     mapinfo = app.config['MAP_CONFIG']
     mapinfo.update({

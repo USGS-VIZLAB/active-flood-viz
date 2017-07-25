@@ -11,19 +11,27 @@ with open('floodviz/static/reference/reference.json', 'r') as f:
     end_date = data['endDate']
     peak_dv_date = data['endDate']
     peak_site = data['peak']['site']
-    reference_data = []
+    city_data = []
     for i in range(0, len(data['reference']['features'])):
         if data['reference']['features'][i]['properties']['reftype'] == 'city':
-            reference_data.append(data['reference']['features'][i])
+            city_data.append(data['reference']['features'][i])
 
-    reference_data = {"type": "FeatureCollection", "features": reference_data}
+    city_data = {"type": "FeatureCollection", "features": city_data}
 
     river_data = []
     for i in range(0, len(data['reference']['features'])):
         if data['reference']['features'][i]['properties']['reftype'] == 'rivers':
             river_data.append(data['reference']['features'][i])
 
-    river_data = {"type": "FeatureCollection", "features": river_data}
-    river_data = json.dumps(river_data)
+    river_data = json.dumps({"type": "FeatureCollection", "features": river_data})
+
+    background_data = []
+    for i in range(0, len(data['reference']['features'])):
+        if data['reference']['features'][i]['properties']['reftype'] == 'politicalBoundaries':
+            background_data.append(data['reference']['features'][i])
+
+    background_data = json.dumps({"type": "FeatureCollection", "features": background_data})
+
+
 
 
