@@ -51,5 +51,14 @@
 	fill: none;
 	stroke-width: 1;
 	stroke: steelblue;
-	opacity: 0.8;
+	opacity: 0.9;
+}
+
+.hydro-inactive-bland{
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	fill: none;
+	stroke-width: 1;
+	stroke: steelblue;
+	opacity: 0.55;
 }

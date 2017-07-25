@@ -62,6 +62,15 @@
 			return toKeep;
 		};
 
+		var make_lines_bland = function (key){
+			FV.hydrograph_display_ids.forEach(function(id) {
+				if(id !== key){
+					d3.select('#hydro' + id).attr('class', 'hydro-inactive-bland');
+				}
+			})
+		};
+
+
 		/**
 		 *
 		 * Draws the svg, scales the range of the data, and draws the line for each site
@@ -221,18 +230,21 @@
 			update();
 		};
 		/**
-		 * Highlight a line.
+		 * Highlight a line, de-emphasize all other lines
 		 * @param sitekey the site number of the line to be highlighted
 		 */
 		self.activate_line = function (sitekey) {
+			make_lines_bland(sitekey);
 			d3.select('#hydro' + sitekey).attr('class', 'hydro-active');
 		};
 		/**
-		 * Un-highlight a line
-		 * @param sitekey the site number of the line to be un-highlighted
+		 * Set all lines to inactive
 		 */
-		self.deactivate_line = function (sitekey) {
-			d3.select('#hydro' + sitekey).attr('class', 'hydro-inactive');
+		self.deactivate_line = function () {
+			FV.hydrograph_display_ids.forEach(function(id) {
+				d3.select('#hydro' + id).attr('class', 'hydro-inactive');
+			})
+
 		};
 		return self
 	};
