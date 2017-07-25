@@ -222,8 +222,8 @@
 							g.x > NW.x && g.x < SE.x &&
 							g.y > NW.y && g.y < SE.y
 						) {
-							selected.push(g.id);
-							self.site_add_accent(g.id);
+							selected.push(key);
+							self.site_add_accent(key);
 						}
 					});
 					self.linked_interactions.click(selected);
@@ -337,6 +337,7 @@
 					.on('mousedown', function () {
 						d3.event.stopPropagation();
 					});
+
 				sites.selectAll('circle').each(function (d) {
 					if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
 						self.site_add_accent(d.properties.id);
