@@ -1,5 +1,21 @@
 DEBUG = False
 
+TITLE = 'Lorem Ipsum'
+SUBTITLE = 'Lorem ipsum dolor sit amet'
+FOOTER = 'loremipsum.com'
+
+# dimensions for the hydrograph
+HYDROGRAPH_ASPECT_RATIO = {
+    'height': 3.5,
+    'width': 5.5
+}
+
+MAP_CONFIG = {
+    'width': 1,
+    'height': 1,
+    'scale': 1
+}
+
 # Site IDs available for charting
 SITE_IDS = ['05463500', '05471050', '05420680', '05479000',
             '05484000', '05481000', '05486000', '05421000',
@@ -19,11 +35,7 @@ HYDRO_DISPLAY_IDS = ['05471200', '05476750', '05411850', '05454220',
 EVENT_START_DT = '2008-06-26'
 EVENT_END_DT = '2008-07-05'
 
-# dimensions for the hydrograph
-CHART_DIMENSIONS = {
-    'height': 400,
-    'width': 800
-}
+
 
 # MAP SETTINGS
 
@@ -36,11 +48,7 @@ RIVERS_FILE = 'floodviz/static/geojson/rivers.json'
 
 
 
-MAP_CONFIG = {
-    'width': 750,
-    'height': 450,
-    'scale': 1
-}
+
 
 REFERENCE_DATA = {
     "type": "FeatureCollection",
@@ -83,6 +91,6 @@ PEAK_DV_DT = '2008-07-05'
 # This dict holds aspect ratio data for the peak flow chart rendered in static/js/peakflow.js
 # NOTE: the height and width of the svg are modified beyond these values in peakflow.js
 PEAK_META = {
-    'height': '300',
-    'width': '900'
+    'height': '4',
+    'width': '7.5'
 }
