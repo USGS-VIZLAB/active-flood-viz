@@ -13,7 +13,7 @@
  * interaction functions for other figures should be passed to init in and object.
  *
  */
-var thumbnail = function(options) {
+var hydromodule = function (options) {
 
 	var self = {};
 
@@ -189,10 +189,10 @@ var thumbnail = function(options) {
 	};
 
 	/**
+	 * Returns the svg element node. Primarily used for thumb-nailing.
 	 */
-	self.svg_elem = function() {
+	self.get_svg_elem = function () {
 		return d3.select(options.div_id);
-		//return d3.select(options.div_id).html();
 	};
 	/**
 	 * Displays tooltip for hydrograph at a data point in addition to
