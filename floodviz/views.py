@@ -6,6 +6,7 @@ from . import app
 from . import hydrograph_utils
 from . import map_utils
 from . import peak_flow_utils
+from . import reference_parser as ref
 
 url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 
@@ -27,9 +28,9 @@ def sitemap():
 
 @app.route('/timeseries/')
 def timeseries_data():
-    hydro_start_date = app.config['EVENT_START_DT']
-    hydro_end_date = app.config['EVENT_END_DT']
-    sites = app.config['SITE_IDS']
+    hydro_start_date = ref.start_date
+    hydro_end_date = ref.end_date
+    sites = ref.site_ids
 
     # Hydrodata data clean and write
     j = hydrograph_utils.req_hydrodata(sites, hydro_start_date, hydro_end_date, url_nwis_prefix)
@@ -39,10 +40,11 @@ def timeseries_data():
 
 def _peakflow_helper():
     # Peak Flow config vars #
-    peak_site = app.config['PEAK_SITE']
-    peak_start_date = app.config['EVENT_START_DT']
-    peak_end_date = app.config['EVENT_END_DT']
-    peak_dv_date = app.config['PEAK_DV_DT']
+    # peak_site = app.config['PEAK_SITE']
+    peak_site = ref.peak_site
+    peak_start_date = ref.start_date
+    peak_end_date = ref.end_date
+    peak_dv_date = ref.peak_dv_date
     url_peak_prefix = app.config['NWIS_PEAK_STREAMFLOW_SERVICE_ENDPOINT']
 
     # Peak Water Flow data clean and write 
@@ -52,18 +54,19 @@ def _peakflow_helper():
     return peak_data
 
 def _map_helper():
-    site_data = map_utils.site_dict(app.config['SITE_IDS'], app.config['NWIS_SITE_SERVICE_ENDPOINT'])
+    site_data = map_utils.site_dict(ref.site_ids, app.config['NWIS_SITE_SERVICE_ENDPOINT'])
     site_data = map_utils.create_geojson(site_data)
-    projection = map_utils.projection_info(app.config['PROJECTION_EPSG_CODE'], app.config['SPATIAL_REFERENCE_ENDPOINT'])
+    projection = map_utils.projection_info(ref.epsg, app.config['SPATIAL_REFERENCE_ENDPOINT'])
     
     with open(app.config['BACKGROUND_FILE'], 'r') as bg_file:
         bg_data = json.load(bg_file)
-    bg_data = map_utils.filter_background(app.config['BOUNDING_BOX'], bg_data)
+    bg_data = map_utils.filter_background(ref.bbox, bg_data)
 
     with open(app.config['RIVERS_FILE'], 'r') as rivers_file:
         rivers = json.load(rivers_file)
 
-    ref_data = app.config['REFERENCE_DATA']
+    ref_data = ref.reference_data
+    print(ref_data)
 
 
     mapinfo = app.config['MAP_CONFIG']
@@ -81,14 +84,14 @@ def _map_helper():
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": app.config['BOUNDING_BOX'][0:2]
+                        "coordinates": ref.bbox[0:2]
                     },
                 },
                 {
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": app.config['BOUNDING_BOX'][2:4]
+                        "coordinates": ref.bbox[2:4]
                     },
                 }
             ]
