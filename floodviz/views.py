@@ -6,15 +6,21 @@ from . import app
 from . import hydrograph_utils
 from . import map_utils
 from . import peak_flow_utils
+from .linked_data_utils import LinkedData
 
 url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
+linked_data = LinkedData()
 
 
 @app.route('/')
 def root():
+
+    linked_data.set_dates(app.config['EVENT_START_DT'], app.config['EVENT_END_DT'])
+    linked_data.set_location(app.config['BOUNDING_BOX'])
+
     peakinfo = _peakflow_helper()
     mapinfo = _map_helper()
-    return render_template('index.html', mapinfo=mapinfo, peakinfo=peakinfo)
+    return render_template('index.html', mapinfo=mapinfo, peakinfo=peakinfo, linked_data=linked_data.assemble())
 
 
 @app.route('/hydrograph/')
@@ -57,6 +63,8 @@ def _peakflow_helper():
 
 def _map_helper():
     site_data = map_utils.site_dict(app.config['SITE_IDS'], app.config['NWIS_SITE_SERVICE_ENDPOINT'])
+    linked_data.set_gages(site_data)
+
     site_data = map_utils.create_geojson(site_data)
     projection = map_utils.projection_info(app.config['PROJECTION_EPSG_CODE'], app.config['SPATIAL_REFERENCE_ENDPOINT'])
 
