@@ -63,9 +63,6 @@ def _map_helper():
 
     rivers = json.loads(ref.river_data)
 
-    for feature in rivers['features']:
-        del(feature["id"])
-
     ref_data = ref.city_data
 
     mapinfo = app.config['MAP_CONFIG']
