@@ -16,7 +16,8 @@ def parse_rdb(endpoint, params):
                   i.e {'site_no' : '056777781'} -> '&site_no=056777781'
 
         RETURNS:
-            list of data point dicts extracted from webservice.
+            With success this function returns a list of data point dicts extracted from webservice.
+            On a request failure, this function returns None.
     """
     all_data = []
     try:
@@ -47,6 +48,5 @@ def parse_rdb(endpoint, params):
         else:
             all_data = None
 
-    print(all_data)
     return all_data
 
