@@ -17,9 +17,11 @@
 
 		var self = {};
 
-		var margin = {top: 30, right: 20, bottom: 30, left: 50};
-		var height = options.height - margin.top - margin.bottom;
-		var width = options.width - margin.left - margin.right;
+		var default_display_ids = null;
+
+		var margin = {top: 60, right: 30, bottom: 30, left: 50};
+		var height = 500 * (options.height / options.width) - margin.top - margin.bottom;
+		var width = 500 - margin.left - margin.right;
 
 		// Adds the svg canvas
 		var svg = null;
@@ -72,6 +74,19 @@
 
 
 		/**
+		 * Show only the default set of lines on the hydrograph.
+		 */
+		var reset_hydrograph = function () {
+			FV.hydrograph_display_ids.forEach(function (id) {
+				if (default_display_ids.indexOf(id) === -1) {
+					self.linked_interactions.click(id);
+				}
+			});
+			// use array.slice() with no parameters to deep copy
+			self.change_lines(default_display_ids.slice());
+		};
+
+		/**
 		 *
 		 * Draws the svg, scales the range of the data, and draws the line for each site
 		 * all based on the data set as it was passed in. Called as needed
@@ -89,11 +104,14 @@
 			// recreate svg
 			svg = d3.select(options.div_id)
 				.append('svg')
-				.attr('width', width + margin.left + margin.right)
-				.attr('height', height + margin.top + margin.bottom)
+				.attr("preserveAspectRatio", "xMinYMin meet")
+				.attr("viewBox", "0 0 " + (width + margin.left + margin.right ) + " " + (height + margin.top + margin.bottom ))
 				.append('g')
 				.attr('transform',
-					'translate(' + margin.left + ',' + margin.top + ')');
+					'translate(' + margin.left + ',' + margin.top + ')')
+				.on('dblclick', function () {
+					reset_hydrograph();
+				});
 
 			var graph_data = sub_data.map(function (d) {
 				return {
@@ -130,6 +148,14 @@
 					.attr('id', 'hydro' + d.key)
 					.attr('d', line(d.values));
 			});
+			svg.append('g')
+				.attr('id', 'hydro-background')
+				.append('rect')
+				.attr('x', 0)
+				.attr('y', 0)
+				.attr('height', height)
+				.attr('width', width);
+
 			// Add the X Axis
 			svg.append('g')
 				.attr('class', 'axis')
@@ -174,6 +200,7 @@
 				})
 				.on('click', function (d) {
 					self.linked_interactions.click(d.data.key);
+					self.linked_interactions.hover_out(d.data.key);
 					self.remove_series(d.data.key);
 				});
 
@@ -191,6 +218,8 @@
 		 *
 		 */
 		self.init = function (linked_interactions) {
+			// use array.slice() to deep copy
+			default_display_ids = FV.hydrograph_display_ids.slice();
 			self.linked_interactions = linked_interactions;
 			update();
 		};
