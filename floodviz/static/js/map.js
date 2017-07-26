@@ -233,20 +233,18 @@
 			};
 
 			/**
-			 * Make all sites bland except those with bland = false in state.
+			 * De-emphasize all sites except the one specified
+			 * @param exemptkey - The key of the one site that should not be de-emphasized
 			 */
-			var make_sites_bland = function () {
+			var make_sites_bland = function (exemptkey) {
 				Object.keys(state.gages).forEach(function (key) {
 					const g = state.gages[key];
 					var style = 'gage-point';
 					if (g.accent) {
 						style += '-accent'
 					}
-					if (g.bland) {
+					if (key !== exemptkey) {
 						style += '-bland';
-					}
-					else {
-						g.bland = true;
 					}
 					d3.select('#map' + key).attr('class', style);
 				});
@@ -321,8 +319,7 @@
 					state.gages[g.properties.id] = {
 						x: position[0],
 						y: position[1],
-						accent: false,
-						bland: true
+						accent: false
 					};
 				});
 
@@ -360,8 +357,7 @@
 			 * Shows sitename tooltip on map figure at correct location.
 			 */
 			self.site_tooltip_show = function (sitename, sitekey) {
-				state.gages[sitekey].bland = false;
-				make_sites_bland();
+				make_sites_bland(sitekey);
 				var gage_point_cords = document.getElementById('map' + sitekey).getBoundingClientRect();
 				maptip.transition().duration(500);
 				maptip.style('display', 'inline-block')
