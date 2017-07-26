@@ -64,9 +64,13 @@
 			return toKeep;
 		};
 
-		var make_lines_bland = function (key){
+		/**
+		 * De-emphasize all but one specified line
+		 * @param exemptkey - The key of the one line that should not be de-emphasized
+		 */
+		var make_lines_bland = function (exemptkey){
 			FV.hydrograph_display_ids.forEach(function(id) {
-				if(id !== key){
+				if(id !== exemptkey){
 					d3.select('#hydro' + id).attr('class', 'hydro-inactive-bland');
 				}
 			})
