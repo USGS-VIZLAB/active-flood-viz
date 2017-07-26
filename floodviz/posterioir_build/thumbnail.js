@@ -7,16 +7,31 @@ jsdom.env(
 
 	// create DOM hook
 	"<html><body><div id='hydrograph'></div>" +
+	"<div id='map'></divid>" +
 	"</body></html>",
 
 	// load local assets into window environment (!)
 	[
 		'./floodviz/static/bower_components/d3/d3.js',
 		'./floodviz/static/bower_components/jquery/dist/jquery.min.js',
-		'./floodviz/posterioir_build/hydro_thumbnail.js'
+		'./floodviz/posterioir_build/hydro_thumbnail.js',
+		'./floodviz/posterioir_build/map_thumbnail.js'
 	],
 
 	function (err, window) {
+
+			// var map_figure = window.mapmodule(
+			// 	{
+			// 		'height': 300,
+			// 		'width': 560,
+			// 		'div_id': '#map',
+			// 		'data': data_hydro,
+			// 		"map_display_ids": ['05471200', '05476750', '05411850', '05454220',
+             //         '05481950', '05416900', '05464500', '05487470']
+			// 		// Refactor Later. I'm assuming this will change with refrences.json
+			// 	}
+			// );
+
 
 			var hydro_figure = window.hydromodule(
 				{
@@ -25,20 +40,31 @@ jsdom.env(
 					'div_id': '#hydrograph',
 					'data': data_hydro,
 					"hydrograph_display_ids": ['05471200', '05476750', '05411850', '05454220',
-						'05481950', '05416900', '05464500', '05487470', '05457700', '05471000']
+                     '05481950', '05416900', '05464500', '05487470']
 					// Refactor Later. I'm assuming this will change with refrences.json
 				}
 			);
 
 			hydro_figure.init(undefined);
-			var svg = hydro_figure.get_svg_elem().node();
-			var style = fs.readFileSync('floodviz/static/css/hydrograph.css', 'utf8');
-			var svg_string = generate_style(style, svg);
+			var svg_h = hydro_figure.get_svg_elem().node();
+			var style_h = fs.readFileSync('floodviz/static/css/hydrograph.css', 'utf8');
+			var svg_string_h = generate_style(style_h, svg_h);
 			// Takes care of canvas conversion
-			svg2png(svg_string)
-				.then(buffer => fs.writeFile('thumbnail.png', buffer))
+			svg2png(svg_string_h)
+				.then(buffer => fs.writeFile('thumbnail_hydro.png', buffer))
 				.then(console.log('\nConverted D3 figure to PNG successfully... \n'))
 				.catch(e => console.error(e));
+
+			// map_figure.init(undefined);
+			// var svg_m = map_figure.get_svg_elem().node();
+			// var style_m = fs.readFileSync('floodviz/static/css/map.css', 'utf8');
+			// var svg_string_m = generate_style(style_m, svg_m);
+			// // Takes care of canvas conversion
+			// svg2png(svg_string_m)
+			// 	.then(buffer => fs.writeFile('thumbnail_map.png', buffer))
+			// 	.then(console.log('\nConverted D3 figure to PNG successfully... \n'))
+			// 	.catch(e => console.error(e));
+
 
 			// Hook style to inline svg string.
 			function generate_style(style_string, svgDomElement) {
