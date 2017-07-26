@@ -34,6 +34,10 @@ def timeseries_data():
     # Hydrodata data clean and write
     j = hydrograph_utils.req_hydrodata(sites, hydro_start_date, hydro_end_date, url_nwis_prefix)
     timeseries_data = hydrograph_utils.parse_hydrodata(j)
+
+    # Write data to file for post build thumbnail
+    with open('floodviz/static/data/hydrograph_data.json', 'w') as f:
+        json.dump(timeseries_data, f)
     return jsonify(timeseries_data)
 
 
@@ -94,4 +98,8 @@ def _map_helper():
             ]
         }
     })
+
+    with open('floodviz/static/data/map_data.json', 'w') as f:
+        json.dump(mapinfo, f)
+
     return mapinfo

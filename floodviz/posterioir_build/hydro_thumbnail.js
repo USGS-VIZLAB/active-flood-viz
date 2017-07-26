@@ -55,7 +55,7 @@ var hydromodule = function (options) {
 	var subset_data = function (full_data) {
 		var toKeep = [];
 		full_data.forEach(function (d) {
-			if (options.hydrograph_display_ids.indexOf(d.key) !== -1) {
+			if (options.display_ids.indexOf(d.key) !== -1) {
 				toKeep.push(d);
 			}
 		});

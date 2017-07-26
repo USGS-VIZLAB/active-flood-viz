@@ -85,7 +85,7 @@ var mapmodule = function (options) {
 			.attr('class', classname)
 			.each(function (d) {
 				if (property_for_id && d.properties[property_for_id]) {
-					if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
+					if (options.display_ids.indexOf(d.properties.id) !== -1) {
 						self.site_add_accent(d.properties.id);
 					}
 				}
@@ -312,10 +312,10 @@ var mapmodule = function (options) {
 			};
 			state.gages.push(info);
 		});
-		// Debug points
-		if (FV.config.debug) {
-			add_circles(options.bounds, 'debug-point', 3)
-		}
+	};
+
+	self.get_svg_elem = function () {
+		return d3.select(options.div_id);
 	};
 
 	/**
