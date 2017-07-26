@@ -65,6 +65,19 @@
 		};
 
 		/**
+		 * De-emphasize all but one specified line
+		 * @param exemptkey - The key of the one line that should not be de-emphasized
+		 */
+		var make_lines_bland = function (exemptkey){
+			FV.hydrograph_display_ids.forEach(function(id) {
+				if(id !== exemptkey){
+					d3.select('#hydro' + id).attr('class', 'hydro-inactive-bland');
+				}
+			})
+		};
+
+
+		/**
 		 * Show only the default set of lines on the hydrograph.
 		 */
 		var reset_hydrograph = function () {
@@ -250,18 +263,21 @@
 			update();
 		};
 		/**
-		 * Highlight a line.
+		 * Highlight a line, de-emphasize all other lines
 		 * @param sitekey the site number of the line to be highlighted
 		 */
 		self.activate_line = function (sitekey) {
+			make_lines_bland(sitekey);
 			d3.select('#hydro' + sitekey).attr('class', 'hydro-active');
 		};
 		/**
-		 * Un-highlight a line
-		 * @param sitekey the site number of the line to be un-highlighted
+		 * Set all lines to inactive
 		 */
-		self.deactivate_line = function (sitekey) {
-			d3.select('#hydro' + sitekey).attr('class', 'hydro-inactive');
+		self.deactivate_line = function () {
+			FV.hydrograph_display_ids.forEach(function(id) {
+				d3.select('#hydro' + id).attr('class', 'hydro-inactive');
+			})
+
 		};
 		return self
 	};
