@@ -16,8 +16,8 @@ jsdom.env(
 		'./floodviz/static/bower_components/d3/d3.js',
 		'./floodviz/static/bower_components/jquery/dist/jquery.min.js',
 		'./floodviz/static/bower_components/proj4/dist/proj4.js',
-		'./floodviz/posterioir_build/hydro_thumbnail.js',
-		'./floodviz/posterioir_build/map_thumbnail.js'
+		'./floodviz/posterior_build/hydro_thumbnail.js',
+		'./floodviz/posterior_build/map_thumbnail.js'
 	],
 
 	function (err, window) {
@@ -62,6 +62,7 @@ jsdom.env(
 				.then(console.log('\nConverted D3 hydrograph to PNG successfully... \n'))
 				.catch(e => console.error(e));
 
+			buffer = null;
 			map_figure.init(undefined);
 			var svg_m = map_figure.get_svg_elem().node();
 			var style_m = fs.readFileSync('floodviz/static/css/map.css', 'utf8');
