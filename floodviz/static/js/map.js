@@ -232,6 +232,9 @@
 				svg.select('#map-select-box').remove();
 			};
 
+			/**
+			 * Make all sites bland except those with bland = false in state.
+			 */
 			var make_sites_bland = function () {
 				Object.keys(state.gages).forEach(function (key) {
 					const g = state.gages[key];
@@ -249,6 +252,9 @@
 				});
 			};
 
+			/**
+			 * reset all sites to normal styling (not bland)
+			 */
 			var make_sites_normal = function () {
 				Object.keys(state.gages).forEach(function (key) {
 					const g = state.gages[key];
