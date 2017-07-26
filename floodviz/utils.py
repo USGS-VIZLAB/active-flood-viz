@@ -25,6 +25,7 @@ def parse_rdb(endpoint, params):
     except requests.exceptions.RequestException as e:
         print(e)
         print('- bad webservice url -')
+        all_data = None
     else:
         if r.status_code is 200:
             content = iter(r.text.splitlines())
