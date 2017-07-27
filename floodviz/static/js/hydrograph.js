@@ -18,6 +18,8 @@
 		var self = {};
 
 		var default_display_ids = null;
+		var timer = null;
+		var dblclick_armed = false;
 
 		var margin = {top: 30, right: 20, bottom: 30, left: 50};
 		var height = options.height - margin.top - margin.bottom;
@@ -73,6 +75,9 @@
 					self.linked_interactions.click(id);
 				}
 			});
+			default_display_ids.forEach(function(id){
+				self.linked_interactions.accent_on_map(id);
+			});
 			// use array.slice() with no parameters to deep copy
 			self.change_lines(default_display_ids.slice());
 		};
@@ -99,10 +104,7 @@
 				.attr('height', height + margin.top + margin.bottom)
 				.append('g')
 				.attr('transform',
-					'translate(' + margin.left + ',' + margin.top + ')')
-				.on('dblclick', function () {
-					reset_hydrograph();
-				});
+					'translate(' + margin.left + ',' + margin.top + ')');
 
 			var graph_data = sub_data.map(function (d) {
 				return {
@@ -139,13 +141,17 @@
 					.attr('id', 'hydro' + d.key)
 					.attr('d', line(d.values));
 			});
+			// Make transparent background for lines
 			svg.append('g')
 				.attr('id', 'hydro-background')
 				.append('rect')
 				.attr('x', 0)
 				.attr('y', 0)
 				.attr('height', height)
-				.attr('width', width);
+				.attr('width', width)
+				.on('dblclick', function () {
+					reset_hydrograph();
+				});
 
 			// Add the X Axis
 			svg.append('g')
@@ -190,9 +196,20 @@
 					self.series_tooltip_remove(d.data.key);
 				})
 				.on('click', function (d) {
-					self.linked_interactions.click(d.data.key);
-					self.linked_interactions.hover_out(d.data.key);
-					self.remove_series(d.data.key);
+					if (dblclick_armed) {
+						clearTimeout(timer);
+						reset_hydrograph();
+						dblclick_armed = false;
+					}
+					else {
+						dblclick_armed = true;
+						timer = setTimeout(function () {
+							self.linked_interactions.click(d.data.key);
+							self.linked_interactions.hover_out(d.data.key);
+							self.remove_series(d.data.key);
+							dblclick_armed = false;
+						}, 200);
+					}
 				});
 
 		};
