@@ -27,13 +27,12 @@ SITE_IDS = ['05463500', '05471050', '05420680', '05479000',
             '05481950', '05416900', '05464500', '05487470']
 
 # Sites to be displayed on the hydrograph by default.
-HYDRO_DISPLAY_IDS = ['05471200', '05476750', '05411850', '05454220',
-                     '05481950', '05416900', '05464500', '05487470']
+HYDRO_DISPLAY_IDS = ['05471200', '05476750', '05411850', '05462000']
 
 
 # Start and end of time series data #
-EVENT_START_DT = '2008-06-26'
-EVENT_END_DT = '2008-07-05'
+EVENT_START_DT = '2008-06-05'
+EVENT_END_DT = '2008-06-15'
 
 
 
@@ -41,7 +40,7 @@ EVENT_END_DT = '2008-07-05'
 
 PROJECTION_EPSG_CODE = '2794'
 
-BOUNDING_BOX = [-94.294625, 41.015733, -91.424186, 43.102420]
+BOUNDING_BOX = [-95.3, 39.8, -91, 43.6]
 
 BACKGROUND_FILE = 'floodviz/static/geojson/states.json'
 RIVERS_FILE = 'floodviz/static/geojson/rivers.json'
@@ -85,9 +84,9 @@ REFERENCE_DATA = {
 ### Peak Flow Config Vars ###
 
 # Site ID for peak flow bar chart
-PEAK_SITE = '05481950'  # used arbitrary site for now --- 05458900
+PEAK_SITE = '05462000'  # used arbitrary site for now --- 05458900
 # Daily Value date for lollipop construction
-PEAK_DV_DT = '2008-07-05'
+PEAK_DV_DT = '2008-06-09'
 # This dict holds aspect ratio data for the peak flow chart rendered in static/js/peakflow.js
 # NOTE: the height and width of the svg are modified beyond these values in peakflow.js
 PEAK_META = {
