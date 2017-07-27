@@ -12,13 +12,15 @@ var target = null;
 var args = process.argv.splice(process.execArgv.length + 2);
 if (args.length !== 1 || typeof args[0] !== "string") {
 	console.log('\nUsage: node thumbnail.js -figureName\n\nValid figure names: -map, -hydro\n');
+	process.exit();
 } else {
 	if(args[0] === '-hydro') {
 		target = 'hydro';
 	} else if (args[0] === '-map'){
 		target = 'map';
 	} else {
-		console.log('\nInvalid flag.\nValid figure names: -map, -hydro\n');
+		console.log('\nInvalid argument.\nValid figure names: -map, -hydro\n');
+		process.exit();
 	}
 }
 
