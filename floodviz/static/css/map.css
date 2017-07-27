@@ -5,25 +5,11 @@
 	opacity: .9;
 }
 
-#map circle.gage-point-bland {
-	stroke: #004500;
-	stroke-width: 2;
-	fill-opacity: 0;
-	opacity: .5;
-}
-
 #map circle.gage-point-accent {
 stroke: #00d040 ;
 stroke-width: 3;
 fill-opacity: 0;
 opacity: 1;
-}
-
-#map circle.gage-point-accent-bland{
-stroke: #00d040 ;
-stroke-width: 3;
-fill-opacity: 0;
-opacity: 0.5;
 }
 
 #map circle.ref-point{
