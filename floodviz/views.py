@@ -15,7 +15,8 @@ url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 def root():
     peakinfo = _peakflow_helper()
     mapinfo = _map_helper()
-    return render_template('index.html', mapinfo=mapinfo, peakinfo=peakinfo)
+    display_sites = ref['display_sites']
+    return render_template('index.html', mapinfo=mapinfo, peakinfo=peakinfo, display_sites=display_sites)
 
 @app.route('/hydrograph/')
 def hydrograph():
@@ -29,14 +30,13 @@ def sitemap():
 @app.route('/timeseries/')
 def timeseries_data():
     hydro_start_date = ref['start_date']
-    hydro_end_date = ref['end date']
+    hydro_end_date = ref['end_date']
     sites = ref['site_ids']
 
     # Hydrodata data clean and write
     j = hydrograph_utils.req_hydrodata(sites, hydro_start_date, hydro_end_date, url_nwis_prefix)
     timeseries_data = hydrograph_utils.parse_hydrodata(j)
     return jsonify(timeseries_data)
-
 
 def _peakflow_helper():
     # Peak Flow config vars #
