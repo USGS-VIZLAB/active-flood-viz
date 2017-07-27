@@ -110,7 +110,7 @@
 
 		FV.hydrograph_data_path = "{{ url_for('timeseries_data', filename='data/hydrograph_data.json') }}";
 		FV.hydrograph_dimensions = {{ config.HYDROGRAPH_ASPECT_RATIO | safe }};
-		FV.hydrograph_display_ids = {{ config.HYDRO_DISPLAY_IDS | safe }};
+		FV.hydrograph_display_ids = {{ display_sites | safe }};
 
 		FV.peakmeta = {{ config.PEAK_META | safe }};
 		FV.peakinfo = {{ peakinfo | tojson | safe }};
