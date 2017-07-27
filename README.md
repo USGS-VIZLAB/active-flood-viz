@@ -18,7 +18,7 @@ the frozen files.
 1. Navigate to your project directory.
 1. Put the rivers.json file in `floodviz/static/geojson/rivers.json` (temporary step)
 1. Copy `DOIRootCA2.cer` into this directory.
-1. Run `docker build --rm --build-arg config=examples/iowa.py --build-arg ref=examples/reference.json -t flood -f Dockerfile .`. This will create the docker image and name it `flood`.
+1. Run `docker build --build-arg config=examples/iowa.py --build-arg ref=examples/reference.json -t flood:latest -f Dockerfile-DOI .`. This will create the docker image and name it `flood`.
 If you are building the image off of the DOI network, you will need to specify Dockerfile rather than Dockerfile-DOI in the above command
 
 **To run a container based on the image:**
