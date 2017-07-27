@@ -52,6 +52,33 @@ class LinkedData:
         })
         return event
 
+    def _assemble_gage(self, gage):
+        g = self._blank_thing('Place')
+        g.update({
+            "address": "HUC:" + gage['huc_cd'],
+            "name": gage['station_nm'],
+            "branchCode": "SITE:"+gage['site_no'],
+            "geo": {
+                self._blank_thing('geoCoordinates').update({
+                    "longitude": gage['dec_long_va'],
+                    "latitude": gage['dec_lat_va']
+
+                })
+            },
+            "additionalProperty": {
+                "huc_cd": gage.huc_cd,
+                "site_no": gage.site_no
+            }
+        })
+        return g
+
+    def _assemble_all_gages(self):
+        gages_ld = []
+        for gage in self.gages:
+            gages_ld.append(self._assemble_gage(gage))
+
+        return gages_ld
+
     def set_gages(self, gages):
         self.gages = gages
 
@@ -73,5 +100,8 @@ class LinkedData:
         str(self.location)
 
     def assemble(self):
-        self.ld["about"] = self._assemble_event()
+        self.ld['about'] = self._assemble_event()
+        self.ld['about'].update({
+
+        })
         return self.ld
