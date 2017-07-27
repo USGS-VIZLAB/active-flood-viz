@@ -2,16 +2,15 @@
 	stroke: #004500;
 	stroke-width: 2;
 	fill-opacity: 0;
-	opacity: .75;
+	opacity: .9;
 }
 
 #map circle.gage-point-accent {
-	stroke: #00d040 ;
-	stroke-width: 3;
-	fill-opacity: 0;
-	opacity: 1;
+stroke: #00d040 ;
+stroke-width: 3;
+fill-opacity: 0;
+opacity: 1;
 }
-
 
 #map circle.ref-point{
 	fill: red;
@@ -36,9 +35,8 @@
 }
 
 #map {
-	float: right;
 	margin-right: 10px;
-	margin-top: 20px;
+	margin-top: 50px;
 	margin-bottom: 10px;
 }
 

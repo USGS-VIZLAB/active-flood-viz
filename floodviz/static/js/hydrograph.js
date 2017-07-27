@@ -21,9 +21,9 @@
 		var timer = null;
 		var dblclick_armed = false;
 
-		var margin = {top: 30, right: 20, bottom: 30, left: 50};
-		var height = options.height - margin.top - margin.bottom;
-		var width = options.width - margin.left - margin.right;
+		var margin = {top: 60, right: 30, bottom: 30, left: 50};
+		var height = 500 * (options.height / options.width) - margin.top - margin.bottom;
+		var width = 500 - margin.left - margin.right;
 
 		// Adds the svg canvas
 		var svg = null;
@@ -67,6 +67,21 @@
 		};
 
 		/**
+		 * De-emphasize all but one specified line
+		 * @param exemptkey - The key of the one line that should not be de-emphasized
+		 */
+		var make_lines_bland = function (exemptkey){
+			if(FV.hydrograph_display_ids.indexOf(exemptkey) !== -1) {
+				FV.hydrograph_display_ids.forEach(function (id) {
+					if (id !== exemptkey) {
+						d3.select('#hydro' + id).attr('class', 'hydro-inactive-bland');
+					}
+				})
+			}
+		};
+
+
+		/**
 		 * Show only the default set of lines on the hydrograph.
 		 */
 		var reset_hydrograph = function () {
@@ -100,8 +115,8 @@
 			// recreate svg
 			svg = d3.select(options.div_id)
 				.append('svg')
-				.attr('width', width + margin.left + margin.right)
-				.attr('height', height + margin.top + margin.bottom)
+				.attr("preserveAspectRatio", "xMinYMin meet")
+				.attr("viewBox", "0 0 " + (width + margin.left + margin.right ) + " " + (height + margin.top + margin.bottom ))
 				.append('g')
 				.attr('transform',
 					'translate(' + margin.left + ',' + margin.top + ')');
@@ -267,18 +282,21 @@
 			update();
 		};
 		/**
-		 * Highlight a line.
+		 * Highlight a line, de-emphasize all other lines
 		 * @param sitekey the site number of the line to be highlighted
 		 */
 		self.activate_line = function (sitekey) {
+			make_lines_bland(sitekey);
 			d3.select('#hydro' + sitekey).attr('class', 'hydro-active');
 		};
 		/**
-		 * Un-highlight a line
-		 * @param sitekey the site number of the line to be un-highlighted
+		 * Set all lines to inactive
 		 */
-		self.deactivate_line = function (sitekey) {
-			d3.select('#hydro' + sitekey).attr('class', 'hydro-inactive');
+		self.deactivate_line = function () {
+			FV.hydrograph_display_ids.forEach(function(id) {
+				d3.select('#hydro' + id).attr('class', 'hydro-inactive');
+			})
+
 		};
 		return self
 	};
