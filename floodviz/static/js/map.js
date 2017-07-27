@@ -236,38 +236,6 @@
 			};
 
 			/**
-			 * De-emphasize all sites except the one specified
-			 * @param exemptkey - The key of the one site that should not be de-emphasized
-			 */
-			var make_sites_bland = function (exemptkey) {
-				Object.keys(state.gages).forEach(function (key) {
-					const g = state.gages[key];
-					var style = 'gage-point';
-					if (g.accent) {
-						style += '-accent'
-					}
-					if (key !== exemptkey) {
-						style += '-bland';
-					}
-					d3.select('#map' + key).attr('class', style);
-				});
-			};
-
-			/**
-			 * reset all sites to normal styling (not bland)
-			 */
-			var make_sites_normal = function () {
-				Object.keys(state.gages).forEach(function (key) {
-					const g = state.gages[key];
-					var style = 'gage-point';
-					if (g.accent) {
-						style += '-accent'
-					}
-					d3.select('#map' + key).attr('class', style);
-				});
-			};
-
-			/**
 			 * Initialize the Map.
 			 *
 			 *@param {Object} linked_interactions - Object holding functions that link to another figure's interactions.
@@ -361,7 +329,6 @@
 			 * Shows sitename tooltip on map figure at correct location.
 			 */
 			self.site_tooltip_show = function (sitename, sitekey) {
-				make_sites_bland(sitekey);
 				var gage_point_cords = document.getElementById('map' + sitekey).getBoundingClientRect();
 				maptip.transition().duration(500);
 				maptip.style('display', 'inline-block')
@@ -373,7 +340,6 @@
 			 * Removes tooltip style from map site.
 			 */
 			self.site_tooltip_remove = function () {
-				make_sites_normal();
 				maptip.style('display', 'none');
 			};
 
