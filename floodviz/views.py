@@ -6,7 +6,7 @@ from . import app
 from . import hydrograph_utils
 from . import map_utils
 from . import peak_flow_utils
-from . import reference_parser as ref
+from . import REFERENCE_DATA as ref
 
 url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
 
@@ -28,9 +28,9 @@ def sitemap():
 
 @app.route('/timeseries/')
 def timeseries_data():
-    hydro_start_date = ref.start_date
-    hydro_end_date = ref.end_date
-    sites = ref.site_ids
+    hydro_start_date = ref['start_date']
+    hydro_end_date = ref['end date']
+    sites = ref['site_ids']
 
     # Hydrodata data clean and write
     j = hydrograph_utils.req_hydrodata(sites, hydro_start_date, hydro_end_date, url_nwis_prefix)
@@ -40,11 +40,10 @@ def timeseries_data():
 
 def _peakflow_helper():
     # Peak Flow config vars #
-    # peak_site = app.config['PEAK_SITE']
-    peak_site = ref.peak_site
-    peak_start_date = ref.start_date
-    peak_end_date = ref.end_date
-    peak_dv_date = ref.peak_dv_date
+    peak_site = ref['peak_site']
+    peak_start_date = ref['start_date']
+    peak_end_date = ref['end_date']
+    peak_dv_date = ref['peak_dv_date']
     url_peak_prefix = app.config['NWIS_PEAK_STREAMFLOW_SERVICE_ENDPOINT']
 
     # Peak Water Flow data clean and write 
@@ -54,16 +53,17 @@ def _peakflow_helper():
     return peak_data
 
 def _map_helper():
-    site_data = map_utils.site_dict(ref.site_ids, app.config['NWIS_SITE_SERVICE_ENDPOINT'])
+    site_data = map_utils.site_dict(ref['site_ids'], app.config['NWIS_SITE_SERVICE_ENDPOINT'])
     site_data = map_utils.create_geojson(site_data)
-    projection = map_utils.projection_info(ref.epsg, app.config['SPATIAL_REFERENCE_ENDPOINT'])
+    projection = map_utils.projection_info(ref['epsg'], app.config['SPATIAL_REFERENCE_ENDPOINT'])
+    bbox = ref['bbox']
 
-    bg_data = json.loads(ref.background_data)
-    bg_data = map_utils.filter_background(ref.bbox, bg_data)
+    bg_data = json.loads(ref['background_geojson_data'])
+    bg_data = map_utils.filter_background(bbox, bg_data)
 
-    rivers = json.loads(ref.river_data)
+    rivers = json.loads(ref['river_geojson_data'])
 
-    ref_data = ref.city_data
+    ref_data = ref['city_geojson_data']
 
     mapinfo = app.config['MAP_CONFIG']
     mapinfo.update({
@@ -80,14 +80,14 @@ def _map_helper():
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": ref.bbox[0:2]
+                        "coordinates": bbox[0:2]
                     },
                 },
                 {
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": ref.bbox[2:4]
+                        "coordinates": bbox[2:4]
                     },
                 }
             ]
