@@ -1,56 +1,77 @@
-import requests
+import re
 
-def req_peak_data(site, start_date, end_date, url_prefix):
-    """ 
-    This function first requests water peak flow data in
-    rdb format from NWIS peak water data service.
+from . import utils
 
-    ARGS: 
-        site - string site ID for the site to be charted
-        start_date - starting date to chart peak flow data
-        end_date - ending date to chart peak flow data
-        url_prefix - config varbile for nwis peak waterdata service endpoint url
-    
-    RETURNS:
-        content - list of all lines in the data file 
 
-    """
+def req_peak_data(site, end_date, url_prefix):
+
     # peak value historical data #
-    content = None
-    url = url_prefix + '?site_no=' + site + '&agency_cd=USGS&format=rdb' + '&end_date=' + end_date
-    try:
-        r = requests.get(url)
-    except requests.exceptions.RequestException as e:
-        print('- Bad URL -')
+    params = {
+        'agency_cd': 'USGS',
+        'format': 'rdb',
+        'site_no': site,
+        'end_date': end_date
+    }
+    raw_peaks = utils.parse_rdb(url_prefix, params)
+    if raw_peaks is None:
+        print('rdb parser has returned no data to peakflow util req_peak_data')
+        peaks = None
+
     else:
-        if r.status_code is 200:
-            content = r.text.splitlines()
-    
-    return content
+        keep_keys = [
+            'peak_dt',
+            'peak_va'
+        ]
+        peaks = []
+        for raw in raw_peaks:
+            peak = {k: raw[k] for k in keep_keys}
+            peaks.append(peak)
+
+    return peaks
+
 
 def req_peak_dv_data(site, date, url_prefix):
-    """ 
-    requests data from the Daily Value NWIS water data service
-    for creating the lollipop svg elements for the current year.
 
-    ARGS: 
-        site - string site ID for the site to be charted
-        date - date to chart lollipop flow data
-        url_pefix - String constant for nwis peak waterdata service endpoint url
-    
-    RETURNS:
-        content - list of all lines in the data file 
+    url_prefix += 'dv/'
 
-    """
-    content = None
-    url = url_prefix + 'dv/?format=rdb&sites=' + site + '&startDT=' + date + '&endDT=' + date + '&siteStatus=all'
-    try:
-        r = requests.get(url)
-        if r.status_code is 200:
-            content = r.text.splitlines()
-    except requests.exceptions.RequestException as e:
-        print('- Bad URL -')
-    return content
+    params = {
+        'format': 'rdb',
+        'siteStatus': 'all',
+        'sites': site,
+        'startDT': date,
+        'endDT': date
+
+    }
+    content = utils.parse_rdb(url_prefix, params)
+    if content is None:
+        print('rdb parser has returned no data to peakflow util req_peak_dv_data')
+        peaks = None
+
+    else:
+        # Find the name of that column whose name changes
+        for k in content[0].keys():
+            colname = re.match(r'\d+_00060_00003$', k)
+            # if a match has been found
+            if colname is not None:
+                colname = colname.string
+                break
+        # (no break) means that this column has not been found
+        else:
+            # I'd rather base my guess on what the thing looks like than on where it is
+            colname = content[0].keys()[3]
+
+        keep_keys = [
+            colname,
+            'datetime'
+        ]
+        peaks = []
+        for raw in content:
+            peak = {k: raw[k] for k in keep_keys}
+            # rename that weird column to 'discharge'
+            peak['discharge'] = peak.pop(colname)
+            peaks.append(peak)
+
+    return peaks
 
 
 
@@ -70,22 +91,13 @@ def parse_peak_data(peak_data, dv_data):
     """
     
     all_data = []
-    seen = set([])
+    seen = set()
     if peak_data:
-        # parse peak_data 
-        for line in peak_data:
-            if not line.startswith('USGS'):
-                continue
-            line = line.split('\t')
-            year = line[2].split('-')[0]
-            # remove duplicate years
-            if year in seen:
-                continue
-            else:
-                seen.add(year)
-            if line[4]:
-                peak_val = int(line[4])
-                all_data.append({'label': year, 'value': peak_val})
+        for peak in peak_data:
+            # I am not worried about years that are not four digits long
+            year = re.match(r'^(\d{4}).*', peak['peak_dt']).group(1)
+            seen.add(year)
+
     if dv_data:    
         # parse daily_value data
         for line in dv_data:
