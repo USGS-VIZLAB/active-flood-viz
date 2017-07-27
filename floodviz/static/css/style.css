@@ -40,27 +40,10 @@ html, body, .main-content {
 
 #map_text {
 	margin-top: 10px;
-	margin-left: 120px;
-}
-
-#hydrograph_text {
-	margin-left: 30px;
-	margin-right: 30px;
-}
-
-#peakflow_text {
-	margin-left: 20px;
-}
-
-#map, #hydrograph {
-	margin-left: 20px;
-	margin-right: 20px;
 }
 
 #pic1, #pic2 {
-	height: 300px;
 	margin-top: 50px;
-	border: 1px solid black;
 }
 
 #pic1_text, #pic2_text {
