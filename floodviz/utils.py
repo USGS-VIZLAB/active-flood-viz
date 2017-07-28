@@ -28,6 +28,7 @@ def parse_rdb(endpoint, params):
         all_data = None
     else:
         if r.status_code is 200:
+            print(r.url)
             content = iter(r.text.splitlines())
             headers = None
             for line in content:
