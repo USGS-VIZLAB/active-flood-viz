@@ -1,6 +1,6 @@
+import os
 
 DEBUG = False
-
 
 NWIS_SITE_SERVICE_ENDPOINT = 'https://waterservices.usgs.gov/nwis/'
 NWIS_PEAK_STREAMFLOW_SERVICE_ENDPOINT = 'https://nwis.waterdata.usgs.gov/nwis/peak'
@@ -56,3 +56,9 @@ MAP_CONFIG = {
 
 # Thumbnail Support
 THUMBNAIL = False
+
+deployed_url_base = os.environ.get('DEPLOYED_BASE_URL')
+if deployed_url_base:
+    FREEZER_BASE_URL = deployed_url_base
+    print(FREEZER_BASE_URL)
+

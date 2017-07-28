@@ -85,14 +85,7 @@
 							return '';
 						}
 					})
-					.attr('class', classname)
-					.each(function (d) {
-						if (property_for_id && d.properties[property_for_id]) {
-							if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
-								self.site_add_accent(d.properties.id);
-							}
-						}
-					});
+					.attr('class', classname);
 				return (group);
 			};
 			/**
@@ -223,14 +216,17 @@
 					};
 					var selected = FV.hydrograph_display_ids;
 
-					state.gages.forEach(function (g) {
+					const keys = Object.keys(state.gages);
+
+					keys.forEach(function (key) {
+						const g = state.gages[key];
 						if (
 							selected.indexOf(g.id) === -1 &&
 							g.x > NW.x && g.x < SE.x &&
 							g.y > NW.y && g.y < SE.y
 						) {
-							selected.push(g.id);
-							self.site_add_accent(g.id);
+							selected.push(key);
+							self.site_add_accent(key);
 						}
 					});
 					self.linked_interactions.click(selected);
@@ -287,6 +283,18 @@
 				add_paths(options.bg_data, 'background');
 				add_paths(options.rivers_data, 'river');
 				add_circles(options.ref_data, 'ref-point', 2);
+
+				// Save locations of gages in SVG for later use with selection box
+				state.gages = {};
+				options.site_data.features.forEach(function (g) {
+					var position = projection(g.geometry.coordinates);
+					state.gages[g.properties.id] = {
+						x: position[0],
+						y: position[1],
+						accent: false
+					};
+				});
+
 				// Add sites and bind events for site hovers
 				var sites = add_circles(options.site_data, 'gage-point', 3, 'id');
 				sites.selectAll('circle')
@@ -295,7 +303,7 @@
 						self.linked_interactions.hover_in(d.properties.id);
 					})
 					.on('mouseout', function (d) {
-						self.site_tooltip_remove(d.properties.id);
+						self.site_tooltip_remove();
 						self.linked_interactions.hover_out(d.properties.id);
 					})
 					.on('click', function (d) {
@@ -305,17 +313,12 @@
 						d3.event.stopPropagation();
 					});
 
-				// Save locations of gages in SVG for later use with selection box
-				state.gages = [];
-				options.site_data.features.forEach(function (g) {
-					var position = projection(g.geometry.coordinates);
-					var info = {
-						x: position[0],
-						y: position[1],
-						id: g.properties.id
-					};
-					state.gages.push(info);
+				sites.selectAll('circle').each(function (d) {
+					if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
+						self.site_add_accent(d.properties.id);
+					}
 				});
+
 				// Debug points
 				if (FV.config.debug) {
 					add_circles(options.bounds, 'debug-point', 3)
@@ -345,9 +348,11 @@
 			 * Used by hydromodule for cross figure interactions.
 			 */
 			self.site_remove_accent = function (sitekey) {
+				state.gages[sitekey].accent = false;
 				d3.select('#map' + sitekey).attr('class', 'gage-point');
 			};
 			self.site_add_accent = function (sitekey) {
+				state.gages[sitekey].accent = true;
 				d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
 			};
 
