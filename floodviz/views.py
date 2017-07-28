@@ -27,7 +27,7 @@ def sitemap():
     mapinfo = _map_helper()
     return render_template('map.html', mapinfo=mapinfo)
 
-@app.route('/timeseries/')
+@app.route('/timeseries.json')
 def timeseries_data():
     hydro_start_date = ref['start_date']
     hydro_end_date = ref['end_date']
