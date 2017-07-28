@@ -19,7 +19,7 @@
 
 		var default_display_ids = null;
 
-		var margin = {top: 60, right: 30, bottom: 30, left: 50};
+		var margin = {top: 60, right: 0, bottom: 30, left: 35};
 		var height = 500 * (options.height / options.width) - margin.top - margin.bottom;
 		var width = 500 - margin.left - margin.right;
 
