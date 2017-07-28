@@ -77,40 +77,27 @@ def req_peak_dv_data(site, date, url_prefix):
 
 def parse_peak_data(peak_data, dv_data):
 
-    """ 
-    Parses peak flow water data peak_data and constructs a dictionary 
-    appropriately formated for D3 charting library. 
-
-    ARGS: 
-        peak_data - list of lines from peak flow data requested from NWIS waterdata service.
-        dv_data - list of lines from daily value data requested from NWIS waterdata service.
-    
-    RETURNS:
-        peak_data - A list holding the peak flow data points
-        (each as a dict) for a specific site 
-    """
-    
     all_data = []
     seen = set()
     if peak_data:
-        for peak in peak_data:
+        for point in peak_data:
             # I am not worried about years that are not four digits long
-            year = re.match(r'^(\d{4}).*', peak['peak_dt']).group(1)
+            year = re.match(r'^(\d{4}).*', point['peak_dt']).group(1)
             seen.add(year)
+            all_data.append({
+                'label': year,
+                'value': float(point['peak_va'])
+            })
 
-    if dv_data:    
-        # parse daily_value data
-        for line in dv_data:
-            if not line.startswith('USGS'):
-                continue
-            line = line.split('\t')
-            year = line[2].split('-')[0]
-            # below conditon will favor the peak value retrieved from
+    if dv_data:
+        for point in dv_data:
+            year = re.match(r'^(\d{4}).*', point['datetime']).group(1)
+            # below condition will favor the peak value retrieved from
             # peak value data opposed to daily value data if peak value data is available
-            if year in seen:
-                break
-            if line[3]:
-                peak_val = float(line[3])
-                all_data.append({'label': year, 'value': peak_val})
+            if year not in seen:
+                all_data.append({
+                    'label': year,
+                    'value': float(point['discharge'])
+                })
 
     return all_data
