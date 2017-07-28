@@ -4,29 +4,20 @@ var jsdom = require('jsdom/lib/old-api.js');
 var svg2png = require('svg2png');
 // Data imports
 var data_hydro = require('../thumbnail/hydrograph_data.json');
-var data_map = require('../thumbnail/map_data.json');
 
-
-// Collect script arguments for figure decision
-var target = null;
+// Collect script arguments for external css
 var style_path = null;
-
 var args = process.argv.splice(process.execArgv.length + 2);
-if (args.length < 1 || args.length > 3) {
-	console.log('\nUsage: node thumbnail.js -figureName ' + '\n\nValid figure names: -map, -hydro' +
+if (args.length > 2) {
+	console.log('\nUsage: node thumbnail.js ' +
 		'\n\nOptional flag: -css path/to/css/file.css\n');
 	process.exit();
 } else {
-	if(args[0] === '-hydro') {
-		target = 'hydro';
-	} else if (args[0] === '-map'){
-		target = 'map';
+	if (args[0] === '-css') {
+		style_path = args[1];
 	} else {
-		console.log('\nInvalid argument.\nValid figure names: -map, -hydro\n');
+		console.log('\nUnrecognized argument: ' + args[0] + '\n');
 		process.exit();
-	}
-	if (args[1]) {
-		style_path = args[2];
 	}
 }
 
@@ -47,39 +38,18 @@ jsdom.env(
 	],
 
 	function (err, window) {
-			if (target === 'hydro') {
-				var hydro_figure = window.hydromodule(
-					{
-						'height': 300,
-						'width': 560,
-						'div_id': '#hydrograph',
-						'data': data_hydro,
-						"display_ids": ['05471200', '05476750', '05411850', '05454220',
-						 '05481950', '05416900', '05464500', '05487470']
-						// Refactor Later. I'm assuming this will change with references.json
-					}
-				);
-				convert(hydro_figure, window, 'floodviz/static/css/hydrograph.css', 'floodviz/thumbnail/thumbnail_hydro.png');
-			} else if (target === 'map') {
-				var map_figure = window.mapmodule(
-					{
-						'height': 300,
-						'width': 560,
-						'proj': window.proj4(data_map.proj4string),
-						'bounds': data_map.bounds,
-						'scale': data_map.scale,
-						'bg_data': data_map.bg_data,
-						'rivers_data': data_map.rivers_data,
-						'ref_data': data_map.ref_data,
-						'site_data': data_map.site_data,
-						'div_id': '#map',
-						'display_ids': ['05471200', '05476750', '05411850', '05454220',
-						 '05481950', '05416900', '05464500', '05487470']
-						// Refactor Later. I'm assuming this will change with references.json
-					}
-				);
-				convert(map_figure, window, 'floodviz/static/css/map.css', 'floodviz/thumbnail/thumbnail_map.png');
+		var hydro_figure = window.hydromodule(
+			{
+				'height': 300,
+				'width': 560,
+				'div_id': '#hydrograph',
+				'data': data_hydro,
+				"display_ids": ['05471200', '05476750', '05411850', '05454220',
+				 '05481950', '05416900', '05464500', '05487470']
+				// Refactor Later. I'm assuming this will change with references.json
 			}
+		);
+		convert(hydro_figure,window,'floodviz/static/css/hydrograph.css','floodviz/thumbnail/thumbnail_hydro.png');
 	}
 );
 
@@ -91,7 +61,12 @@ function convert(figure, window, css_path, filename) {
 	var svg = figure.get_svg_elem().node();
 	var style_default = fs.readFileSync(css_path, 'utf8');
 	if (style_path !== null) {
-		style_ext = fs.readFileSync(style_path, 'utf8');
+		try {
+			style_ext = fs.readFileSync(style_path, 'utf8');
+		} catch(error) {
+			console.log('\nError: external css file path not found.\nUsing only default style.\n\n' + error);
+			style_ext = null;
+		}
 		svg_string = inject_style(style_default, style_ext, svg, window);
 	} else {
 		svg_string = inject_style(style_default, null, svg, window);
