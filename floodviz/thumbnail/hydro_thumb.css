@@ -1,0 +1,8 @@
+.hydro-inactive{
+	stroke-linejoin: round;
+	stroke-linecap: round;
+	fill: none;
+	stroke-width: 5;
+	stroke: yellow;
+	opacity: 0.8;
+}

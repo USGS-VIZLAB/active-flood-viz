@@ -9,9 +9,12 @@ var data_map = require('../thumbnail/map_data.json');
 
 // Collect script arguments for figure decision
 var target = null;
+var style_path = null;
+
 var args = process.argv.splice(process.execArgv.length + 2);
-if (args.length !== 1 || typeof args[0] !== "string") {
-	console.log('\nUsage: node thumbnail.js -figureName\n\nValid figure names: -map, -hydro\n');
+if (args.length < 1 || args.length > 3) {
+	console.log('\nUsage: node thumbnail.js -figureName ' + '\n\nValid figure names: -map, -hydro' +
+		'\n\nOptional flag: -css path/to/css/file.css\n');
 	process.exit();
 } else {
 	if(args[0] === '-hydro') {
@@ -21,6 +24,9 @@ if (args.length !== 1 || typeof args[0] !== "string") {
 	} else {
 		console.log('\nInvalid argument.\nValid figure names: -map, -hydro\n');
 		process.exit();
+	}
+	if (args[1]) {
+		style_path = args[2];
 	}
 }
 
@@ -80,21 +86,28 @@ jsdom.env(
 // Wrapper around svg2png that injects custom css to inline svg before conversion
 function convert(figure, window, css_path, filename) {
 	figure.init(undefined);
-	var svg_m = figure.get_svg_elem().node();
-	var style_m = fs.readFileSync(css_path, 'utf8');
-	var svg_string_m = inject_style(style_m, svg_m, window);
+	var style_ext = null;
+	var svg_string = null;
+	var svg = figure.get_svg_elem().node();
+	var style_default = fs.readFileSync(css_path, 'utf8');
+	if (style_path !== null) {
+		style_ext = fs.readFileSync(style_path, 'utf8');
+		svg_string = inject_style(style_default, style_ext, svg, window);
+	} else {
+		svg_string = inject_style(style_default, null, svg, window);
+	}
 	// Takes care of canvas conversion and encodes base64
-	svg2png(svg_string_m)
+	svg2png(svg_string)
 		.then(buffer => fs.writeFile(filename, buffer))
 		.then(console.log('\nConverted D3 figure to PNG successfully... \n'))
 		.catch(e => console.error(e));
 }
 
 // Hook style to inline svg string.
-function inject_style(style_string, svgDomElement, window) {
+function inject_style(style_string, ext_style, svgDomElement, window) {
 	var s = window.document.createElement('style');
 	s.setAttribute('type', 'text/css');
-	s.innerHTML = "<![CDATA[\n" + style_string + "\n]]>";
+	s.innerHTML = "<![CDATA[\n" + style_string + ext_style + "\n]]>";
 	var defs = window.document.createElement('defs');
 	defs.appendChild(s);
 	svgDomElement.insertBefore(defs, svgDomElement.firstChild);
