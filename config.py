@@ -54,3 +54,5 @@ MAP_CONFIG = {
     'scale': None,
 }
 
+# Thumbnail Support
+THUMBNAIL = False

@@ -3,8 +3,8 @@ var fs = require('fs');
 var jsdom = require('jsdom/lib/old-api.js');
 var svg2png = require('svg2png');
 // Data imports
-var data_hydro = require('../static/data/hydrograph_data.json');
-var data_map = require('../static/data/map_data.json');
+var data_hydro = require('../thumbnail/hydrograph_data.json');
+var data_map = require('../thumbnail/map_data.json');
 
 
 // Collect script arguments for figure decision
@@ -24,7 +24,7 @@ if (args.length !== 1 || typeof args[0] !== "string") {
 	}
 }
 
-// Headless Browser Start
+// Headless Browser Start for DOM
 jsdom.env(
 
 	// create DOM hook
@@ -35,10 +35,9 @@ jsdom.env(
 	// load local assets into window environment
 	[
 		'./floodviz/static/bower_components/d3/d3.js',
-		'./floodviz/static/bower_components/jquery/dist/jquery.min.js',
 		'./floodviz/static/bower_components/proj4/dist/proj4.js',
-		'./floodviz/posterior_build/hydro_thumbnail.js',
-		'./floodviz/posterior_build/map_thumbnail.js'
+		'./floodviz/thumbnail/hydro_thumbnail.js',
+		'./floodviz/thumbnail/map_thumbnail.js'
 	],
 
 	function (err, window) {
@@ -51,10 +50,10 @@ jsdom.env(
 						'data': data_hydro,
 						"display_ids": ['05471200', '05476750', '05411850', '05454220',
 						 '05481950', '05416900', '05464500', '05487470']
-						// Refactor Later. I'm assuming this will change with refrences.json
+						// Refactor Later. I'm assuming this will change with references.json
 					}
 				);
-				convert(hydro_figure, window, 'floodviz/static/css/hydrograph.css', 'thumbnail_hydro.png');
+				convert(hydro_figure, window, 'floodviz/static/css/hydrograph.css', 'floodviz/thumbnail/thumbnail_hydro.png');
 			} else if (target === 'map') {
 				var map_figure = window.mapmodule(
 					{
@@ -73,7 +72,7 @@ jsdom.env(
 						// Refactor Later. I'm assuming this will change with references.json
 					}
 				);
-				convert(map_figure, window, 'floodviz/static/css/map.css', 'thumbnail_map.png');
+				convert(map_figure, window, 'floodviz/static/css/map.css', 'floodviz/thumbnail/thumbnail_map.png');
 			}
 	}
 );

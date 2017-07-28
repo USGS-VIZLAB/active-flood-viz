@@ -8,7 +8,7 @@ from . import map_utils
 from . import peak_flow_utils
 
 url_nwis_prefix = app.config['NWIS_SITE_SERVICE_ENDPOINT']
-
+thumbnail = app.config['THUMBNAIL']
 
 @app.route('/')
 def root():
@@ -35,9 +35,10 @@ def timeseries_data():
     j = hydrograph_utils.req_hydrodata(sites, hydro_start_date, hydro_end_date, url_nwis_prefix)
     timeseries_data = hydrograph_utils.parse_hydrodata(j)
 
-    # Write data to file for post build thumbnail
-    with open('floodviz/static/data/hydrograph_data.json', 'w') as f:
-        json.dump(timeseries_data, f)
+    if thumbnail:
+        with open('floodviz/thumbnail/hydrograph_data.json', 'w') as f:
+            json.dump(timeseries_data, f)
+
     return jsonify(timeseries_data)
 
 
@@ -99,7 +100,8 @@ def _map_helper():
         }
     })
 
-    with open('floodviz/static/data/map_data.json', 'w') as f:
-        json.dump(mapinfo, f)
+    if thumbnail:
+        with open('floodviz/thumbnail/map_data.json', 'w') as f:
+            json.dump(mapinfo, f)
 
     return mapinfo

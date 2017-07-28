@@ -94,3 +94,6 @@ PEAK_META = {
     'height': '4',
     'width': '7.5'
 }
+
+# Thumbnail Support
+THUMBNAIL = False
