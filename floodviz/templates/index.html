@@ -3,6 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}"/>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
@@ -19,11 +20,89 @@
 
 <body>
 
-	<div class="main-content container-fluid">
-		<div id="hydrograph">
+	<div class="header-content container-fluid">
+		<div class ="row">
+			<div class="col-sm-12 header">
+				<img src="static/images/usgsLogo.png"/>
+				<h3>{{ config.TITLE | safe }}</h3>
+			</div>
 		</div>
-		<div id="map"></div>
-		<div id="peakflow_bar"></div>
+		<div class ="row">
+			<div class="col-sm-12 subheader">
+				<h3>{{ config.SUBTITLE | safe }}</h3>
+			</div>
+		</div>
+	</div>
+
+	<div class="main-content container">
+		<div class="col-xs-offset-11">
+			<div class="icon-div">
+				<img src="static/images/facebook.png" class="icon"/>
+				<img src="static/images/twitter.png" class="icon"/>
+				<img src="static/images/github.png" class="icon"/>
+			</div>
+		</div>
+
+		<div class="row row1">
+			<div class="col-sm-6">
+				<div id="map"></div>
+				<div id="map_text">
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				</div>
+			</div>
+			<div class="col-sm-6 col-centered">
+				<div id="hydrograph"></div>
+				<div id="hydrograph_text">
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				</div>
+			</div>
+		</div>
+		<div class="w-100"></div>
+		<div class="row row2">
+			<div class="col-sm-12">
+				<div id="textbox1">
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+				</div>
+			</div>
+		</div>
+		<div class="row row3">
+			<div class="col-sm-3">
+				<div id="textbox2">
+					<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+					<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+					<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+				</div>
+			</div>
+			<div class="col-sm-9">
+				<div id="peakflow_bar"></div>
+				<div id="peakflow_text">
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				</div>
+			</div>
+		</div>
+			<div class="w-100"></div>
+		<div class="row row4">
+			<div class="col-sm-6">
+				<img src="static/images/pic_1.png" class="img-responsive" id="pic1"/>
+				<div id="pic1_text">
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<img src="static/images/pic_2.png" class="img-responsive" id="pic2"/>
+				<div id="pic2_text">
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid footer">
+		<div class="row">
+			<div class="col-sm-6">
+				<h5>{{ config.FOOTER | safe }}</h5>
+			</div>
+		</div>
 	</div>
 
 	<script type="text/javascript">
@@ -34,8 +113,8 @@
 		};
 
 		FV.hydrograph_data_path = "{{ url_for('timeseries_data', filename='data/hydrograph_data.json') }}";
-		FV.hydrograph_dimensions = {{ config.CHART_DIMENSIONS | safe }};
-		FV.hydrograph_display_ids = {{ config.HYDRO_DISPLAY_IDS | safe }};
+		FV.hydrograph_dimensions = {{ config.HYDROGRAPH_ASPECT_RATIO | safe }};
+		FV.hydrograph_display_ids = {{ display_sites | safe }};
 
 		FV.peakmeta = {{ config.PEAK_META | safe }};
 		FV.peakinfo = {{ peakinfo | tojson | safe }};

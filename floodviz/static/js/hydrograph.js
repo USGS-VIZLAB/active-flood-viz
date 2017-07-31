@@ -17,9 +17,13 @@
 
 		var self = {};
 
-		var margin = {top: 30, right: 20, bottom: 30, left: 50};
-		var height = options.height - margin.top - margin.bottom;
-		var width = options.width - margin.left - margin.right;
+		var default_display_ids = null;
+		var timer = null;
+		var dblclick_armed = false;
+
+		var margin = {top: 60, right: 0, bottom: 30, left: 35};
+		var height = 500 * (options.height / options.width) - margin.top - margin.bottom;
+		var width = 500 - margin.left - margin.right;
 
 		// Adds the svg canvas
 		var svg = null;
@@ -63,6 +67,37 @@
 		};
 
 		/**
+		 * De-emphasize all but one specified line
+		 * @param exemptkey - The key of the one line that should not be de-emphasized
+		 */
+		var make_lines_bland = function (exemptkey){
+			if(FV.hydrograph_display_ids.indexOf(exemptkey) !== -1) {
+				FV.hydrograph_display_ids.forEach(function (id) {
+					if (id !== exemptkey) {
+						d3.select('#hydro' + id).attr('class', 'hydro-inactive-bland');
+					}
+				})
+			}
+		};
+
+
+		/**
+		 * Show only the default set of lines on the hydrograph.
+		 */
+		var reset_hydrograph = function () {
+			FV.hydrograph_display_ids.forEach(function (id) {
+				if (default_display_ids.indexOf(id) === -1) {
+					self.linked_interactions.click(id);
+				}
+			});
+			default_display_ids.forEach(function(id){
+				self.linked_interactions.accent_on_map(id);
+			});
+			// use array.slice() with no parameters to deep copy
+			self.change_lines(default_display_ids.slice());
+		};
+
+		/**
 		 *
 		 * Draws the svg, scales the range of the data, and draws the line for each site
 		 * all based on the data set as it was passed in. Called as needed
@@ -80,8 +115,8 @@
 			// recreate svg
 			svg = d3.select(options.div_id)
 				.append('svg')
-				.attr('width', width + margin.left + margin.right)
-				.attr('height', height + margin.top + margin.bottom)
+				.attr("preserveAspectRatio", "xMinYMin meet")
+				.attr("viewBox", "0 0 " + (width + margin.left + margin.right ) + " " + (height + margin.top + margin.bottom ))
 				.append('g')
 				.attr('transform',
 					'translate(' + margin.left + ',' + margin.top + ')');
@@ -121,6 +156,18 @@
 					.attr('id', 'hydro' + d.key)
 					.attr('d', line(d.values));
 			});
+			// Make transparent background for lines
+			svg.append('g')
+				.attr('id', 'hydro-background')
+				.append('rect')
+				.attr('x', 0)
+				.attr('y', 0)
+				.attr('height', height)
+				.attr('width', width)
+				.on('dblclick', function () {
+					reset_hydrograph();
+				});
+
 			// Add the X Axis
 			svg.append('g')
 				.attr('class', 'axis')
@@ -164,8 +211,20 @@
 					self.series_tooltip_remove(d.data.key);
 				})
 				.on('click', function (d) {
-					self.linked_interactions.click(d.data.key);
-					self.remove_series(d.data.key);
+					if (dblclick_armed) {
+						clearTimeout(timer);
+						reset_hydrograph();
+						dblclick_armed = false;
+					}
+					else {
+						dblclick_armed = true;
+						timer = setTimeout(function () {
+							self.linked_interactions.click(d.data.key);
+							self.linked_interactions.hover_out(d.data.key);
+							self.remove_series(d.data.key);
+							dblclick_armed = false;
+						}, 200);
+					}
 				});
 
 		};
@@ -182,6 +241,8 @@
 		 *
 		 */
 		self.init = function (linked_interactions) {
+			// use array.slice() to deep copy
+			default_display_ids = FV.hydrograph_display_ids.slice();
 			self.linked_interactions = linked_interactions;
 			update();
 		};
@@ -221,18 +282,21 @@
 			update();
 		};
 		/**
-		 * Highlight a line.
+		 * Highlight a line, de-emphasize all other lines
 		 * @param sitekey the site number of the line to be highlighted
 		 */
 		self.activate_line = function (sitekey) {
+			make_lines_bland(sitekey);
 			d3.select('#hydro' + sitekey).attr('class', 'hydro-active');
 		};
 		/**
-		 * Un-highlight a line
-		 * @param sitekey the site number of the line to be un-highlighted
+		 * Set all lines to inactive
 		 */
-		self.deactivate_line = function (sitekey) {
-			d3.select('#hydro' + sitekey).attr('class', 'hydro-inactive');
+		self.deactivate_line = function () {
+			FV.hydrograph_display_ids.forEach(function(id) {
+				d3.select('#hydro' + id).attr('class', 'hydro-inactive');
+			})
+
 		};
 		return self
 	};
