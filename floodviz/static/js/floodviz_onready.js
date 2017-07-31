@@ -18,11 +18,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	var hydro_options = {
 		'height': FV.hydrograph_dimensions.height,
 		'width': FV.hydrograph_dimensions.width,
+		'display_ids': FV.hydrograph_display_ids,
 		'div_id': '#hydrograph'
 	};
 
 	var map_figure = FV.mapmodule(map_options);
-	var hydro_figure = FV.hydromodule(hydro_options);
+	var hydro_figure = hydromodule(hydro_options);
 
 	// Use frames to link interactions
 	var map_to_hydro = {

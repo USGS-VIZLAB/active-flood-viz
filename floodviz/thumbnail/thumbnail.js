@@ -15,6 +15,7 @@ var jsdom = require('jsdom/lib/old-api.js');
 var svg2png = require('svg2png');
 // Data imports
 var data_hydro = require('../thumbnail/hydrograph_data.json');
+var reference = require('../../examples/reference.json');
 
 // Collect script arguments for external css
 var style_path = null;
@@ -24,11 +25,13 @@ if (args.length > 2) {
 		'\n\nOptional flag: -css path/to/css/file.css\n');
 	process.exit();
 } else {
-	if (args[0] === '-css') {
-		style_path = args[1];
-	} else {
-		console.log('\nUnrecognized argument: ' + args[0] + '\n');
-		process.exit();
+	if (args[0]) {
+		if (args[0] === '-css') {
+			style_path = args[1];
+		} else {
+			console.log('\nUnrecognized argument: ' + args[0] + '\n');
+			process.exit();
+		}
 	}
 }
 
@@ -44,7 +47,7 @@ jsdom.env(
 	[
 		'./floodviz/static/bower_components/d3/d3.js',
 		'./floodviz/static/bower_components/proj4/dist/proj4.js',
-		'./floodviz/thumbnail/hydro_thumbnail.js'
+		'./floodviz/static/js/hydrograph.js'
 	],
 
 	function (err, window) {
@@ -54,9 +57,7 @@ jsdom.env(
 				'width': 560,
 				'div_id': '#hydrograph',
 				'data': data_hydro,
-				"display_ids": ['05471200', '05476750', '05411850', '05454220',
-				 '05481950', '05416900', '05464500', '05487470']
-				// Refactor Later. I'm assuming this will change with references.json
+				"display_ids": reference.display_sites
 			}
 		);
 		convert(hydro_figure,window, 'floodviz/static/css/hydrograph.css', 'floodviz/thumbnail/thumbnail_hydro.png');
@@ -82,7 +83,7 @@ function convert(figure, window, css_path, filename) {
 		svg_string = inject_style(style_default, null, svg, window);
 	}
 	// Takes care of canvas conversion and encodes base64
-	svg2png(svg_string)
+	svg2png(svg_string, {height: 300, width: 560})
 		.then(buffer => fs.writeFile(filename, buffer))
 		.then(console.log('\nConverted D3 figure to PNG successfully... \n'))
 		.catch(e => console.error(e));
