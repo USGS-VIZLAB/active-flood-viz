@@ -59,7 +59,7 @@ jsdom.env(
 				// Refactor Later. I'm assuming this will change with references.json
 			}
 		);
-		convert(hydro_figure,window,'floodviz/static/css/hydrograph.css','floodviz/thumbnail/thumbnail_hydro.png');
+		convert(hydro_figure,window, 'floodviz/static/css/hydrograph.css', 'floodviz/thumbnail/thumbnail_hydro.png');
 	}
 );
 
