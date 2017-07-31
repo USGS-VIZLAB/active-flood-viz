@@ -4,7 +4,13 @@ from . import utils
 
 
 def req_peak_data(site, end_date, url_prefix):
-
+    """
+    Call
+    :param site: Site number on which to get peakflow data
+    :param end_date: Date up to which data should be fetched
+    :param url_prefix: NWIS endpoint prefix
+    :return: List of dictionaries containing the date and values of peak streamflow for each water year.
+    """
     # peak value historical data #
     params = {
         'agency_cd': 'USGS',
@@ -31,9 +37,14 @@ def req_peak_data(site, end_date, url_prefix):
 
 
 def req_peak_dv_data(site, date, url_prefix):
-
+    """
+    Get peak streamflow for a particular day from the daily values service
+    :param site: Site number on which to get data
+    :param date: Date for which to get the peak flow
+    :param url_prefix: NWIS service endpoint
+    :return: List of dictionaries containing the date and value of peak streamflow
+    """
     url_prefix += 'dv/'
-
     params = {
         'format': 'rdb',
         'siteStatus': 'all',
@@ -74,20 +85,31 @@ def req_peak_dv_data(site, date, url_prefix):
     return peaks
 
 
-
 def parse_peak_data(peak_data, dv_data):
-
+    """
+    Combine the peakflow information from the annual and daily values into a single list of dictionaries
+    describing yearly peak streamflow.
+    :param peak_data: Data from the NWIS peak flow service
+    :param dv_data: Data from the NWIS daily values service
+    :return: Data from peak flow service and daily value service combined into a single list.
+    """
     all_data = []
     seen = set()
     if peak_data:
         for point in peak_data:
             # I am not worried about years that are not four digits long
             year = re.match(r'^(\d{4}).*', point['peak_dt']).group(1)
-            seen.add(year)
-            all_data.append({
-                'label': year,
-                'value': float(point['peak_va'])
-            })
+            if year not in seen:
+                all_data.append({
+                    'label': year,
+                    'value': int(point['peak_va'])
+                })
+                seen.add(year)
+            # If we have multiple points for a single cal. year, select the highest peak.
+            elif all_data[-1]['label'] == year:
+                later_val = int(point['peak_va'])
+                if later_val > all_data[-1]['value']:
+                    all_data[-1]['value'] = later_val
 
     if dv_data:
         for point in dv_data:
@@ -97,7 +119,7 @@ def parse_peak_data(peak_data, dv_data):
             if year not in seen:
                 all_data.append({
                     'label': year,
-                    'value': float(point['discharge'])
+                    'value': int(point['discharge'])
                 })
 
     return all_data
