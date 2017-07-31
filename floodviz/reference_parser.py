@@ -19,7 +19,7 @@ def parse_reference_data(path):
                 parsed_data['bbox'] = data['bbox']
                 parsed_data['start_date'] = data['startDate']
                 parsed_data['end_date'] = data['endDate']
-                parsed_data['peak_dv_date'] = data['endDate']
+                parsed_data['peak_dv_date'] = data['peak']['dv_date']
                 parsed_data['peak_site'] = data['peak']['site']
 
                 # grab the cities to be placed on the map
