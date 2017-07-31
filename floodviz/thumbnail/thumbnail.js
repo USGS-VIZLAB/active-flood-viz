@@ -1,3 +1,14 @@
+/*
+*
+* This Script is intended to be run after a flask freeze during the build process.
+*
+* Its main objective is to dynamically create thumbnails for the site figures
+* based on the data obtained from our server side flask services.
+*
+* */
+
+
+
 // Dependency Import
 var fs = require('fs');
 var jsdom = require('jsdom/lib/old-api.js');
@@ -33,8 +44,7 @@ jsdom.env(
 	[
 		'./floodviz/static/bower_components/d3/d3.js',
 		'./floodviz/static/bower_components/proj4/dist/proj4.js',
-		'./floodviz/thumbnail/hydro_thumbnail.js',
-		'./floodviz/thumbnail/map_thumbnail.js'
+		'./floodviz/thumbnail/hydro_thumbnail.js'
 	],
 
 	function (err, window) {
@@ -55,11 +65,11 @@ jsdom.env(
 
 // Wrapper around svg2png that injects custom css to inline svg before conversion
 function convert(figure, window, css_path, filename) {
-	figure.init(undefined);
 	var style_ext = null;
 	var svg_string = null;
 	var svg = figure.get_svg_elem().node();
 	var style_default = fs.readFileSync(css_path, 'utf8');
+	figure.init();
 	if (style_path !== null) {
 		try {
 			style_ext = fs.readFileSync(style_path, 'utf8');

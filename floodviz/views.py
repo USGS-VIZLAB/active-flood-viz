@@ -97,8 +97,4 @@ def _map_helper():
         }
     })
 
-    if thumbnail:
-        with open('floodviz/thumbnail/map_data.json', 'w') as f:
-            json.dump(mapinfo, f)
-
     return mapinfo
