@@ -35,6 +35,10 @@ if (args.length > 2) {
 	}
 }
 
+var height = 300;
+var width = 560;
+
+
 // Headless Browser Start for DOM
 jsdom.env(
 
@@ -53,8 +57,8 @@ jsdom.env(
 	function (err, window) {
 		var hydro_figure = window.hydromodule(
 			{
-				'height': 300,
-				'width': 560,
+				'height': height,
+				'width': width,
 				'div_id': '#hydrograph',
 				'data': data_hydro,
 				"display_ids": reference.display_sites
@@ -83,7 +87,7 @@ function convert(figure, window, css_path, filename) {
 		svg_string = inject_style(style_default, null, svg, window);
 	}
 	// Takes care of canvas conversion and encodes base64
-	svg2png(svg_string, {height: 300, width: 560})
+	svg2png(svg_string, {height: height, width: width})
 		.then(buffer => fs.writeFile(filename, buffer))
 		.then(console.log('\nConverted D3 figure to PNG successfully... \n'))
 		.catch(e => console.error(e));
