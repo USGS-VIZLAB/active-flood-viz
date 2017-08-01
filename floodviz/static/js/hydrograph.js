@@ -225,6 +225,7 @@ var hydromodule = function (options) {
 						self.remove_series(d.data.key);
 						dblclick_armed = false;
 					}, 200);
+					ga_send_event('Hydrograph', 'series_click_off', d.data.key);
 				}
 			});
 
@@ -309,4 +310,14 @@ var hydromodule = function (options) {
 	};
 
 	return self
+}
+
+
+function ga_send_event (category, action, label ) {
+	ga('send', {
+		hitType: 'event',
+		eventCategory: category,
+		eventAction: action,
+		eventLabel: label
+	});
 }
