@@ -311,13 +311,3 @@ var hydromodule = function (options) {
 
 	return self
 }
-
-
-function ga_send_event (category, action, label ) {
-	ga('send', {
-		hitType: 'event',
-		eventCategory: category,
-		eventAction: action,
-		eventLabel: label
-	});
-}

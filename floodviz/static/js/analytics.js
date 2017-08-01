@@ -12,3 +12,14 @@
 
 ga('create', 'UA-103831764-1', 'auto');
 ga('send', 'pageview');
+
+
+
+function ga_send_event (category, action, label ) {
+	ga('send', {
+		hitType: 'event',
+		eventCategory: category,
+		eventAction: action,
+		eventLabel: label
+	});
+}
