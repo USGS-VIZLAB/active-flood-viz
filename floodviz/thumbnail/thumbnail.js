@@ -5,9 +5,8 @@
 * Its main objective is to dynamically create thumbnails for the site figures
 * based on the data obtained from our server side flask services.
 *
-* */
-
-
+*
+*/
 
 // Dependency Import
 var fs = require('fs');
@@ -15,11 +14,12 @@ var jsdom = require('jsdom/lib/old-api.js');
 var svg2png = require('svg2png');
 // Data imports
 var data_hydro = require('../thumbnail/hydrograph_data.json');
-var reference = require('../../examples/reference.json');
+var reference = require('../../instance/reference.json');
 
 // Collect script arguments for external css
-var style_path = null;
+var style_ext = null;
 var args = process.argv.splice(process.execArgv.length + 2);
+
 if (args.length > 2) {
 	console.log('\nUsage: node thumbnail.js ' +
 		'\n\nOptional flag: -css path/to/css/file.css\n');
@@ -27,9 +27,16 @@ if (args.length > 2) {
 } else {
 	if (args[0]) {
 		if (args[0] === '-css') {
-			style_path = args[1];
+			try {
+				style_ext = fs.readFileSync(args[1], 'utf8');
+			} catch(error) {
+				console.log('\nError: external css file path not found. - Using only default style.\n\n' + error);
+				style_ext = null;
+			}
 		} else {
-			console.log('\nUnrecognized argument: ' + args[0] + '\n');
+			console.log('\nUnrecognized argument: ' + args[0]);
+			console.log('\nUsage: node thumbnail.js ' +
+				'\n\nOptional flag: -css path/to/css/file.css\n');
 			process.exit();
 		}
 	}
@@ -44,13 +51,11 @@ jsdom.env(
 
 	// create DOM hook
 	"<html><body><div id='hydrograph'></div>" +
-	"<div id='map'></divid>" +
 	"</body></html>",
 
 	// load local assets into window environment
 	[
 		'./floodviz/static/bower_components/d3/d3.js',
-		'./floodviz/static/bower_components/proj4/dist/proj4.js',
 		'./floodviz/static/js/hydrograph.js'
 	],
 
@@ -60,7 +65,6 @@ jsdom.env(
 				'height': height,
 				'width': width,
 				'div_id': '#hydrograph',
-				'data': data_hydro,
 				"display_ids": reference.display_sites
 			}
 		);
@@ -74,18 +78,8 @@ function convert(figure, window, css_path, filename) {
 	var svg_string = null;
 	var svg = figure.get_svg_elem().node();
 	var style_default = fs.readFileSync(css_path, 'utf8');
-	figure.init();
-	if (style_path !== null) {
-		try {
-			style_ext = fs.readFileSync(style_path, 'utf8');
-		} catch(error) {
-			console.log('\nError: external css file path not found.\nUsing only default style.\n\n' + error);
-			style_ext = null;
-		}
-		svg_string = inject_style(style_default, style_ext, svg, window);
-	} else {
-		svg_string = inject_style(style_default, null, svg, window);
-	}
+	figure.init(null, data_hydro);
+	svg_string = inject_style(style_default, style_ext, svg, window);
 	// Takes care of canvas conversion and encodes base64
 	svg2png(svg_string, {height: height, width: width})
 		.then(buffer => fs.writeFile(filename, buffer))

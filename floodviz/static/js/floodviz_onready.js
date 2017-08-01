@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	//data for hydrograph
 	d3.json(FV.hydrograph_data_path, function (error, data) {
 		if (error) { console.error(error); }
-		hydro_options['data'] = data;
-		hydro_figure.init(map_to_hydro);
+		hydro_figure.init(map_to_hydro, data);
 	});
 });

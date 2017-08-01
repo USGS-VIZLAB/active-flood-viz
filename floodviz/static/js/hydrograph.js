@@ -5,8 +5,8 @@
  *    Non-optional Keys include:
  *        @prop 'height' v(int) - height of the graph
  *        @prop 'width' v(int) - width of the graph
- *        @prop 'data' v(list) - A list of objects representing data points
  *        @prop 'div_id' v(string) - id for the container for this graph
+ *        @prop 'display_ids' v(list) - default series to show on hydrograph
  *
  * hydromodule is a module for creating hydrographs using d3. Pass it a javascript object
  * specifying config options for the graph. Call init() to create the graph. Linked
@@ -16,6 +16,7 @@
 var hydromodule = function (options) {
 
 	var self = {};
+	var data_global = null;
 
 	var default_display_ids = null;
 	var timer = null;
@@ -106,7 +107,7 @@ var hydromodule = function (options) {
 	 */
 	var update = function () {
 		// Cut the data down to sites we want to display
-		var sub_data = subset_data(options.data);
+		var sub_data = subset_data(data_global);
 		// Remove the current version of the graph if one exists
 		var current_svg = d3.select(options.div_id + ' svg');
 		if (current_svg) {
@@ -239,7 +240,8 @@ var hydromodule = function (options) {
 	 *
 	 *
 	 */
-	self.init = function (linked_interactions) {
+	self.init = function (linked_interactions, data) {
+		data_global = data;
 		// use array.slice() to deep copy
 		default_display_ids = options.display_ids.slice();
 		self.linked_interactions = linked_interactions;
