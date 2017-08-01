@@ -2,6 +2,7 @@ FROM debian:stretch
 MAINTAINER James McFeeters "jmcfeeters@usgs.gov"
 
 ARG config
+ARG ref
 
 RUN apt-get update && apt-get install -y \
     python3-pip \
@@ -17,6 +18,8 @@ WORKDIR /app
 RUN cp nginx.conf /etc/nginx
 
 RUN cp $config instance/config.py
+
+RUN cp $ref instance/reference.json
 
 RUN rm -f /etc/apt/sources.list.d/chris-lea-node_js-jessie.list \
 && curl https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
