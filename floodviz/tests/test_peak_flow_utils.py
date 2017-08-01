@@ -60,7 +60,7 @@ class PeakflowBaseTest(unittest.TestCase):
                                      {'peak_dt': '2008-06-01', 'peak_va': '7800'}, ]
 
 
-class TestReqPeakDataPeakflow(PeakflowBaseTest):
+class TestReqPeakData(PeakflowBaseTest):
     def setUp(self):
         self.nwis_response = '# \n' \
                              '# U.S. Geological Survey\n' \
@@ -145,7 +145,7 @@ class TestReqPeakDataPeakflow(PeakflowBaseTest):
             self.assertEqual(req_peak_data(self.site, self.end_date, self.prefix), self.correct_outupt)
 
 
-class TestReqPeakDVDataPeakflow(PeakflowBaseTest):
+class TestReqPeakDVData(PeakflowBaseTest):
     def setUp(self):
         self.nwis_response = '# ---------------------------------- WARNING ----------------------------------------\n' \
                              '# Provisional data are subject to revision. Go to\n' \
@@ -182,7 +182,7 @@ class TestReqPeakDVDataPeakflow(PeakflowBaseTest):
             self.assertEqual(req_peak_dv_data(self.site, self.date, self.prefix), self.correct_output)
 
 
-class TestParsePeakDataPeakflow(PeakflowBaseTest):
+class TestParsePeakData(PeakflowBaseTest):
     def setUp(self):
         self.mock_peak_in = self.correct_historic_peaks_output
         self.mock_dv_in = self.correct_dv_peak_output
