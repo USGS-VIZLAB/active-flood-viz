@@ -120,3 +120,7 @@ node_modules/
 
 *floodviz/static/geojson/*
 !states.json
+
+# Thumbnail Files #
+*floodviz/thumbnail/*.json
+*floodviz/thumbnail/*.png
