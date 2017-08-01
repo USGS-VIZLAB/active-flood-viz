@@ -24,8 +24,6 @@ RUN cp $config instance/config.py
 
 RUN cp $ref instance/reference.json
 
-RUN if $thumbnail -eq "true"; then node floodviz/thumbnail/thumbnail.js; fi
-
 RUN rm -f /etc/apt/sources.list.d/chris-lea-node_js-jessie.list \
 && curl --cacert DOIRootCA2.cer https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
 && echo 'deb https://deb.nodesource.com/node_6.x jessie main' > /etc/apt/sources.list.d/nodesource.list \
@@ -40,6 +38,8 @@ RUN npm config set cafile "/app/DOIRootCA2.cer" \
 RUN node_modules/bower/bin/bower install --allow-root
 
 RUN python3 run.py --freeze --norun
+
+RUN if $thumbnail -eq "true"; then node floodviz/thumbnail/thumbnail.js; fi
 
 EXPOSE 80
 
