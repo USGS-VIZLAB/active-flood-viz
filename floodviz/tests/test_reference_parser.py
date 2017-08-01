@@ -168,7 +168,14 @@ class TestReferenceParser(unittest.TestCase):
     def test_good_data(self):
         with mock.patch('floodviz.reference_parser.open', mock.mock_open(read_data=self.mock_reference)):
             parsed_data = reference_parser.parse_reference_data(self.mock_path)
-            self.assertEqual(parsed_data, self.mock_response)
+            self.assertEqual(parsed_data['epsg'], self.mock_response['epsg'])
+            self.assertEqual(parsed_data['display_sites'], self.mock_response['display_sites'])
+            self.assertEqual(parsed_data['bbox'], self.mock_response['bbox'])
+            self.assertEqual(parsed_data['epsg'], self.mock_response['epsg'])
+            self.assertEqual(parsed_data['peak_dv_date'], self.mock_response['peak_dv_date'])
+            self.assertEqual(parsed_data['city_geojson_data'], self.mock_response['city_geojson_data'])
+            self.assertEqual(parsed_data['river_geojson_data'], self.mock_response['river_geojson_data'])
+            self.assertEqual(parsed_data['background_geojson_data'], self.mock_response['background_geojson_data'])
 
     def test_bad_path(self):
         parsed_data = reference_parser.parse_reference_data(self.mock_path)
