@@ -18,5 +18,9 @@
   "homepage": "https://github.com/USGS-VIZLAB/active-flood-viz#readme",
   "devDependencies": {
     "bower": "1.8.0"
+  },
+  "dependencies": {
+    "jsdom": "^11.1.0",
+    "svg2png": "^4.1.1"
   }
 }
