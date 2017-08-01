@@ -1,4 +1,5 @@
 from floodviz.reference_parser import parse_reference_data
+from floodviz import reference_parser
 
 import unittest
 from unittest import mock
@@ -82,21 +83,30 @@ class TestReferenceParser(unittest.TestCase):
         self.mock_path = "mock/path.json"
         self.path = 'flood-viz/examples/reference.json'
 
-        self.mock_open = mock.mock_open(read_data=self.mock_reference)
-        self.mock_open.return_value = self.mock_response
+        # self.mock_open = mock.mock_open(read_data=self.mock_reference)
+        # self.mock_open.return_value = self.mock_response
 
 
-    def test_good_data(self):
-        p = mock.patch.object(builtins, 'open', new_callable=self.mock_open)
-        p.start()
+        self.open_mock = mock.MagicMock(spec=open)
+        self.read_mock = mock.MagicMock()
+        self.open_mock.return_value.__enter__.return_value = self.mock_reference
+
+
+    @mock.patch('builtins.open')
+    def test_good_data(self, m_open):
+        # p = mock.patch.object(builtins, 'open', new_callable=self.mock_open)
+        # p.start()
         # with mock.patch('__main__.open', self.mock_open) as m:
-        parsed = parse_reference_data(self.mock_path)
-        self.assertEqual(parsed, self.mock_response)
+        # parsed = parse_reference_data(self.mock_path)
+        # self.assertEqual(parsed, self.mock_response)
 
         # m = mock.mock_open()
         # with mock.patch(parse_reference_data(self.mock_path), m, create=True):
         # self.assertEqual(parse_reference_data(self.mock_path), self.mock_response)
 
+
+        with mock.patch.object(reference_parser, 'open', self.open_mock, create=True) as m:
+            self.assertEqual((reference_parser.parse_reference_data(self.mock_path)), self.mock_response)
 
 
 
