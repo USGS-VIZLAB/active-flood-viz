@@ -238,6 +238,8 @@ var hydromodule = function (options) {
 	 *        @prop 'hover_out' - linked interaction function for hover_out events on this figure.
 	 *        @prop 'click' - linked interaction function for click events on this figure.
 	 *
+	 *@param {array} data - times series data for the hydrograph. Each element is an object representing a data point.
+	 *
 	 *
 	 */
 	self.init = function (linked_interactions, data) {
