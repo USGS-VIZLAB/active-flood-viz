@@ -205,6 +205,7 @@ var hydromodule = function (options) {
 				self.linked_interactions.hover_in(d.data.name, d.data.key);
 				self.activate_line(d.data.key);
 				self.series_tooltip_show(d);
+				ga_send_event('Hydrograph', 'hover_series', d.data.key);
 			})
 			.on('mouseout', function (d) {
 				self.linked_interactions.hover_out();

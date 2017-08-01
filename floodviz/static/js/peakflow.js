@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			.style('left', (event.pageX) + 10 + 'px')
 			.style('top', (event.pageY - 70) + 'px')
 			.html((d.label) + '<br>' + (d.value) + ' cfs');
+		ga_send_event('Peakflow', 'hover_bar', d.label + '_' + d.value);
 	}
 
 	function mouseout(tooltip) {tooltip.style('display', 'none');}

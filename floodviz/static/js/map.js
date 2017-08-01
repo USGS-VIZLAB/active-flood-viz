@@ -301,6 +301,7 @@
 					.on('mouseover', function (d) {
 						self.site_tooltip_show(d.properties.name, d.properties.id);
 						self.linked_interactions.hover_in(d.properties.id);
+						ga_send_event('Map', 'hover_gauge', d.properties.id);
 					})
 					.on('mouseout', function (d) {
 						self.site_tooltip_remove();
@@ -308,6 +309,7 @@
 					})
 					.on('click', function (d) {
 						toggle_hydrograph_display(d.properties.id);
+						ga_send_event('Map', 'gauge_click_on', d.properties.id);
 					})
 					.on('mousedown', function () {
 						d3.event.stopPropagation();
