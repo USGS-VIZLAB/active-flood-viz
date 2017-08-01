@@ -168,8 +168,6 @@ class TestReferenceParser(unittest.TestCase):
     def test_good_data(self):
         with mock.patch('floodviz.reference_parser.open', mock.mock_open(read_data=self.mock_reference)):
             parsed_data = reference_parser.parse_reference_data(self.mock_path)
-            print("p", parsed_data)
-            print("m", self.mock_response)
             self.assertEqual(parsed_data, self.mock_response)
 
     def test_bad_path(self):
