@@ -49,23 +49,24 @@ class LinkedData:
         :return: JSON-LD-like dict representing the event
         """
         event = self._blank_thing("Event")
-        event.update({
-            "@context": "http://schema.org",
-            "@type": "Event",
-            "name": "FLOOD EVENT NAME",
-            "startDate": self.dates['start'],
-            "endDate": self.dates['end'],
-            "location": {
+        if self.location and self.dates:
+            event.update({
                 "@context": "http://schema.org",
-                "@type": "Place",
-                "address": "null",
-                "geo": {
+                "@type": "Event",
+                "name": "FLOOD EVENT NAME",
+                "startDate": self.dates['start'],
+                "endDate": self.dates['end'],
+                "location": {
                     "@context": "http://schema.org",
-                    "@type": "GeoShape",
-                    "box": self._location_str(),
+                    "@type": "Place",
+                    "address": "null",
+                    "geo": {
+                        "@context": "http://schema.org",
+                        "@type": "GeoShape",
+                        "box": self._location_str(),
+                    },
                 },
-            },
-        })
+            })
         return event
 
     def _assemble_gage(self, gage):
@@ -98,8 +99,9 @@ class LinkedData:
         :return: A list of dicts describing the gages
         """
         gages_ld = []
-        for gage in self.gages:
-            gages_ld.append(self._assemble_gage(gage))
+        if self.gages:
+            for gage in self.gages:
+                gages_ld.append(self._assemble_gage(gage))
         return gages_ld
 
     def set_gages(self, gages):
@@ -143,8 +145,10 @@ class LinkedData:
         :return: return a JSON-LD-like dictionary
         """
         self.ld['about'] = self._assemble_event()
-        gages = self._assemble_all_gages()
-        for g in gages:
-            self.ld.update(g)
-        print(gages)
+
+        if self.gages:
+            gages = self._assemble_all_gages()
+            for g in gages:
+                self.ld.update(g)
+
         return self.ld
