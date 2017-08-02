@@ -184,6 +184,8 @@ var hydromodule = function (options) {
 		hydrotip = svg.append('g')
 			.attr('transform', 'translate(-100,-100)')
 			.attr('class', 'hydrotip');
+		hydrotip.append('rect');
+
 		hydrotip.append('circle')
 			.attr('r', 3.5);
 
@@ -260,10 +262,19 @@ var hydromodule = function (options) {
 	 * corresponding map site tooltip.
 	 */
 	self.series_tooltip_show = function (d) {
-
+		const padding = 3;
 		hydrotip.attr('transform', 'translate(' + x(d.data.time_mili) + ',' + y(d.data.value) + ')')
 			.attr('class', 'hydrotip-show');
-		hydrotip.select('text').html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone);
+		const tiptext = hydrotip.select('text');
+		tiptext.html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone);
+		const textbg = hydrotip.select('rect');
+		const bound = tiptext._groups[0][0].getBBox();
+		textbg.attr('x', bound.x - padding)
+			.attr('y', bound.y - padding)
+			.attr('width', bound.width + padding * 2)
+			.attr('height', bound.height + padding * 2);
+
+
 	};
 
 	/**

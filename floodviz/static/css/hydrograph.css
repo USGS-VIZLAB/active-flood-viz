@@ -26,8 +26,18 @@
 
 .hydrotip-show text {
 	text-anchor: middle;
-	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+	stroke: black;
+	opacity: 1;
+	stroke-width: 0;
+	font-weight: normal;
+	font-family: "Times", serif;
 }
+
+.hydrotip-show rect {
+	stroke: none;
+	fill: rgba(71, 181, 176, 0.8);
+}
+
 .hydrotip-hide{
 	display: none;
 }
