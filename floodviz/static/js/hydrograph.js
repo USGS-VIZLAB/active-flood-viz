@@ -28,8 +28,8 @@ var hydromodule = function (options) {
 
 	// Adds the svg canvas
 	var svg = null;
-	// Focus for hydrograph hover tooltip
-	var focus = null;
+	// for hydrograph hover tooltip
+	var hydrotip = null;
 	// Voronoi layer
 	var voronoi_group = null;
 	// Define the voronoi
@@ -181,13 +181,13 @@ var hydromodule = function (options) {
 			.call(d3.axisLeft(y).ticks(10, '.0f'));
 
 		// Tooltip
-		focus = svg.append('g')
+		hydrotip = svg.append('g')
 			.attr('transform', 'translate(-100,-100)')
-			.attr('class', 'focus');
-		focus.append('circle')
+			.attr('class', 'hydrotip');
+		hydrotip.append('circle')
 			.attr('r', 3.5);
 
-		focus.append('text')
+		hydrotip.append('text')
 			.attr('y', -10);
 
 		// Voronoi Layer
@@ -260,16 +260,18 @@ var hydromodule = function (options) {
 	 * corresponding map site tooltip.
 	 */
 	self.series_tooltip_show = function (d) {
-		focus.attr('transform', 'translate(' + x(d.data.time_mili) + ',' + y(d.data.value) + ')');
-		focus.select('text').html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone);
+
+		hydrotip.attr('transform', 'translate(' + x(d.data.time_mili) + ',' + y(d.data.value) + ')')
+			.attr('class', 'hydrotip-show');
+		hydrotip.select('text').html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone);
 	};
 
 	/**
 	 * Removes tooltip view from the hydrograph series
 	 * as well as the correspond mapsite tooltip.
 	 */
-	self.series_tooltip_remove = function (sitekey) {
-		focus.attr('transform', 'translate(-100,-100)');
+	self.series_tooltip_remove = function () {
+		hydrotip.attr('class', 'hydrotip-hide');
 	};
 
 	/**
