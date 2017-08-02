@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	var xAxis = d3.axisBottom().scale(x);
 	var yAxis = d3.axisLeft().scale(y).ticks(8);
 
+	var peak_moused_over_bar = {};
+
 	var svg = d3.select('#peakflow_bar').append('svg')
 		.attr("preserveAspectRatio", "xMinYMin meet")
 		.attr("viewBox", "0 0 " + (width + margin.right) + " " + (height+ margin.top + margin.bottom))
@@ -106,7 +108,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			.style('left', (event.pageX) + 10 + 'px')
 			.style('top', (event.pageY - 70) + 'px')
 			.html((d.label) + '<br>' + (d.value) + ' cfs');
-		ga_send_event('Peakflow', 'hover_bar', d.label + '_' + d.value);
+		if (peak_moused_over_bar[d.label] === undefined) {
+			ga_send_event('Peakflow', 'hover_bar', d.label + '_' + d.value);
+			peak_moused_over_bar[d.label] = true;
+		}
+
 	}
 
 	function mouseout(tooltip) {tooltip.style('display', 'none');}

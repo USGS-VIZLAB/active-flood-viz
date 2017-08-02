@@ -56,6 +56,8 @@
 			var maptip = d3.select('body')
 				.append('div')
 				.attr('id', 'maptip');
+			// Google Analytics Boolean Trackers
+			var map_moused_over_gauge = {};
 
 			/**
 			 * Add circles to the map.
@@ -230,6 +232,7 @@
 						}
 					});
 					self.linked_interactions.click(selected);
+					ga_send_event('Map', 'drag_select', selected);
 				}
 				state.box = {};
 				svg.select('#map-select-box').remove();
@@ -301,7 +304,10 @@
 					.on('mouseover', function (d) {
 						self.site_tooltip_show(d.properties.name, d.properties.id);
 						self.linked_interactions.hover_in(d.properties.id);
-						ga_send_event('Map', 'hover_gauge', d.properties.id);
+;						if (map_moused_over_gauge[d.properties.id] === undefined) {
+							ga_send_event('Map', 'hover_gauge', d.properties.id);
+							map_moused_over_gauge[d.properties.id] = true;
+						}
 					})
 					.on('mouseout', function (d) {
 						self.site_tooltip_remove();
