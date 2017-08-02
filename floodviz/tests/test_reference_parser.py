@@ -188,6 +188,14 @@ class TestReferenceParser(unittest.TestCase):
             parsed_data = reference_parser.parse_reference_data(self.mock_path)
             self.assertEqual(parsed_data, None)
 
+    def test_feature_parsing(self):
+        with mock.patch('floodviz.reference_parser.open', mock.mock_open(read_data=self.mock_reference)):
+            parsed_data = reference_parser.parse_reference_data(self.mock_path)
+            self.assertEqual(parsed_data['city_geojson_data']['features'],
+                             self.mock_response['city_geojson_data']['features'])
+            self.assertEqual(parsed_data['river_geojson_data'], self.mock_response['river_geojson_data'])
+            self.assertEqual(parsed_data['background_geojson_data'], self.mock_response['background_geojson_data'])
+
 
 
 
