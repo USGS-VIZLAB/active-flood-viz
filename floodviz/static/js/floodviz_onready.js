@@ -18,11 +18,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	var hydro_options = {
 		'height': FV.hydrograph_dimensions.height,
 		'width': FV.hydrograph_dimensions.width,
+		'display_ids': FV.hydrograph_display_ids,
 		'div_id': '#hydrograph'
 	};
 
 	var map_figure = FV.mapmodule(map_options);
-	var hydro_figure = FV.hydromodule(hydro_options);
+	var hydro_figure = hydromodule(hydro_options);
 
 	// Use frames to link interactions
 	var map_to_hydro = {
@@ -41,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	//data for hydrograph
 	d3.json(FV.hydrograph_data_path, function (error, data) {
 		if (error) { console.error(error); }
-		hydro_options['data'] = data;
-		hydro_figure.init(map_to_hydro);
+		hydro_figure.init(map_to_hydro, data);
 	});
 });

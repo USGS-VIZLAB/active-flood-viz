@@ -37,11 +37,12 @@ def parse_rdb(endpoint, params):
                 if headers is None:
                     # header procedure
                     line = line.split('\t')
-                    headers = line
+                    headers = [l.strip() for l in line]
                     next(content)
                 else:
                     # extraction procedure
                     line = line.split('\t')
+                    line = [l.strip() for l in line]
                     # sanity check that headers has been filled
                     if headers is not None:
                         data_point = zip(headers, line)
