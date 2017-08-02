@@ -39,7 +39,9 @@ def timeseries_data():
 
     if thumbnail:
         with open('floodviz/thumbnail/hydrograph_data.json', 'w') as f:
-            json.dump(timeseries_data, f)
+            k = hydrograph_utils.req_hydrodata(ref['display_sites'], hydro_start_date, hydro_end_date, url_nwis_prefix)
+            thumbnail_data = hydrograph_utils.parse_hydrodata(j)
+            json.dump(thumbnail_data, f)
 
     return jsonify(timeseries_data)
 
