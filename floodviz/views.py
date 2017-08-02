@@ -17,8 +17,9 @@ thumbnail = app.config['THUMBNAIL']
 @app.route('/')
 def root():
 
-    linked_data.set_dates(app.config['EVENT_START_DT'], app.config['EVENT_END_DT'])
-    linked_data.set_location(app.config['BOUNDING_BOX'])
+    linked_data.set_dates(ref['start_date'], ref['end_date'])
+    linked_data.set_location(ref['bbox'])
+
 
     peakinfo = _peakflow_helper()
     mapinfo = _map_helper()
@@ -57,7 +58,6 @@ def timeseries_data():
 def _peakflow_helper():
     # Peak Flow config vars #
     peak_site = ref['peak_site']
-    peak_start_date = ref['start_date']
     peak_end_date = ref['end_date']
     peak_dv_date = ref['peak_dv_date']
     url_peak_prefix = app.config['NWIS_PEAK_STREAMFLOW_SERVICE_ENDPOINT']
