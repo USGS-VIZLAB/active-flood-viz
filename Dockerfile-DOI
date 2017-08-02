@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     nginx-light \
     curl \
     apt-transport-https \
-    git
+    git \
+    libfontconfig
 
 COPY . /app
 WORKDIR /app
@@ -28,8 +29,7 @@ RUN rm -f /etc/apt/sources.list.d/chris-lea-node_js-jessie.list \
 && curl --cacert DOIRootCA2.cer https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
 && echo 'deb https://deb.nodesource.com/node_6.x jessie main' > /etc/apt/sources.list.d/nodesource.list \
 && apt-get update \
-&& apt-get install -y nodejs \
-&& apt-get install -y libfontconfig
+&& apt-get install -y nodejs
 
 RUN pip3 --cert /app/DOIRootCA2.cer install -r requirements.txt
 
