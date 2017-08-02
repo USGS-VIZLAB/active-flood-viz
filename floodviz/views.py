@@ -16,11 +16,9 @@ thumbnail = app.config['THUMBNAIL']
 
 @app.route('/')
 def root():
-
     linked_data.set_dates(ref['start_date'], ref['end_date'])
     linked_data.set_location(ref['bbox'])
-
-
+    linked_data.set_page_name(app.config['TITLE'])
     peakinfo = _peakflow_helper()
     mapinfo = _map_helper()
     display_sites = ref['display_sites']

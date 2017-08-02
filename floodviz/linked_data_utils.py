@@ -8,8 +8,7 @@ class LinkedData:
     def __init__(self):
         self.ld = self._blank_thing("WebSite")
         self.ld.update({
-            "name": "Active flood visualization",
-            "about": "Visualization of a flood event based on USGS streamgage readings",
+            "name": "Active flood visualization placeholder name",
             "datePublished": str(date.today()),
             "publisher": {
                 "@context": "http://schema.org",
@@ -104,6 +103,9 @@ class LinkedData:
                 gages_ld.append(self._assemble_gage(gage))
         return gages_ld
 
+    def set_page_name(self, name):
+        self.ld['name'] = name
+
     def set_gages(self, gages):
         """
         Sets the gages to be used
@@ -145,10 +147,10 @@ class LinkedData:
         :return: return a JSON-LD-like dictionary
         """
         self.ld['about'] = self._assemble_event()
-
+        self.ld['gages'] = []
         if self.gages:
             gages = self._assemble_all_gages()
             for g in gages:
-                self.ld.update(g)
+                self.ld['gages'].append(g)
 
         return self.ld
