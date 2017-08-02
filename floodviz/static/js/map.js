@@ -304,7 +304,8 @@
 					.on('mouseover', function (d) {
 						self.site_tooltip_show(d.properties.name, d.properties.id);
 						self.linked_interactions.hover_in(d.properties.id);
-;						if (map_moused_over_gauge[d.properties.id] === undefined) {
+;						// Only log first hover of gauge point per session
+						if (map_moused_over_gauge[d.properties.id] === undefined) {
 							ga_send_event('Map', 'hover_gauge', d.properties.id);
 							map_moused_over_gauge[d.properties.id] = true;
 						}

@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			.style('left', (event.pageX) + 10 + 'px')
 			.style('top', (event.pageY - 70) + 'px')
 			.html((d.label) + '<br>' + (d.value) + ' cfs');
+		// Only log one hover per bar per session
 		if (peak_moused_over_bar[d.label] === undefined) {
 			ga_send_event('Peakflow', 'hover_bar', d.label + '_' + d.value);
 			peak_moused_over_bar[d.label] = true;

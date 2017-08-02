@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 });
 
-
+// Wrapper function for Google Analytics explicit send
 function ga_send_event(category, action, label) {
 	ga('send', {
 		hitType: 'event',

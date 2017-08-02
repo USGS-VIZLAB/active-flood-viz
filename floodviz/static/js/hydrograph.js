@@ -208,6 +208,7 @@ var hydromodule = function (options) {
 				self.linked_interactions.hover_in(d.data.name, d.data.key);
 				self.activate_line(d.data.key);
 				self.series_tooltip_show(d);
+				// Only log first hover of hydrograph per session
 				if (!hydro_moused_over) {
 					ga_send_event('Hydrograph', 'hover_series', d.data.key);
 					hydro_moused_over = true;
