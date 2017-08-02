@@ -62,10 +62,9 @@ def _peakflow_helper():
     peak_dv_date = ref['peak_dv_date']
     url_peak_prefix = app.config['NWIS_PEAK_STREAMFLOW_SERVICE_ENDPOINT']
 
-    # Peak Water Flow data clean and write
-    content = peak_flow_utils.req_peak_data(peak_site, peak_start_date, peak_end_date, url_peak_prefix)
+    historic_peaks = peak_flow_utils.req_peak_data(peak_site, peak_end_date, url_peak_prefix)
     daily_value_data = peak_flow_utils.req_peak_dv_data(peak_site, peak_dv_date, url_nwis_prefix)
-    peak_data = peak_flow_utils.parse_peak_data(content, daily_value_data)
+    peak_data = peak_flow_utils.parse_peak_data(historic_peaks, daily_value_data)
     return peak_data
 
 

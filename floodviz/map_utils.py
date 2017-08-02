@@ -1,69 +1,53 @@
 from string import Template
-
 import requests
+
+from . import utils
 
 
 def site_dict(site_list, url_prefix):
     """
-    Puts site data into a dictionary
+       Puts site data into a dictionary
 
-    :param site_list: A list of site ids to be queried on NWIS
-    :param url_prefix: A string containing the beginning of the NWIS site url
+       :param site_list: A list of site ids to be queried on NWIS
+       :param url_prefix: A string containing the beginning of the NWIS site url
 
-    :returns An array of dicts containing various site information in a usable format.
-        If service call fails, function will return None
-    """
-
+       :returns An array of dicts containing various site information in a usable format.
+           If service call fails, function will return None
+       """
     if not site_list:
-        print("Site list empty, returning empty list")
+        print('Site list empty, returning empty list')
         return []
 
-    # generate the string of site ids for the url
-    id_input_string = ",".join(site_list)
+        # generate the string of site ids for the url
+    id_input_string = ','.join(site_list)
 
     # create the url
-    url = url_prefix + "site/?format=rdb&sites=" + id_input_string + "&siteStatus=all"
+    url = url_prefix + 'site/'
 
-    # get data from url
-    req = requests.get(url)
+    params = {
+        'format': 'rdb',
+        'sites': id_input_string,
+        'siteStatus': 'all',
+    }
 
-    if req.status_code != 200:
-        print("Error: service call failed")
-        return None
+    raw_gages = utils.parse_rdb(url, params)
+    if raw_gages is not None:
+        keep_fields = [
+            'site_no',
+            'station_nm',
+            'dec_long_va',
+            'dec_lat_va',
+            'huc_cd'
+        ]
+        gages = []
+        for raw in raw_gages:
+            gage = {k: raw[k] for k in keep_fields}
+            gages.append(gage)
+    else:
+        print('utils rdb_parser has returned no data to map utils')
+        gages = None
 
-    if req.text == "":
-        print("Service call returned no data")
-        return []
-
-    # data begins on first line that doesn't start with '#'
-    data = req.text.splitlines()
-    for line in req.text.splitlines():
-        if line.startswith('#'):
-            data.remove(line)
-        else:
-            break
-
-    keep_fields = [
-        'site_no',
-        'station_nm',
-        'dec_long_va',
-        'dec_lat_va',
-        'huc_cd'
-    ]
-
-    # make a list of dicts from data, remove any aberrant spaces
-    fields = [field.strip() for field in data[0].split('\t')]
-    dnice = []
-    for line in data[2:]:
-        line = [item.strip() for item in line.split('\t')]
-        line_dict = dict(zip(fields, line))
-        try:
-            filtered_line_dict = {k: line_dict[k] for k in keep_fields}
-        except KeyError:
-            raise KeyError
-        dnice.append(filtered_line_dict)
-
-    return dnice
+    return gages
 
 
 def create_geojson(data):
@@ -141,7 +125,7 @@ def filter_background(bbox, bg_data):
         feature_max_lon = -180
         feature_min_lat = 90
         feature_min_lon = 180
-        
+
         coordinates = f['geometry']['coordinates']
 
         for group in coordinates:
@@ -171,7 +155,7 @@ def filter_background(bbox, bg_data):
         # If the box containing a feature also contains the bounding box, keep this feature
         # Allow adding more than one because otherwise MD contains boxes in WV, and CA would contain most of NV.
         if feature_min_lat < min(box_lat) and feature_max_lat > max(box_lat) and \
-                feature_min_lon < min(box_lon) and feature_max_lon > max(box_lon):
+                        feature_min_lon < min(box_lon) and feature_max_lon > max(box_lon):
             in_box.append(f)
 
     keepers = {
@@ -180,5 +164,3 @@ def filter_background(bbox, bg_data):
     }
 
     return keepers
-
-
