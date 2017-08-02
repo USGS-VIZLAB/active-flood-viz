@@ -193,8 +193,8 @@ class TestReferenceParser(unittest.TestCase):
             parsed_data = reference_parser.parse_reference_data(self.mock_path)
             self.assertEqual(parsed_data['city_geojson_data']['features'],
                              self.mock_response['city_geojson_data']['features'])
-            self.assertEqual(parsed_data['river_geojson_data'], self.mock_response['river_geojson_data'])
-            self.assertEqual(parsed_data['background_geojson_data'], self.mock_response['background_geojson_data'])
+            self.assertEqual(json.loads(parsed_data['river_geojson_data'])['features'], json.loads(self.mock_response['river_geojson_data'])['features'])
+            self.assertEqual(json.loads(parsed_data['background_geojson_data'])['features'], json.loads(self.mock_response['background_geojson_data'])['features'])
 
 
 
