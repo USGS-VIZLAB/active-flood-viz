@@ -51,6 +51,7 @@ jsdom.env(
 
 	// create DOM hook
 	"<html><body><div id='hydrograph'></div>" +
+	"<div id='map'></divid>" +
 	"</body></html>",
 
 	// load local assets into window environment

@@ -24,4 +24,4 @@ PEAK_META = {
 }
 
 # Thumbnail Support
-THUMBNAIL = False
+THUMBNAIL = True
