@@ -22,13 +22,12 @@ RUN cp $config instance/config.py
 
 RUN cp $ref instance/reference.json
 
-RUN if $thumbnail -eq "true"; then node floodviz/thumbnail/thumbnail.js
-
 RUN rm -f /etc/apt/sources.list.d/chris-lea-node_js-jessie.list \
 && curl https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
 && echo 'deb https://deb.nodesource.com/node_6.x jessie main' > /etc/apt/sources.list.d/nodesource.list \
 && apt-get update \
-&& apt-get install -y nodejs
+&& apt-get install -y nodejs \
+&& apt-get install -y libfontconfig
 
 RUN pip3 install -r requirements.txt
 
@@ -37,6 +36,8 @@ RUN npm update
 RUN node_modules/bower/bin/bower install --allow-root
 
 RUN python3 run.py --freeze --norun
+
+RUN if $thumbnail -eq "true"; then node floodviz/thumbnail/thumbnail.js
 
 EXPOSE 80
 

@@ -83,7 +83,7 @@ function convert(figure, window, css_path, filename) {
     // Takes care of canvas conversion and encodes base64
     svg2png(svg_string)
         .then(buffer => fs.writeFile(filename, buffer))
-        .then(console.log('\nConverted D3 figure to PNG successfully... \n'))
+        .then(console.log('\nConverted D3 figure to PNG successfully...'))
         .catch(e => console.error(e));
 }
 
