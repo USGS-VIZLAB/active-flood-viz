@@ -40,7 +40,7 @@ RUN node_modules/bower/bin/bower install --allow-root
 
 RUN python3 run.py --freeze --norun
 
-RUN if $thumbnail -eq "true"; then node floodviz/thumbnail/thumbnail.js
+RUN if $thumbnail -eq "true"; then node floodviz/thumbnail/thumbnail.js; fi
 
 EXPOSE 80
 
