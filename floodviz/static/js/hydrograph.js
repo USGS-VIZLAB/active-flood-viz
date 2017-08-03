@@ -210,7 +210,7 @@ var hydromodule = function (options) {
 				self.series_tooltip_show(d);
 				// Only log first hover of hydrograph per session
 				if (!hydro_moused_over) {
-					ga_send_event('Hydrograph', 'hover_series', d.data.key);
+					FV.ga_send_event('Hydrograph', 'hover_series', d.data.key);
 					hydro_moused_over = true;
 				}
 			})
@@ -233,7 +233,7 @@ var hydromodule = function (options) {
 						self.remove_series(d.data.key);
 						dblclick_armed = false;
 					}, 200);
-					ga_send_event('Hydrograph', 'series_click_off', d.data.key);
+					FV.ga_send_event('Hydrograph', 'series_click_off', d.data.key);
 				}
 			});
 

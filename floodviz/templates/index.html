@@ -13,8 +13,39 @@
 	<title>Flood Viz</title>
 	<script type="application/ld+json">
 		{{ linked_data | tojson | safe }}
+
 	</script>
-  <script type="text/javascript" src="{{ url_for('static', filename='js/analytics_helper.js') }}"></script>
+	<script type="text/javascript">
+		(function (i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r;
+			i[r] = i[r] || function () {
+					(i[r].q = i[r].q || []).push(arguments)
+				}, i[r].l = 1 * new Date();
+			a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0];
+			a.async = 1;
+			a.src = g;
+			m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+		ga('create', 'UA-103831764-1', 'auto');
+		ga('send', 'pageview');
+
+		// Global Namespace for project - FV
+		var FV = FV || {};
+
+		// Wrapper function for Google Analytics explicit send
+		FV.ga_send_event = function(category, action, label) {
+			ga('send', {
+				hitType: 'event',
+				eventCategory: category,
+				eventAction: action,
+				eventLabel: label
+			});
+		}
+
+	</script>
+
 </head>
 
 <body>
@@ -37,11 +68,11 @@
 		<div class="col-xs-offset-11">
 			<div class="icon-div">
 				<img src="static/images/facebook.png" class="icon"
-					 onclick="ga_send_event('Social_Media', 'click_icon', 'facebook');"/>
+					 onclick="FV.ga_send_event('Social_Media', 'click_icon', 'facebook');"/>
 				<img src="static/images/twitter.png" class="icon"
-					 onclick="ga_send_event('Social_Media', 'click_icon', 'twitter');"/>
+					 onclick="FV.ga_send_event('Social_Media', 'click_icon', 'twitter');"/>
 				<img src="static/images/github.png" class="icon"
-					 onclick="ga_send_event('Social_Media', 'click_icon', 'github');">
+					 onclick="FV.ga_send_event('Social_Media', 'click_icon', 'github');">
 			</div>
 		</div>
 
@@ -49,7 +80,11 @@
 			<div class="col-sm-6">
 				<div id="map"></div>
 				<div id="map_text">
-					<p>Lorem ipsum dolor <a href="https://www.w3schools.com">Link here</a> sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+					<p>Lorem ipsum dolor <a href="https://i.redd.it/skwjllc1cidz.jpg"
+											onclick="FV.ga_send_event('Links', 'click_link', 'link_description');">Link here</a> sit
+						amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+						aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+						commodo consequat.</p>
 				</div>
 			</div>
 			<div class="col-sm-6 col-centered">
@@ -108,8 +143,7 @@
 	</div>
 
 	<script type="text/javascript">
-		// Global Namespace for project - FV
-		var FV = FV || {};
+
 		FV.config ={
 			debug: {{ config.DEBUG | tojson | safe }}
 		};
@@ -123,15 +157,6 @@
 
 		FV.mapinfo = {{ mapinfo | tojson | safe }};
 
-		// Wrapper function for Google Analytics explicit send
-		FV.ga_send_event = function(category, action, label) {
-			ga('send', {
-				hitType: 'event',
-				eventCategory: category,
-				eventAction: action,
-				eventLabel: label
-			});
-		}
 	</script>
 
 	<script type="text/javascript"

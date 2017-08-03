@@ -232,7 +232,7 @@
 						}
 					});
 					self.linked_interactions.click(selected);
-					ga_send_event('Map', 'drag_select', selected.join(','));
+					FV.ga_send_event('Map', 'drag_select', selected.join(','));
 				}
 				state.box = {};
 				svg.select('#map-select-box').remove();
@@ -306,7 +306,7 @@
 						self.linked_interactions.hover_in(d.properties.id);
 ;						// Only log first hover of gage point per session
 						if (map_moused_over_gage[d.properties.id] === undefined) {
-							ga_send_event('Map', 'hover_gage', d.properties.id);
+							FV.ga_send_event('Map', 'hover_gage', d.properties.id);
 							map_moused_over_gage[d.properties.id] = true;
 						}
 					})
@@ -316,7 +316,7 @@
 					})
 					.on('click', function (d) {
 						toggle_hydrograph_display(d.properties.id);
-						ga_send_event('Map', 'gage_click_on', d.properties.id);
+						FV.ga_send_event('Map', 'gage_click_on', d.properties.id);
 					})
 					.on('mousedown', function () {
 						d3.event.stopPropagation();
