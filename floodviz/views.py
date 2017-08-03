@@ -20,12 +20,21 @@ def root():
 
 @app.route('/hydrograph/')
 def hydrograph():
-    return render_template('hydrograph.html')
+    peakinfo = _peakflow_helper()
+    mapinfo = _map_helper()
+    display_sites = ref['display_sites']
+    return render_template('hydrograph.html', mapinfo=mapinfo, peakinfo=peakinfo, display_sites=display_sites)
 
 @app.route('/map/')
 def sitemap():
     mapinfo = _map_helper()
-    return render_template('map.html', mapinfo=mapinfo)
+    display_sites = ref['display_sites']
+    return render_template('map.html', mapinfo=mapinfo, display_sites=display_sites)
+
+@app.route('/peakflow/')
+def peakflow():
+    peakinfo = _peakflow_helper()
+    return render_template('peakflow.html', peakinfo=peakinfo)
 
 @app.route('/timeseries.json')
 def timeseries_data():
@@ -39,7 +48,9 @@ def timeseries_data():
 
     if thumbnail:
         with open('floodviz/thumbnail/hydrograph_data.json', 'w') as f:
-            json.dump(timeseries_data, f)
+            k = hydrograph_utils.req_hydrodata(ref['display_sites'], hydro_start_date, hydro_end_date, url_nwis_prefix)
+            thumbnail_data = hydrograph_utils.parse_hydrodata(k)
+            json.dump(thumbnail_data, f)
 
     return jsonify(timeseries_data)
 
