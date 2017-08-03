@@ -1,30 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}"/>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" type="text/css"
+		  href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}"/>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/map.css') }}" />
-    <title>Site Map</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/hydrograph.css') }}" />
+	<title>Flood Viz</title>
+
 </head>
 <body>
 
-<div class="main-content container-fluid">
-    <div id="map">
+<div class="main-content container">
+		<div class="row">
+{#			<div class="col-sm-6 col-centered">#}
+{#				<div id="map"></div>#}
+{#			</div>#}
+			<div class="col-sm-12 col-centered">
+				<div id="map"></div>
+			</div>
+		</div>
+	</div>
 
-    </div>
-</div>
+	<script type="text/javascript">
+		// Global Namespace for project - FV
+		var FV = FV || {};
+		FV.config ={
+			debug: {{ config.DEBUG | tojson | safe }}
+		};
 
-<script type="text/javascript" src="{{ url_for('static', filename='bower_components/proj4/dist/proj4.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='bower_components/d3/d3.js') }}"></script>
-<script type="text/javascript"
-        src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
-<script type="text/javascript"
-        src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.js') }}"></script>
-<script type="text/javascript">
-    var FV = FV || {};
-    FV.mapinfo = {{ mapinfo | tojson |safe }};
-</script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/map.js') }}"></script>
+		FV.hydrograph_data_path = "{{ url_for('timeseries_data', filename='data/hydrograph_data.json') }}";
+		FV.hydrograph_dimensions = {{ config.HYDROGRAPH_ASPECT_RATIO | safe }};
+		FV.hydrograph_display_ids = {{ display_sites | safe }};
+
+		FV.mapinfo = {{ mapinfo | tojson | safe }};
+	</script>
+
+	<script type="text/javascript"
+			src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+	<script type="text/javascript"
+			src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/d3/d3.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/hydrograph.js')}}"></script>
+	<script type="text/javascript"
+			src="{{ url_for('static', filename='bower_components/proj4/dist/proj4.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/map.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/floodviz_onready.js') }}"></script>
 </body>
 </html>
