@@ -11,7 +11,10 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/peakflow.css') }}" />
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/hydrograph.css') }}" />
 	<title>Flood Viz</title>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/analytics_helper.js') }}"></script>
+	<script type="application/ld+json">
+		{{ linked_data | tojson | safe }}
+	</script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/analytics_helper.js') }}"></script>
 </head>
 
 <body>
