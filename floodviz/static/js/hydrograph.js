@@ -53,6 +53,9 @@ var hydromodule = function (options) {
 	var x = d3.scaleTime().range([0, width]);
 	var y = d3.scaleLog().range([height, 0]);
 
+	// Google Analytics Boolean Trackers
+	var hydro_moused_over = false;
+
 	/**
 	 * Filters a set of data based on the ids listed in display_ids
 	 * @returns {Array} The entries of the original `data` whose `key` values are elements of display_ids.
@@ -205,6 +208,11 @@ var hydromodule = function (options) {
 				self.linked_interactions.hover_in(d.data.name, d.data.key);
 				self.activate_line(d.data.key);
 				self.series_tooltip_show(d);
+				// Only log first hover of hydrograph per session
+				if (!hydro_moused_over) {
+					FV.ga_send_event('Hydrograph', 'hover_series', d.data.key);
+					hydro_moused_over = true;
+				}
 			})
 			.on('mouseout', function (d) {
 				self.linked_interactions.hover_out();
@@ -225,6 +233,7 @@ var hydromodule = function (options) {
 						self.remove_series(d.data.key);
 						dblclick_armed = false;
 					}, 200);
+					FV.ga_send_event('Hydrograph', 'series_click_off', d.data.key);
 				}
 			});
 
