@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+	<title>Flood Viz</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="stylesheet" type="text/css"
@@ -10,50 +11,45 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/map.css') }}" />
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/peakflow.css') }}" />
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/hydrograph.css') }}" />
-	<title>Flood Viz</title>
-	<script type="application/ld+json">
-		{{ linked_data | tojson | safe }}
-
-	</script>
+	<script type="application/ld+json"> {{ linked_data | tojson | safe }} </script>
+	<script> var FV = FV || {}; </script>
+	{% if config.GA_ID != "null" %}
+		<script> FV.GA_RUN = true; </script>
+	{% else %}
+		<script> FV.GA_RUN = false; </script>
+	{% endif %}
 	<script type="text/javascript">
 
-		// Google Analytics ID
-		try {
-			var ga_id = {{ config.GA_ID}};
-		} catch(e) {
-			if (e.name === "ReferenceError") {
-				ga_id = null;
-			}
+		if (FV.GA_RUN) {
+			var ga_id = "{{ config.GA_ID }}";
+
+			(function (i, s, o, g, r, a, m) {
+				i['GoogleAnalyticsObject'] = r;
+				i[r] = i[r] || function () {
+						(i[r].q = i[r].q || []).push(arguments)
+					}, i[r].l = 1 * new Date();
+				a = s.createElement(o),
+					m = s.getElementsByTagName(o)[0];
+				a.async = 1;
+				a.src = g;
+				m.parentNode.insertBefore(a, m)
+			})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+			ga('create', ga_id, 'auto');
+			ga('send', 'pageview');
 		}
-
-		(function (i, s, o, g, r, a, m) {
-			i['GoogleAnalyticsObject'] = r;
-			i[r] = i[r] || function () {
-					(i[r].q = i[r].q || []).push(arguments)
-				}, i[r].l = 1 * new Date();
-			a = s.createElement(o),
-				m = s.getElementsByTagName(o)[0];
-			a.async = 1;
-			a.src = g;
-			m.parentNode.insertBefore(a, m)
-		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-		ga('create', 'UA-' + ga_id + '-1', 'auto');
-		ga('send', 'pageview');
-
-		// Global Namespace for project - FV
-		var FV = FV || {};
 
 		// Wrapper function for Google Analytics explicit send
 		FV.ga_send_event = function(category, action, label) {
-			ga('send', {
-				hitType: 'event',
-				eventCategory: category,
-				eventAction: action,
-				eventLabel: label
-			});
+			if (FV.GA_RUN) {
+					ga('send', {
+						hitType: 'event',
+						eventCategory: category,
+						eventAction: action,
+						eventLabel: label
+				});
+			}
 		}
-
 	</script>
 
 </head>
@@ -155,6 +151,7 @@
 	</div>
 
 	<script type="text/javascript">
+
 		// Continue FV namespace definitions
 		FV.config ={
 			debug: {{ config.DEBUG | tojson | safe }}
