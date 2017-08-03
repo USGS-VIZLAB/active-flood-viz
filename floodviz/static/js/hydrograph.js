@@ -123,7 +123,7 @@ var hydromodule = function (options) {
 
 		// Save the locations of the edges of the visible svg
 		state.edges = {
-			'l': - (margin.left + margin.right),
+			'l': -(margin.left + margin.right),
 			'r': width + margin.right,
 			't': -(margin.top + margin.bottom)
 		};
@@ -192,8 +192,8 @@ var hydromodule = function (options) {
 		hydrotip.append('rect');
 		hydrotip.append('circle')
 			.attr('r', 3.5);
-		hydrotip.append('text')
-			.attr('y', -10);
+		hydrotip.append('polyline');
+		hydrotip.append('text');
 
 		// Voronoi Layer
 		voronoi_group = svg.append('g')
@@ -274,10 +274,27 @@ var hydromodule = function (options) {
 
 		hydrotip.attr('transform', 'translate(' + scaleX(d.data.time_mili) + ',' + scaleY(d.data.value) + ')')
 			.attr('class', 'hydrotip-show');
+		const arrowheight = 10;
+		const sidelength = arrowheight / 0.866;
+		const points = [[0, 0], [-(sidelength / 2), -arrowheight], [sidelength / 2, -arrowheight], [0, 0]];
+
+		// turn points array into string
+		var arrowpoints = '';
+		points.forEach(function (p) {
+			arrowpoints += p[0] + ' ' + p[1] + ',';
+		});
+		arrowpoints = arrowpoints.substring(0, arrowpoints.length - 1);
+
+		const arrow = hydrotip.select('polyline');
+		arrow.attr('points', arrowpoints);
+
 		const tiptext = hydrotip.select('text');
 		tiptext.html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone);
 		const textbg = hydrotip.select('rect');
 		const bound = tiptext._groups[0][0].getBBox();
+
+		var arrowadjust = -((bound.height / 2) + arrowheight );
+
 
 		// Find the edges of the tooltip (left, right, and top)
 		const tipedges = {
@@ -293,25 +310,26 @@ var hydromodule = function (options) {
 			't': 0
 		};
 
-		if(tipedges.l < state.edges.l){
+		if (tipedges.l < state.edges.l) {
 			// this will be positive so it will be a shift to the right
 			adjust.l = state.edges.l - tipedges.l
 		}
-		else if(tipedges.r > state.edges.r){
+		else if (tipedges.r > state.edges.r) {
 			// this will be negative, so a shift to the left
 			adjust.r = state.edges.r - tipedges.r
 		}
-		if(tipedges.t < state.edges.t){
+		if (tipedges.t < state.edges.t) {
 			// I haven't had this happen yet, so I'm leaving it for later.
 			console.log('top');
 		}
 
-		tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)' );
+		tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', ' + arrowadjust + ')');
 		// One of adjust.l or adjust.r should always be 0.
 		textbg.attr('x', bound.x - padding + adjust.l + adjust.r)
 			.attr('y', bound.y - padding)
 			.attr('width', bound.width + padding * 2)
-			.attr('height', bound.height + padding * 2);
+			.attr('height', bound.height + padding * 2 )
+			.attr('transform', 'translate(0, ' + arrowadjust + ')');
 	};
 
 	/**

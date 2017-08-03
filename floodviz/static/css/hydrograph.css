@@ -38,6 +38,19 @@
 	fill: rgba(71, 181, 176, 0.8);
 }
 
+.hydrotip-show polyline {
+	stroke: none;
+	fill: rgba(71, 181, 176, 0.8);
+	/*fill: red;*/
+}
+
+.hydrotip-show circle {
+	fill-opacity: 0;
+	stroke: red;
+	opacity: 0.5;
+	stroke-width: 1;
+}
+
 .hydrotip-hide{
 	display: none;
 }
