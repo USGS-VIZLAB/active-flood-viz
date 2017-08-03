@@ -22,7 +22,7 @@ var hydromodule = function (options) {
 	var timer = null;
 	var dblclick_armed = false;
 
-	var margin = {top: 60, right: 0, bottom: 30, left: 35};
+	var margin = {top: 60, right: 0, bottom: 30, left: 40};
 	var height = 500 * (options.height / options.width) - margin.top - margin.bottom;
 	var width = 500 - margin.left - margin.right;
 
