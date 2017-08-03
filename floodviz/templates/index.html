@@ -17,7 +17,7 @@
 	</script>
 	<script type="text/javascript">
 
-		// Google Analytics ID 
+		// Google Analytics ID
 		try {
 			var ga_id = {{ config.GA_ID}};
 		} catch(e) {
@@ -38,7 +38,7 @@
 			m.parentNode.insertBefore(a, m)
 		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-		ga('create','UA-' + ga_id + '-1', 'auto');
+		ga('create', 'UA-' + ga_id + '-1', 'auto');
 		ga('send', 'pageview');
 
 		// Global Namespace for project - FV
