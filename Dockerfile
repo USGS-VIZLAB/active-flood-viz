@@ -35,6 +35,8 @@ RUN npm update
 
 RUN node_modules/bower/bin/bower install --allow-root
 
+ENV THUMBNAIL=$thumbnail
+
 RUN python3 run.py --freeze --norun
 
 RUN if $thumbnail -eq "true"; then node floodviz/thumbnail/thumbnail.js; fi
