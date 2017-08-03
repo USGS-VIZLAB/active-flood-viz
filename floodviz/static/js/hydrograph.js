@@ -121,6 +121,7 @@ var hydromodule = function (options) {
 			.append('g')
 			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+		// Save the locations of the edges of the visible svg
 		state.edges = {
 			'l': - (margin.left + margin.right),
 			'r': width + margin.right,
@@ -278,12 +279,14 @@ var hydromodule = function (options) {
 		const textbg = hydrotip.select('rect');
 		const bound = tiptext._groups[0][0].getBBox();
 
+		// Find the edges of the tooltip (left, right, and top)
 		const tipedges = {
 			'l': scaled.x - bound.width / 2,
 			'r': scaled.x + bound.width / 2,
 			't': scaled.y - bound.height
 		};
 
+		// store how much the tooltip has to be adjusted by to stay entirely visible
 		var adjust = {
 			'l': 0,
 			'r': 0,
@@ -291,17 +294,20 @@ var hydromodule = function (options) {
 		};
 
 		if(tipedges.l < state.edges.l){
+			// this will be positive so it will be a shift to the right
 			adjust.l = state.edges.l - tipedges.l
 		}
 		else if(tipedges.r > state.edges.r){
+			// this will be negative, so a shift to the left
 			adjust.r = state.edges.r - tipedges.r
 		}
 		if(tipedges.t < state.edges.t){
+			// I haven't had this happen yet, so I'm leaving it for later.
 			console.log('top');
 		}
 
 		tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)' );
-
+		// One of adjust.l or adjust.r should always be 0.
 		textbg.attr('x', bound.x - padding + adjust.l + adjust.r)
 			.attr('y', bound.y - padding)
 			.attr('width', bound.width + padding * 2)
