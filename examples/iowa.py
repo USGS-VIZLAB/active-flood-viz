@@ -25,3 +25,6 @@ PEAK_META = {
 
 # Thumbnail Support
 THUMBNAIL = False
+
+# Google Analytics
+GA_ID = '103831764'
