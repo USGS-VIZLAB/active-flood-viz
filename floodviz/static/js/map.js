@@ -57,7 +57,7 @@
 				.append('div')
 				.attr('id', 'maptip');
 			// Google Analytics Boolean Trackers
-			var map_moused_over_gauge = {};
+			var map_moused_over_gage = {};
 
 			/**
 			 * Add circles to the map.
@@ -232,7 +232,7 @@
 						}
 					});
 					self.linked_interactions.click(selected);
-					ga_send_event('Map', 'drag_select', selected);
+					ga_send_event('Map', 'drag_select', selected.join(','));
 				}
 				state.box = {};
 				svg.select('#map-select-box').remove();
@@ -304,10 +304,10 @@
 					.on('mouseover', function (d) {
 						self.site_tooltip_show(d.properties.name, d.properties.id);
 						self.linked_interactions.hover_in(d.properties.id);
-;						// Only log first hover of gauge point per session
-						if (map_moused_over_gauge[d.properties.id] === undefined) {
-							ga_send_event('Map', 'hover_gauge', d.properties.id);
-							map_moused_over_gauge[d.properties.id] = true;
+;						// Only log first hover of gage point per session
+						if (map_moused_over_gage[d.properties.id] === undefined) {
+							ga_send_event('Map', 'hover_gage', d.properties.id);
+							map_moused_over_gage[d.properties.id] = true;
 						}
 					})
 					.on('mouseout', function (d) {
@@ -316,7 +316,7 @@
 					})
 					.on('click', function (d) {
 						toggle_hydrograph_display(d.properties.id);
-						ga_send_event('Map', 'gauge_click_on', d.properties.id);
+						ga_send_event('Map', 'gage_click_on', d.properties.id);
 					})
 					.on('mousedown', function () {
 						d3.event.stopPropagation();

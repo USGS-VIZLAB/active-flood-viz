@@ -16,14 +16,6 @@ ga('send', 'pageview');
 
 // GA for DOM content not related to figures.
 document.addEventListener('DOMContentLoaded', function (event) {
-
-	// Social Media Click events for GA
-	var sm_icons = document.getElementsByClassName('icon');
-	Array.prototype.forEach.call(sm_icons, function (element) {
-		element.addEventListener('click', function () {
-			ga_send_event('Social_Media', 'click_icon', element);
-		});
-	});
 	// External links clicked
 	var links = document.getElementsByTagName("a");
 	Array.prototype.forEach.call(links, function (element) {
@@ -33,13 +25,3 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	});
 
 });
-
-// Wrapper function for Google Analytics explicit send
-function ga_send_event(category, action, label) {
-	ga('send', {
-		hitType: 'event',
-		eventCategory: category,
-		eventAction: action,
-		eventLabel: label
-	});
-}

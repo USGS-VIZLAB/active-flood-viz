@@ -33,9 +33,12 @@
 	<div class="main-content container">
 		<div class="col-xs-offset-11">
 			<div class="icon-div">
-				<img src="static/images/facebook.png" class="icon"/>
-				<img src="static/images/twitter.png" class="icon"/>
-				<img src="static/images/github.png" class="icon"/>
+				<img src="static/images/facebook.png" class="icon"
+					 onclick="ga_send_event('Social_Media', 'click_icon', 'facebook');"/>
+				<img src="static/images/twitter.png" class="icon"
+					 onclick="ga_send_event('Social_Media', 'click_icon', 'twitter');"/>
+				<img src="static/images/github.png" class="icon"
+					 onclick="ga_send_event('Social_Media', 'click_icon', 'github');">
 			</div>
 		</div>
 
@@ -116,6 +119,16 @@
 		FV.peakinfo = {{ peakinfo | tojson | safe }};
 
 		FV.mapinfo = {{ mapinfo | tojson | safe }};
+
+		// Wrapper function for Google Analytics explicit send
+		FV.ga_send_event = function(category, action, label) {
+			ga('send', {
+				hitType: 'event',
+				eventCategory: category,
+				eventAction: action,
+				eventLabel: label
+			});
+		}
 	</script>
 
 	<script type="text/javascript"
