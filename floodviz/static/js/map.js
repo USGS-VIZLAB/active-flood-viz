@@ -53,9 +53,7 @@
 			//Create SVG element
 			var svg = null;
 			// Tooltip
-			var maptip = d3.select('body')
-				.append('div')
-				.attr('id', 'maptip');
+			var maptip = null;
 			// Google Analytics Boolean Trackers
 			var map_moused_over_gage = {};
 
@@ -76,9 +74,8 @@
 					.enter()
 					.append('circle')
 					.attr('r', radius)
-					.attr('transform', function (d) {
-						return 'translate(' + projection(d.geometry.coordinates) + ')';
-					})
+					.attr('cx', function(d){return projection(d.geometry.coordinates)[0]})
+					.attr('cy', function(d){return projection(d.geometry.coordinates)[1]})
 					.attr('id', function (d) {
 						if (property_for_id && d.properties[property_for_id]) {
 							return 'map' + d.properties[property_for_id];
@@ -164,7 +161,7 @@
 						height: parseInt(box.attr('height'))
 					};
 
-					for(var i=0; i<point.length; i++){
+					for (var i = 0; i < point.length; i++) {
 						point[i] = Math.round(point[i]);
 					}
 
@@ -309,7 +306,7 @@
 					.on('mouseover', function (d) {
 						self.site_tooltip_show(d.properties.name, d.properties.id);
 						self.linked_interactions.hover_in(d.properties.id);
-;						// Only log first hover of gage point per session
+						// Only log first hover of gage point per session
 						if (map_moused_over_gage[d.properties.id] === undefined) {
 							FV.ga_send_event('Map', 'hover_gage', d.properties.id);
 							map_moused_over_gage[d.properties.id] = true;
@@ -337,12 +334,33 @@
 				if (FV.config.debug) {
 					add_circles(options.bounds, 'debug-point', 3)
 				}
+
+				// Add maptip skeleton
+				maptip = svg.append('g')
+					.attr('class', 'maptip-hide')
+					.attr('id', 'maptip');
+				// I'm abbreviating 'maptip' to 'mt' in these IDs to clarify that they are children of the maptip group
+				maptip.append('rect')
+					.attr('id', 'mt-text-background');
+				maptip.append('polyline')
+					.attr('id', 'mt-arrow');
+				maptip.append('text')
+					.attr('id', 'mt-text');
 			};
 
 			/**
 			 * Shows sitename tooltip on map figure at correct location.
 			 */
 			self.site_tooltip_show = function (sitename, sitekey) {
+				const padding = 4;
+				const gage = d3.select('#map' + sitekey);
+				console.log(gage);
+				const gagelocation = {
+					x: gage.attr('cx'),
+					y: gage.attr('cy')
+				};
+
+				console.log(gagelocation);
 				var gage_point_cords = document.getElementById('map' + sitekey).getBoundingClientRect();
 				maptip.transition().duration(500);
 				maptip.style('display', 'inline-block')
