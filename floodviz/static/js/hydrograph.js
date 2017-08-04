@@ -313,7 +313,7 @@ var hydromodule = function (options) {
 		const tipedges = {
 			'l': scaled.x - bound.width / 2,
 			'r': scaled.x + bound.width / 2,
-			't': scaled.y - bound.height
+			't': scaled.y - bound.height - arrowheight
 		};
 
 		// store how much the tooltip has to be adjusted by to stay entirely visible

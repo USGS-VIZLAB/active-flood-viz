@@ -399,7 +399,7 @@
 				const tipedges = {
 					l: gagelocation.x - textbound.width / 2,
 					r: gagelocation.x + textbound.width / 2,
-					t: gagelocation.y - textbound.height
+					t: gagelocation.y - textbound.height - arrowheight
 				};
 
 				var adjust = {
