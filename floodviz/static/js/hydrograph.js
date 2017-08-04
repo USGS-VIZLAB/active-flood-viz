@@ -188,12 +188,18 @@ var hydromodule = function (options) {
 
 		// Tooltip
 		hydrotip = svg.append('g')
-			.attr('class', 'hydrotip-hide');
-		hydrotip.append('rect');
+			.attr('class', 'hydrotip-hide')
+			.attr('id', 'hydrotip');
+		// I'm abbreviating 'hydrotip' to 'ht' in these IDs to help clarify that these are in the group 'hydrotip'
+		hydrotip.append('rect')
+			.attr('id', 'ht-text-background');
 		hydrotip.append('circle')
-			.attr('r', 2);
-		hydrotip.append('polyline');
-		hydrotip.append('text');
+			.attr('r', 2)
+			.attr('id', 'ht-point');
+		hydrotip.append('polyline')
+			.attr('id', 'ht-arrow');
+		hydrotip.append('text')
+			.attr('id', 'ht-text');
 
 		// Voronoi Layer
 		voronoi_group = svg.append('g')
@@ -285,14 +291,14 @@ var hydromodule = function (options) {
 		});
 		arrowpoints = arrowpoints.substring(0, arrowpoints.length - 1);
 
-		const arrow = hydrotip.select('polyline');
+		const arrow = hydrotip.select('#ht-arrow');
 		arrow.attr('points', arrowpoints);
 
-		const tiptext = hydrotip.select('text');
+		const tiptext = hydrotip.select('#ht-text');
 		tiptext.html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone)
 			.attr('y', -(arrowheight + padding * 2));
 
-		const textbg = hydrotip.select('rect');
+		const textbg = hydrotip.select('#ht-text-background');
 		const bound = tiptext._groups[0][0].getBBox();
 
 		// Find the edges of the tooltip (left, right, and top)
