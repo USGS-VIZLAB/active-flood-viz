@@ -23,9 +23,6 @@ PEAK_META = {
     'width': '7.5'
 }
 
-# Thumbnail Support
-THUMBNAIL = False
-
 # Google Analytics
 GA_ID = 'UA-103831764-1'
 

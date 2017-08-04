@@ -54,9 +54,6 @@ MAP_CONFIG = {
     'scale': None,
 }
 
-# Thumbnail Support
-THUMBNAIL = False
-
 # Google Analytics
 GA_ID = ""
 
