@@ -400,7 +400,6 @@
 				* In those places I now use (-t * x) to achieve an upward offset when t = 1
 				* and a downward offset when t = -1.
 				*/
-
 				var adjust = {
 					'l': 0,
 					'r': 0,
@@ -434,6 +433,17 @@
 				arrow.attr('points', arrowpoints);
 
 				tiptext.attr('y', (-adjust.t * (arrowheight + padding * 2)));
+
+				/*
+				 * The y on the text points to the upper edge, so it requires a bit of adjustment when showing
+				 * the tooltip below the gage.
+				 * I think this is better than adding some byzantine math to the initial setting.
+				 */
+				if(adjust.t === -1){
+					var scootdist = parseFloat(tiptext.attr('y'));
+					scootdist += textbound.height / 2;
+					tiptext.attr('y', scootdist);
+				}
 
 				tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)');
 				// One of adjust.l or adjust.r should always be 0.
