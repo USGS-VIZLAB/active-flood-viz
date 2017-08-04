@@ -22,16 +22,27 @@ opacity: 1;
 	fill-opacity: 0;
 }
 
-#maptip {
-	position: absolute;
-	display: none;
-	min-width: 80px;
-	height: auto;
-	background-color: rgba(71, 181, 176, 0.8);
-	border: none;
-	padding: 10px;
-	text-align: center;
+.maptip-show #mt-text {
+	text-anchor: middle;
+	stroke: black;
 	opacity: 1;
+	stroke-width: 0;
+	font-weight: normal;
+	font-family: "Times", serif;
+}
+
+.maptip-show #mt-text-background {
+	stroke: none;
+	fill: rgba(71, 181, 176, 0.8);
+}
+
+.maptip-show #mt-arrow {
+	stroke: none;
+	fill: rgba(71, 181, 176, 0.8);
+}
+
+.maptip-hide{
+	display: none;
 }
 
 #map {

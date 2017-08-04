@@ -74,8 +74,12 @@
 					.enter()
 					.append('circle')
 					.attr('r', radius)
-					.attr('cx', function(d){return projection(d.geometry.coordinates)[0]})
-					.attr('cy', function(d){return projection(d.geometry.coordinates)[1]})
+					.attr('cx', function (d) {
+						return projection(d.geometry.coordinates)[0]
+					})
+					.attr('cy', function (d) {
+						return projection(d.geometry.coordinates)[1]
+					})
 					.attr('id', function (d) {
 						if (property_for_id && d.properties[property_for_id]) {
 							return 'map' + d.properties[property_for_id];
@@ -262,6 +266,13 @@
 					.attr("preserveAspectRatio", "xMinYMin meet")
 					.attr("viewBox", "0 0 " + width + " " + height);
 
+				state.edges = {
+					l: 0,
+					r: width,
+					t: 0
+				};
+
+
 				// Define the drag behavior to be used for the selection box
 				var drag = d3.drag()
 					.on('start', function () {
@@ -353,26 +364,76 @@
 			 */
 			self.site_tooltip_show = function (sitename, sitekey) {
 				const padding = 4;
+				const arrowheight = 17;
+
+				const sidelength = arrowheight / 0.866;
+				const points = [[0, 0], [-(sidelength / 2), -arrowheight], [(sidelength / 2), -arrowheight], [0, 0]];
+
+				// turn points array into string
+				var arrowpoints = '';
+				points.forEach(function (p) {
+					arrowpoints += p[0] + ' ' + p[1] + ',';
+				});
+				arrowpoints = arrowpoints.substring(0, arrowpoints.length - 1);
+
+
 				const gage = d3.select('#map' + sitekey);
-				console.log(gage);
 				const gagelocation = {
 					x: gage.attr('cx'),
 					y: gage.attr('cy')
 				};
 
-				console.log(gagelocation);
-				var gage_point_cords = document.getElementById('map' + sitekey).getBoundingClientRect();
-				maptip.transition().duration(500);
-				maptip.style('display', 'inline-block')
-					.style('left', (gage_point_cords.left) + 7 + 'px')
-					.style('top', (gage_point_cords.top - 30) + 'px')
-					.html((sitename));
+				const arrow = maptip.select('#mt-arrow');
+				arrow.attr('points', arrowpoints);
+
+
+				maptip.attr('transform', 'translate(' + gagelocation.x + ', ' + gagelocation.y + ')')
+					.attr('class', 'maptip-show');
+				const tiptext = maptip.select('#mt-text');
+				tiptext.html(sitename)
+				.attr('y', -(arrowheight + padding * 2));
+
+				const textbg = maptip.select('#mt-text-background');
+				const textbound = tiptext._groups[0][0].getBBox();
+
+				const tipedges = {
+					l: gagelocation.x - textbound.width / 2,
+					r: gagelocation.x + textbound.width / 2,
+					t: gagelocation.y - textbound.height
+				};
+
+				var adjust = {
+					'l': 0,
+					'r': 0,
+					't': 0
+				};
+
+				if (tipedges.l < state.edges.l) {
+					// this will be positive so it will be a shift to the right
+					adjust.l = state.edges.l - tipedges.l
+				}
+				else if (tipedges.r > state.edges.r) {
+					// this will be negative, so a shift to the left
+					adjust.r = state.edges.r - tipedges.r
+				}
+				if (tipedges.t < state.edges.t) {
+					// I haven't had this happen yet, so I'm leaving it for later.
+					console.log('top');
+				}
+
+				tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)');
+				// One of adjust.l or adjust.r should always be 0.
+				textbg.attr('x', textbound.x - padding + adjust.l + adjust.r)
+					.attr('y', tiptext.attr('y') - textbound.height + 0.5)
+					.attr('width', textbound.width + padding * 2)
+					.attr('height', textbound.height + padding * 2);
+
 			};
 			/**
 			 * Removes tooltip style from map site.
 			 */
 			self.site_tooltip_remove = function () {
-				maptip.style('display', 'none');
+				maptip.attr('class', 'maptip-hide');
 			};
 
 			/**
