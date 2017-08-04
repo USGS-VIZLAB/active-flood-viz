@@ -163,6 +163,11 @@
 						width: parseInt(box.attr('width')),
 						height: parseInt(box.attr('height'))
 					};
+
+					for(var i=0; i<point.length; i++){
+						point[i] = Math.round(point[i]);
+					}
+
 					var move = {
 						x: point[0] - d.x,
 						y: point[1] - d.y

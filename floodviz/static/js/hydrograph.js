@@ -1,4 +1,3 @@
-
 'use strict';
 /**
  * @param {Object} options - holds options for the configuration of the hydrograph
@@ -14,44 +13,45 @@
  *
  */
 var hydromodule = function (options) {
-
 	var self = {};
 	var data_global = null;
+
+	var state = {};
 
 	var default_display_ids = null;
 	var timer = null;
 	var dblclick_armed = false;
 
-	var margin = {top: 60, right: 0, bottom: 30, left: 35};
-	var height = 500 * (options.height / options.width) - margin.top - margin.bottom;
+	var margin = {top: 60, right: 0, bottom: 30, left: 40};
 	var width = 500 - margin.left - margin.right;
+	var height = 500 * (options.height / options.width) - margin.top - margin.bottom;
 
 	// Adds the svg canvas
 	var svg = null;
-	// Focus for hydrograph hover tooltip
-	var focus = null;
+	// for hydrograph hover tooltip
+	var hydrotip = null;
 	// Voronoi layer
 	var voronoi_group = null;
 	// Define the voronoi
 	var voronoi = d3.voronoi()
 		.x(function (d) {
-			return x(d.time_mili);
+			return scaleX(d.time_mili);
 		})
 		.y(function (d) {
-			return y(d.value);
+			return scaleY(d.value);
 		})
 		.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]]);
 	// Define the line
 	var line = d3.line()
 		.x(function (d) {
-			return x(d.time_mili);
+			return scaleX(d.time_mili);
 		})
 		.y(function (d) {
-			return y(d.value);
+			return scaleY(d.value);
 		});
 	// Set the ranges
-	var x = d3.scaleTime().range([0, width]);
-	var y = d3.scaleLog().range([height, 0]);
+	var scaleX = d3.scaleTime().range([0, width]);
+	var scaleY = d3.scaleLog().range([height, 0]);
 
 	// Google Analytics Boolean Trackers
 	var hydro_moused_over = false;
@@ -74,8 +74,8 @@ var hydromodule = function (options) {
 	 * De-emphasize all but one specified line
 	 * @param exemptkey - The key of the one line that should not be de-emphasized
 	 */
-	var make_lines_bland = function (exemptkey){
-		if(options.display_ids.indexOf(exemptkey) !== -1) {
+	var make_lines_bland = function (exemptkey) {
+		if (options.display_ids.indexOf(exemptkey) !== -1) {
 			options.display_ids.forEach(function (id) {
 				if (id !== exemptkey) {
 					d3.select('#hydro' + id).attr('class', 'hydro-inactive-bland');
@@ -94,7 +94,7 @@ var hydromodule = function (options) {
 				self.linked_interactions.click(id);
 			}
 		});
-		default_display_ids.forEach(function(id){
+		default_display_ids.forEach(function (id) {
 			self.linked_interactions.accent_on_map(id);
 		});
 		// use array.slice() with no parameters to deep copy
@@ -122,8 +122,14 @@ var hydromodule = function (options) {
 			.attr("preserveAspectRatio", "xMinYMin meet")
 			.attr("viewBox", "0 0 " + (width + margin.left + margin.right ) + " " + (height + margin.top + margin.bottom ))
 			.append('g')
-			.attr('transform',
-				'translate(' + margin.left + ',' + margin.top + ')');
+			.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+		// Save the locations of the edges of the visible svg
+		state.edges = {
+			'l': - (margin.left + margin.right),
+			'r': width + margin.right,
+			't': -(margin.top + margin.bottom)
+		};
 
 		var graph_data = sub_data.map(function (d) {
 			return {
@@ -138,10 +144,10 @@ var hydromodule = function (options) {
 		});
 
 		// Scale the range of the data
-		x.domain(d3.extent(graph_data, function (d) {
+		scaleX.domain(d3.extent(graph_data, function (d) {
 			return d.time_mili;
 		}));
-		y.domain([d3.min(graph_data, function (d) {
+		scaleY.domain([d3.min(graph_data, function (d) {
 			return d.value;
 		}), d3.max(graph_data, function (d) {
 			return d.value;
@@ -176,21 +182,20 @@ var hydromodule = function (options) {
 		svg.append('g')
 			.attr('class', 'axis')
 			.attr('transform', 'translate(0,' + height + ')')
-			.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%B %e')));
+			.call(d3.axisBottom(scaleX).tickFormat(d3.timeFormat('%B %e')));
 
 		// Add the Y Axis
 		svg.append('g')
 			.attr('class', 'axis')
-			.call(d3.axisLeft(y).ticks(10, '.0f'));
+			.call(d3.axisLeft(scaleY).ticks(10, '.0f'));
 
 		// Tooltip
-		focus = svg.append('g')
-			.attr('transform', 'translate(-100,-100)')
-			.attr('class', 'focus');
-		focus.append('circle')
+		hydrotip = svg.append('g')
+			.attr('class', 'hydrotip-hide');
+		hydrotip.append('rect');
+		hydrotip.append('circle')
 			.attr('r', 3.5);
-
-		focus.append('text')
+		hydrotip.append('text')
 			.attr('y', -10);
 
 		// Voronoi Layer
@@ -220,6 +225,7 @@ var hydromodule = function (options) {
 				self.series_tooltip_remove(d.data.key);
 			})
 			.on('click', function (d) {
+				console.log(d3.mouse(this));
 				if (dblclick_armed) {
 					clearTimeout(timer);
 					reset_hydrograph();
@@ -269,16 +275,60 @@ var hydromodule = function (options) {
 	 * corresponding map site tooltip.
 	 */
 	self.series_tooltip_show = function (d) {
-		focus.attr('transform', 'translate(' + x(d.data.time_mili) + ',' + y(d.data.value) + ')');
-		focus.select('text').html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone);
+		const padding = 3;
+		const scaled = {
+			x: scaleX(d.data.time_mili),
+			y: scaleY(d.data.value)
+		};
+
+		hydrotip.attr('transform', 'translate(' + scaleX(d.data.time_mili) + ',' + scaleY(d.data.value) + ')')
+			.attr('class', 'hydrotip-show');
+		const tiptext = hydrotip.select('text');
+		tiptext.html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone);
+		const textbg = hydrotip.select('rect');
+		const bound = tiptext._groups[0][0].getBBox();
+
+		// Find the edges of the tooltip (left, right, and top)
+		const tipedges = {
+			'l': scaled.x - bound.width / 2,
+			'r': scaled.x + bound.width / 2,
+			't': scaled.y - bound.height
+		};
+
+		// store how much the tooltip has to be adjusted by to stay entirely visible
+		var adjust = {
+			'l': 0,
+			'r': 0,
+			't': 0
+		};
+
+		if(tipedges.l < state.edges.l){
+			// this will be positive so it will be a shift to the right
+			adjust.l = state.edges.l - tipedges.l
+		}
+		else if(tipedges.r > state.edges.r){
+			// this will be negative, so a shift to the left
+			adjust.r = state.edges.r - tipedges.r
+		}
+		if(tipedges.t < state.edges.t){
+			// I haven't had this happen yet, so I'm leaving it for later.
+			console.log('top');
+		}
+
+		tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)' );
+		// One of adjust.l or adjust.r should always be 0.
+		textbg.attr('x', bound.x - padding + adjust.l + adjust.r)
+			.attr('y', bound.y - padding)
+			.attr('width', bound.width + padding * 2)
+			.attr('height', bound.height + padding * 2);
 	};
 
 	/**
 	 * Removes tooltip view from the hydrograph series
 	 * as well as the correspond mapsite tooltip.
 	 */
-	self.series_tooltip_remove = function (sitekey) {
-		focus.attr('transform', 'translate(-100,-100)');
+	self.series_tooltip_remove = function () {
+		hydrotip.attr('class', 'hydrotip-hide');
 	};
 
 	/**
@@ -311,11 +361,11 @@ var hydromodule = function (options) {
 	 * Set all lines to inactive
 	 */
 	self.deactivate_line = function () {
-		options.display_ids.forEach(function(id) {
+		options.display_ids.forEach(function (id) {
 			d3.select('#hydro' + id).attr('class', 'hydro-inactive');
 		})
 
 	};
 
 	return self
-}
+};

@@ -28,3 +28,4 @@ THUMBNAIL = False
 
 # Google Analytics
 GA_ID = 'UA-103831764-1'
+

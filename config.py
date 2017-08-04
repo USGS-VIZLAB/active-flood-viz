@@ -65,3 +65,8 @@ if deployed_url_base:
     FREEZER_BASE_URL = deployed_url_base
     print(FREEZER_BASE_URL)
 
+thumbnail = os.environ.get('THUMBNAIL')
+if thumbnail == "true":
+    THUMBNAIL = True
+else:
+    THUMBNAIL = False
