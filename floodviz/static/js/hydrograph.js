@@ -125,7 +125,7 @@ var hydromodule = function (options) {
 		// Watermark
 		var watermark = svg.append('g')
 			.attr('id', 'usgs-watermark')
-			.attr('transform', 'translate(' + 2 / 3 * width + ',0' + ')scale(0.20)');
+			.attr('transform', 'translate(' + 1/5 * width + ',' +1/4 * height +')scale(0.50)');
 		watermark.append('path')
 			.attr('d', 'm234.95 15.44v85.037c0 17.938-10.132 36.871-40.691 36.871-27.569 0-40.859-14.281-40.859-' +
 				'36.871v-85.04h25.08v83.377c0 14.783 6.311 20.593 15.447 20.593 10.959 0 15.943-7.307 15.943-' +
