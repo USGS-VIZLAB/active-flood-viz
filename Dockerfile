@@ -3,13 +3,15 @@ MAINTAINER James McFeeters "jmcfeeters@usgs.gov"
 
 ARG config
 ARG ref
+ARG thumbnail
 
 RUN apt-get update && apt-get install -y \
     python3-pip \
     nginx-light \
     curl \
     apt-transport-https \
-    git
+    git \
+    libfontconfig
 
 COPY . /app
 WORKDIR /app
@@ -33,7 +35,11 @@ RUN npm update
 
 RUN node_modules/bower/bin/bower install --allow-root
 
+ENV THUMBNAIL=$thumbnail
+
 RUN python3 run.py --freeze --norun
+
+RUN if $thumbnail -eq "true"; then node floodviz/thumbnail/thumbnail.js; fi
 
 EXPOSE 80
 
