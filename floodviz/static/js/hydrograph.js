@@ -43,6 +43,7 @@ var hydromodule = function (options) {
 		.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]]);
 	// Define the line
 	var line = d3.line()
+		.defined(function (d) {return !isNaN(d.value);})
 		.x(function (d) {
 			return scaleX(d.time_mili);
 		})
@@ -143,15 +144,17 @@ var hydromodule = function (options) {
 			.attr('class', 'watermark');
 
 		var graph_data = sub_data.map(function (d) {
-			return {
-				'date': d.date,
-				'key': d.key,
-				'name': d.name,
-				'time': d.time,
-				'time_mili': d.time_mili,
-				'timezone': d.timezone,
-				'value': Number(d.value)
-			};
+				var dp = {
+					'date': d.date,
+					'key': d.key,
+					'name': d.name,
+					'time': d.time,
+					'time_mili': d.time_mili,
+					'timezone': d.timezone,
+					'value': Number(d.value)
+				};
+			//}
+			return dp
 		});
 
 		// Scale the range of the data

@@ -19,14 +19,15 @@ def parse_hydrodata(jdata):
 
     """
     all_series_data = []
-    
+    # gages collect and send data every 15 minutes
+    smallest_increment_ms = 900000
+
     if jdata is not None:
         for site in jdata:
-
             site_name = site['sourceInfo']['siteName']
             site_id = site['sourceInfo']['siteCode'][0]['value']
             timezone = site['sourceInfo']['timeZoneInfo']['defaultTimeZone']['zoneAbbreviation']
-
+            prev_date_ms = None
             # Fill data for this series
             for obj in site['values'][0]['value']:
                 value = obj['value']
@@ -37,8 +38,26 @@ def parse_hydrodata(jdata):
                 dt = datetime.strptime(date + ' ' + t, '%Y-%m-%d %H:%M:%S')
                 # Convert to milliseconds for use with d3 x axis format
                 dt_ms = time.mktime(dt.timetuple()) * 1000
+                # handle missing data
+                if prev_date_ms:
+                    increment = dt_ms - prev_date_ms
+                    if increment > smallest_increment_ms:
+                        num_dummy_points = increment/smallest_increment_ms
+                        added = 0
+                        check_collinear = {}
+                        while added < num_dummy_points:
+                            new_dt_ms = ((added + 1) * (smallest_increment_ms)) + dt_ms
+                            if check_collinear.get(new_dt_ms) is None:
+                                check_collinear[new_dt_ms] = 'added'
+                            else:
+                                print('DUPLICATE!')
+                            all_series_data.append({'key': site_id, 'name': site_name, 'date': date, "time": t,
+                                        'timezone': timezone, "time_mili": new_dt_ms, 'value': 'NA'})
+                            added += 1
+                # append regular (not missing) data
                 all_series_data.append({'key': site_id, 'name': site_name, 'date': date, "time": t,
                                         'timezone': timezone, "time_mili": dt_ms, 'value': value})
+                prev_date_ms = dt_ms
 
     return all_series_data
 
