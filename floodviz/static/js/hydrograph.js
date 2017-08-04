@@ -191,7 +191,7 @@ var hydromodule = function (options) {
 			.attr('class', 'hydrotip-hide');
 		hydrotip.append('rect');
 		hydrotip.append('circle')
-			.attr('r', 3.5);
+			.attr('r', 2);
 		hydrotip.append('polyline');
 		hydrotip.append('text');
 
@@ -274,7 +274,7 @@ var hydromodule = function (options) {
 
 		hydrotip.attr('transform', 'translate(' + scaleX(d.data.time_mili) + ',' + scaleY(d.data.value) + ')')
 			.attr('class', 'hydrotip-show');
-		const arrowheight = 20;
+		const arrowheight = 17;
 		const sidelength = arrowheight / 0.866;
 		const points = [[0, 0], [-(sidelength / 2), -arrowheight], [(sidelength / 2), -arrowheight], [0, 0]];
 

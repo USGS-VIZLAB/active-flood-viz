@@ -45,10 +45,9 @@
 }
 
 .hydrotip-show circle {
-	fill-opacity: 0;
-	stroke: red;
-	opacity: 0.5;
-	stroke-width: 1;
+	fill-opacity: unset;
+	fill: rgba(71, 181, 176, 1);
+	stroke: none;
 }
 
 .hydrotip-hide{
