@@ -371,8 +371,8 @@
 
 				const gage = d3.select('#map' + sitekey);
 				const gagelocation = {
-					x: gage.attr('cx'),
-					y: gage.attr('cy')
+					x: parseFloat(gage.attr('cx')),
+					y: parseFloat(gage.attr('cy'))
 				};
 
 
@@ -407,10 +407,12 @@
 				};
 
 				if (tipedges.l < state.edges.l) {
+					console.log('left');
 					// this will be positive so it will be a shift to the right
 					adjust.l = state.edges.l - tipedges.l
 				}
 				else if (tipedges.r > state.edges.r) {
+					console.log('right');
 					// this will be negative, so a shift to the left
 					adjust.r = state.edges.r - tipedges.r
 				}
