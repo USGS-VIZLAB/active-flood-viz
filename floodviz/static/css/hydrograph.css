@@ -78,3 +78,15 @@
 	stroke: steelblue;
 	opacity: 0.55;
 }
+.watermark {
+    cursor: pointer;
+    fill: #f1f1f1;
+    stroke: #bdbdbd;
+    stroke-width: 0.5;
+}
+
+#usgs-watermark line, polyline, path {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-miterlimit: 10.00;
+}
