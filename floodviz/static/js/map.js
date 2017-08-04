@@ -32,6 +32,9 @@
 
 			var self = {};
 
+			//governs whether map=hydrograph interactions will be turned on
+			var linked = FV.linked
+
 			// Stores SVG coordinates of gages and the size and location of the selection box
 			var state = {};
 
@@ -266,20 +269,22 @@
 					.attr("viewBox", "0 0 " + width + " " + height);
 
 				// Define the drag behavior to be used for the selection box
-				var drag = d3.drag()
-					.on('start', function () {
-						var p = d3.mouse(this);
-						select_box_start(p);
-					})
-					.on('drag', function () {
-						var p = d3.mouse(this);
-						select_box_drag(p);
-					})
-					.on('end', function () {
-						select_box_end();
-					});
+				if (linked === true) {
+					var drag = d3.drag()
+						.on('start', function () {
+							var p = d3.mouse(this);
+							select_box_start(p);
+						})
+						.on('drag', function () {
+							var p = d3.mouse(this);
+							select_box_drag(p);
+						})
+						.on('end', function () {
+							select_box_end();
+						});
 
-				svg.call(drag);
+					svg.call(drag);
+				}
 
 				// set bounding box to values provided
 				var b = path.bounds(options.bounds);
@@ -320,18 +325,21 @@
 						self.linked_interactions.hover_out(d.properties.id);
 					})
 					.on('click', function (d) {
-						toggle_hydrograph_display(d.properties.id);
-						FV.ga_send_event('Map', 'gage_click_on', d.properties.id);
+						if (linked === true) {
+							toggle_hydrograph_display(d.properties.id);
+							FV.ga_send_event('Map', 'gage_click_on', d.properties.id);
+						}
 					})
 					.on('mousedown', function () {
 						d3.event.stopPropagation();
 					});
-
-				sites.selectAll('circle').each(function (d) {
-					if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
-						self.site_add_accent(d.properties.id);
-					}
-				});
+				if (linked === true) {
+					sites.selectAll('circle').each(function (d) {
+						if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
+							self.site_add_accent(d.properties.id);
+						}
+					});
+				}
 
 				// Debug points
 				if (FV.config.debug) {
