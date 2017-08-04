@@ -223,7 +223,6 @@ var hydromodule = function (options) {
 				self.series_tooltip_remove(d.data.key);
 			})
 			.on('click', function (d) {
-				console.log(d3.mouse(this));
 				if (dblclick_armed) {
 					clearTimeout(timer);
 					reset_hydrograph();
