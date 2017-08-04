@@ -266,7 +266,7 @@ var hydromodule = function (options) {
 	 * corresponding map site tooltip.
 	 */
 	self.series_tooltip_show = function (d) {
-		const padding = 3;
+		const padding = 4;
 		const scaled = {
 			x: scaleX(d.data.time_mili),
 			y: scaleY(d.data.value)
@@ -274,9 +274,9 @@ var hydromodule = function (options) {
 
 		hydrotip.attr('transform', 'translate(' + scaleX(d.data.time_mili) + ',' + scaleY(d.data.value) + ')')
 			.attr('class', 'hydrotip-show');
-		const arrowheight = 10;
+		const arrowheight = 20;
 		const sidelength = arrowheight / 0.866;
-		const points = [[0, 0], [-(sidelength / 2), -arrowheight], [sidelength / 2, -arrowheight], [0, 0]];
+		const points = [[0, 0], [-(sidelength / 2), -arrowheight], [(sidelength / 2), -arrowheight], [0, 0]];
 
 		// turn points array into string
 		var arrowpoints = '';
@@ -289,12 +289,11 @@ var hydromodule = function (options) {
 		arrow.attr('points', arrowpoints);
 
 		const tiptext = hydrotip.select('text');
-		tiptext.html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone);
+		tiptext.html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone)
+			.attr('y', -(arrowheight + padding * 2));
+
 		const textbg = hydrotip.select('rect');
 		const bound = tiptext._groups[0][0].getBBox();
-
-		var arrowadjust = -((bound.height / 2) + arrowheight );
-
 
 		// Find the edges of the tooltip (left, right, and top)
 		const tipedges = {
@@ -323,13 +322,12 @@ var hydromodule = function (options) {
 			console.log('top');
 		}
 
-		tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', ' + arrowadjust + ')');
+		tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)');
 		// One of adjust.l or adjust.r should always be 0.
 		textbg.attr('x', bound.x - padding + adjust.l + adjust.r)
-			.attr('y', bound.y - padding)
+			.attr('y', tiptext.attr('y') - bound.height + 0.5)
 			.attr('width', bound.width + padding * 2)
-			.attr('height', bound.height + padding * 2 )
-			.attr('transform', 'translate(0, ' + arrowadjust + ')');
+			.attr('height', bound.height + padding * 2);
 	};
 
 	/**
