@@ -33,7 +33,7 @@
 			var self = {};
 
 			//governs whether map=hydrograph interactions will be turned on
-			var linked = FV.linked
+			var embed = FV.embed
 
 			// Stores SVG coordinates of gages and the size and location of the selection box
 			var state = {};
@@ -269,7 +269,7 @@
 					.attr("viewBox", "0 0 " + width + " " + height);
 
 				// Define the drag behavior to be used for the selection box
-				if (linked === true) {
+				if (embed !== true) {
 					var drag = d3.drag()
 						.on('start', function () {
 							var p = d3.mouse(this);
@@ -325,7 +325,7 @@
 						self.linked_interactions.hover_out(d.properties.id);
 					})
 					.on('click', function (d) {
-						if (linked === true) {
+						if (embed !== true) {
 							toggle_hydrograph_display(d.properties.id);
 							FV.ga_send_event('Map', 'gage_click_on', d.properties.id);
 						}
@@ -333,7 +333,7 @@
 					.on('mousedown', function () {
 						d3.event.stopPropagation();
 					});
-				if (linked === true) {
+				if (embed !== true) {
 					sites.selectAll('circle').each(function (d) {
 						if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
 							self.site_add_accent(d.properties.id);

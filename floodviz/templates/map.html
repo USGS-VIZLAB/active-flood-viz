@@ -75,7 +75,7 @@
 {#		FV.peakinfo = {{ peakinfo | tojson | safe }};#}
 
 		FV.mapinfo = {{ mapinfo | tojson | safe }};
-		FV.linked = false;
+		FV.embed = true;
 	</script>
 
 	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
