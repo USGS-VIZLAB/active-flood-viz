@@ -6,19 +6,19 @@
 	display: block;
 }
 
-#lollipop {
+.lollipop-stem {
 	width: .3%;
 	stroke: steelblue;
 }
-#lollipop:hover {
+.lollipop-stem-active {
 	stroke: #b47846;
 }
 
-.cir {
+.lollipop-circle {
 	fill: steelblue;
 }
 
-.cir:hover{
+.lollipop-circle-active{
 	fill: #b47846;
 }
 

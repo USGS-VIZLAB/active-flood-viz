@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 
 	const x = d3.scaleBand().rangeRound([0, width]).padding(.5);
+	const x_no_padding = d3.scaleBand().rangeRound([0, width]).padding(0);
 
 	const y = d3.scaleLinear().range([height, 0]);
 
@@ -45,6 +46,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	x.domain(data.map(function (d) {
 		return d.label;
 	}));
+	x_no_padding.domain(data.map(function (d) {
+		return d.label;
+	}));
 	y.domain([0, d3.max(data, function (d) {
 		return d.value;
 	})]);
@@ -71,8 +75,29 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('y', 0 - (margin.left / 2))
 		.text('Discharge (cfps)');
 
+	const hidden_bars = svg.append('g');
+
+	data.forEach(function (d) {
+		hidden_bars.append('rect')
+			.attr('class', 'secret-bar')
+			.attr('x', function () {
+				return x(d.label);
+			})
+			.attr('y', 0)
+			.attr('width', x_no_padding.bandwidth())
+			.attr('height', height)
+			// tooltip event
+			.on('mousemove', function () {
+				mouseover(tooltip, d, d3.event)
+			})
+			.on('mouseout', function () {
+				mouseout(tooltip, d)
+			});
+	});
+
 	// Save last data point as lollipop, and remove it from data
 	const lolli_data = data.pop();
+
 
 	const display_bars = svg.append('g');
 
@@ -92,25 +117,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			});
 	});
 
-	const hidden_bars = svg.append('g');
-
-	data.forEach(function (d) {
-		hidden_bars.append('rect')
-			.attr('class', 'secret-bar')
-			.attr('x', function () {
-				return x(d.label);
-			})
-			.attr('y', 0)
-			.attr('width', x.padding(0).bandwidth())
-			.attr('height', height)
-			// tooltip event
-			.on('mousemove', function () {
-				mouseover(tooltip, d, d3.event)
-			})
-			.on('mouseout', function () {
-				mouseout(tooltip, d)
-			});
-	});
 
 	// create lollipop Stroke and Circle
 	const bars = Array.prototype.slice.call(d3.select('#peakflow_bar svg').selectAll('.bar')['_groups'][0]);
@@ -123,49 +129,54 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	const lolli_pos_y = (y(lolli_data['value'])).toString();
 	const path_string = 'M ' + lolli_pos_x + ',' + height + ' ' + lolli_pos_x + ',' + lolli_pos_y;
 	svg.append('path')
-		.attr('id', 'lollipop')
+		.attr('id', 'peak-lollipop-stem')
+		.attr('class', 'lollipop-stem')
 		.attr('stroke-width', 2)
-		.attr('d', path_string)
-		// tooltip event
-		.on('mousemove', function () {
-			mouseover(tooltip, lolli_data, d3.event)
-		})
-		.on('mouseout', function () {
-			mouseout(tooltip)
-		});
+		.attr('d', path_string);
 
 	var group = d3.select('#peakflow_bar svg .group');
 	group.append('circle')
-		.attr('class', 'cir')
-		.attr('r', '4.5')
+		.attr('class', 'lollipop-circle')
+		.attr('id', 'peak-lollipop-circle')
+		.attr('r', 4.5)
 		.attr('cx', lolli_pos_x)
-		.attr('cy', lolli_pos_y)
-		.on('mousemove', function () {
-			mouseover(tooltip, lolli_data, d3.event)
-		})
-		.on('mouseout', function () {
-			mouseout(tooltip)
-		});
+		.attr('cy', lolli_pos_y);
 
 	function mouseover(tooltip, d, event) {
 		const bar = d3.select('#peak' + d.label);
-		bar.attr('class', 'bar-active');
-		tooltip.transition().duration(500).style('opacity', .9);
-		tooltip.style('display', 'inline-block')
-			.style('left', (event.pageX) + 10 + 'px')
-			.style('top', (event.pageY - 70) + 'px')
-			.html((d.label) + '<br>' + (d.value) + ' cfs');
+		if (bar._groups[0][0] === null){
+			d3.select('#peak-lollipop-circle')
+				.attr('class', 'lollipop-circle-active');
+			d3.select('#peak-lollipop-stem')
+				.attr('class', 'lollipop-stem-active');
+		}
+		else {
+			bar.attr('class', 'bar-active');
+			tooltip.transition().duration(500).style('opacity', .9);
+			tooltip.style('display', 'inline-block')
+				.style('left', (event.pageX) + 10 + 'px')
+				.style('top', (event.pageY - 70) + 'px')
+				.html((d.label) + '<br>' + (d.value) + ' cfs');
+		}
 		// Only log one hover per bar per session
 		if (peak_moused_over_bar[d.label] === undefined) {
 			FV.ga_send_event('Peakflow', 'hover_bar', d.label + '_' + d.value);
 			peak_moused_over_bar[d.label] = true;
 		}
-
 	}
 
 	function mouseout(tooltip, d) {
 		const bar = d3.select('#peak' + d.label);
-		bar.attr('class', 'bar');
-		tooltip.style('display', 'none');
+		if (bar._groups[0][0] === null){
+			d3.select('#peak-lollipop-circle')
+				.attr('class', 'lollipop-circle');
+			d3.select('#peak-lollipop-stem')
+				.attr('class', 'lollipop-stem');
+		}
+		else {
+			bar.attr('class', 'bar');
+			tooltip.style('display', 'none');
+		}
+
 	}
 });
