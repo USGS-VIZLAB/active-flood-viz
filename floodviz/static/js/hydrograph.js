@@ -36,7 +36,6 @@ var hydromodule = function (options) {
 	var voronoi = d3.voronoi()
 		.x(function (d) {
 			return scaleX(d.time_mili);
-
 		})
 		.y(function (d) {
 			return scaleY(d.value);
