@@ -407,17 +407,14 @@
 				};
 
 				if (tipedges.l < state.edges.l) {
-					console.log('left');
 					// this will be positive so it will be a shift to the right
 					adjust.l = state.edges.l - tipedges.l
 				}
 				else if (tipedges.r > state.edges.r) {
-					console.log('right');
 					// this will be negative, so a shift to the left
 					adjust.r = state.edges.r - tipedges.r
 				}
 				if (tipedges.t < state.edges.t) {
-					console.log('top');
 					// set t to -1 so that the tooltip will bw drawn under the gage.
 					adjust.t = -1
 				}
@@ -435,7 +432,6 @@
 				arrow.attr('points', arrowpoints);
 
 				tiptext.attr('y', (-adjust.t * (arrowheight + padding * 2)));
-
 				/*
 				 * The y on the text points to the upper edge, so it requires a bit of adjustment when showing
 				 * the tooltip below the gage.
