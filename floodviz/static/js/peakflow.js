@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			.attr('width', scaleX.copy().padding(0).bandwidth())
 			.attr('height', height)
 			// tooltip event
-			.on('mousemove', function () {
+			.on('mouseover', function () {
 				mouseover(tooltip, d, d3.event)
 			})
 			.on('mouseout', function () {
@@ -114,6 +114,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			.attr('width', scaleX.bandwidth())
 			.attr('height', function () {
 				return height - scaleY(d.value);
+			})
+			.on('mouseover', function () {
+				mouseover(tooltip, d, d3.event)
+			})
+			.on('mouseout', function () {
+				mouseout(tooltip, d)
 			});
 	});
 
@@ -136,21 +142,33 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	lollipop.append('path')
 		.attr('id', 'lollipop-stem')
 		.attr('stroke-width', 2)
-		.attr('d', path_string);
+		.attr('d', path_string)
+		.on('mouseover', function () {
+			mouseover(tooltip, lolli_data, d3.event)
+		})
+		.on('mouseout', function () {
+			mouseout(tooltip, lolli_data)
+		});
 
 
 	lollipop.append('circle')
 		.attr('id', 'lollipop-top')
 		.attr('r', 4.5)
 		.attr('cx', lolli_pos_x)
-		.attr('cy', lolli_pos_y);
+		.attr('cy', lolli_pos_y)
+		.on('mouseover', function () {
+			mouseover(tooltip, lolli_data, d3.event)
+		})
+		.on('mouseout', function () {
+			mouseout(tooltip, lolli_data)
+		});
 
 	function mouseover(tooltip, d, event) {
 		const bar = d3.select('#peak' + d.label);
-		if(bar.attr('class').startsWith('lollipop')) {
+		if (bar.attr('class').startsWith('lollipop')) {
 			bar.attr('class', 'lollipop-active');
 		}
-		else{
+		else {
 			bar.attr('class', 'bar-active');
 		}
 		tooltip.transition().duration(500).style('opacity', .9);
@@ -168,10 +186,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	function mouseout(tooltip, d) {
 		const bar = d3.select('#peak' + d.label);
-		if(bar.attr('class').startsWith('lollipop')) {
+		if (bar.attr('class').startsWith('lollipop')) {
 			bar.attr('class', 'lollipop');
 		}
-		else{
+		else {
 			bar.attr('class', 'bar')
 		}
 		tooltip.style('display', 'none');
