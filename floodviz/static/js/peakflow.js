@@ -75,6 +75,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.text('Discharge (cfps)');
 
 
+	const display_bars = graph.append('g');
+	const lollipop = graph.append('g')
+		.attr('class', 'lollipop');
 	const hidden_bars = graph.append('g');
 
 	data.forEach(function (d) {
@@ -98,8 +101,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	// Save last data point as lollipop, and remove it from data
 	const lolli_data = data.pop();
 
-
-	const display_bars = graph.append('g');
+	lollipop.attr('id', 'peak' + lolli_data.label);
 
 	data.forEach(function (d) {
 		display_bars.append('rect')
@@ -114,12 +116,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			.attr('width', scaleX.bandwidth())
 			.attr('height', function () {
 				return height - scaleY(d.value);
-			})
-			.on('mouseover', function () {
-				mouseover(tooltip, d, d3.event)
-			})
-			.on('mouseout', function () {
-				mouseout(tooltip, d)
 			});
 	});
 
@@ -135,33 +131,19 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	const lolli_pos_y = (scaleY(lolli_data['value'])).toString();
 	const path_string = 'M ' + lolli_pos_x + ',' + height + ' ' + lolli_pos_x + ',' + lolli_pos_y;
 
-	const lollipop = graph.append('g')
-		.attr('id', 'peak' + lolli_data.label)
-		.attr('class', 'lollipop');
+
 
 	lollipop.append('path')
 		.attr('id', 'lollipop-stem')
 		.attr('stroke-width', 2)
-		.attr('d', path_string)
-		.on('mouseover', function () {
-			mouseover(tooltip, lolli_data, d3.event)
-		})
-		.on('mouseout', function () {
-			mouseout(tooltip, lolli_data)
-		});
+		.attr('d', path_string);
 
 
 	lollipop.append('circle')
 		.attr('id', 'lollipop-top')
 		.attr('r', 4.5)
 		.attr('cx', lolli_pos_x)
-		.attr('cy', lolli_pos_y)
-		.on('mouseover', function () {
-			mouseover(tooltip, lolli_data, d3.event)
-		})
-		.on('mouseout', function () {
-			mouseout(tooltip, lolli_data)
-		});
+		.attr('cy', lolli_pos_y);
 
 	function mouseover(tooltip, d, event) {
 		const bar = d3.select('#peak' + d.label);
