@@ -13,22 +13,22 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	peakflow_bar.style.width = width;
 
 
-	const x = d3.scaleBand().rangeRound([0, width]).padding(.5);
-	const x_no_padding = d3.scaleBand().rangeRound([0, width]).padding(0);
+	const scaleX = d3.scaleBand().range([0, width]).padding(.5);
+	const scaleY = d3.scaleLinear().range([height, 0]);
 
-	const y = d3.scaleLinear().range([height, 0]);
-
-	const xAxis = d3.axisBottom().scale(x);
-	const yAxis = d3.axisLeft().scale(y).ticks(8);
+	const xAxis = d3.axisBottom().scale(scaleX);
+	const yAxis = d3.axisLeft().scale(scaleY).ticks(8);
 
 	var peak_moused_over_bar = {};
 
 	const svg = d3.select('#peakflow_bar').append('svg')
 		.attr("preserveAspectRatio", "xMinYMin meet")
-		.attr("viewBox", "0 0 " + (width + margin.right) + " " + (height + margin.top + margin.bottom))
-		.append('g')
+		.attr("viewBox", "0 0 " + (width + margin.right) + " " + (height + margin.top + margin.bottom));
+
+	// All the things added to the graph should be added to this group
+	const graph = svg.append('g')
 		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-		.attr('class', 'group');
+		.attr('id', 'graph');
 
 	const tooltip = d3.select('body')
 		.append('div')
@@ -43,19 +43,17 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	});
 	xAxis.tickValues(ticks);
 
-	x.domain(data.map(function (d) {
+	scaleX.domain(data.map(function (d) {
 		return d.label;
 	}));
-	x_no_padding.domain(data.map(function (d) {
-		return d.label;
-	}));
-	y.domain([0, d3.max(data, function (d) {
+	scaleY.domain([0, d3.max(data, function (d) {
 		return d.value;
 	})]);
 
 	// Add x axis
-	svg.append('g')
-		.attr('class', 'axis axis--x')
+	graph.append('g')
+		.attr('class', 'axis-x')
+		.attr('id', 'peak-axis-x')
 		.attr('transform', 'translate(0,' + height + ')')
 		.call(xAxis)
 		.append('text')
@@ -65,8 +63,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.text('Year');
 
 	// add y axis
-	svg.append('g')
-		.attr('class', 'axis axis--y')
+	graph.append('g')
+		.attr('class', 'axis-y')
+		.attr('id', 'peak-axis-y')
 		.call(yAxis)
 		.append('text')
 		.attr('text-anchor', 'middle')
@@ -75,16 +74,17 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('y', 0 - (margin.left / 2))
 		.text('Discharge (cfps)');
 
-	const hidden_bars = svg.append('g');
+
+	const hidden_bars = graph.append('g');
 
 	data.forEach(function (d) {
 		hidden_bars.append('rect')
 			.attr('class', 'secret-bar')
 			.attr('x', function () {
-				return x(d.label);
+				return (scaleX(d.label) - (scaleX.bandwidth() * (scaleX.padding())));
 			})
 			.attr('y', 0)
-			.attr('width', x_no_padding.bandwidth())
+			.attr('width', scaleX.copy().padding(0).bandwidth())
 			.attr('height', height)
 			// tooltip event
 			.on('mousemove', function () {
@@ -99,21 +99,21 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	const lolli_data = data.pop();
 
 
-	const display_bars = svg.append('g');
+	const display_bars = graph.append('g');
 
 	data.forEach(function (d) {
 		display_bars.append('rect')
 			.attr('class', 'bar')
 			.attr('id', 'peak' + d.label)
 			.attr('x', function () {
-				return x(d.label);
+				return scaleX(d.label);
 			})
 			.attr('y', function () {
-				return y(d.value);
+				return scaleY(d.value);
 			})
-			.attr('width', x.bandwidth())
+			.attr('width', scaleX.bandwidth())
 			.attr('height', function () {
-				return height - y(d.value);
+				return height - scaleY(d.value);
 			});
 	});
 
@@ -125,17 +125,17 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	});
 	const padding = last_bars[1] - last_bars[0];
 
-	const lolli_pos_x = ((last_bars[1] + padding + ((1 / 2) * x.bandwidth())).toString());
-	const lolli_pos_y = (y(lolli_data['value'])).toString();
+	const lolli_pos_x = ((last_bars[1] + padding + ((1 / 2) * scaleX.bandwidth())).toString());
+	const lolli_pos_y = (scaleY(lolli_data['value'])).toString();
 	const path_string = 'M ' + lolli_pos_x + ',' + height + ' ' + lolli_pos_x + ',' + lolli_pos_y;
-	svg.append('path')
+	graph.append('path')
 		.attr('id', 'peak-lollipop-stem')
 		.attr('class', 'lollipop-stem')
 		.attr('stroke-width', 2)
 		.attr('d', path_string);
 
-	var group = d3.select('#peakflow_bar svg .group');
-	group.append('circle')
+
+	graph.append('circle')
 		.attr('class', 'lollipop-circle')
 		.attr('id', 'peak-lollipop-circle')
 		.attr('r', 4.5)
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	function mouseover(tooltip, d, event) {
 		const bar = d3.select('#peak' + d.label);
-		if (bar._groups[0][0] === null){
+		if (bar._groups[0][0] === null) {
 			d3.select('#peak-lollipop-circle')
 				.attr('class', 'lollipop-circle-active');
 			d3.select('#peak-lollipop-stem')
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	function mouseout(tooltip, d) {
 		const bar = d3.select('#peak' + d.label);
-		if (bar._groups[0][0] === null){
+		if (bar._groups[0][0] === null) {
 			d3.select('#peak-lollipop-circle')
 				.attr('class', 'lollipop-circle');
 			d3.select('#peak-lollipop-stem')
