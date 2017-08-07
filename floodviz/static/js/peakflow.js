@@ -48,14 +48,21 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		return d.value;
 	})]);
 
-	svg.append('g').attr('class', 'axis axis--x').attr('transform', 'translate(0,' + height + ')').call(xAxis)
+	// Add x axis
+	svg.append('g')
+		.attr('class', 'axis axis--x')
+		.attr('transform', 'translate(0,' + height + ')')
+		.call(xAxis)
 		.append('text')
 		.attr('text-anchor', 'middle')
 		.attr('x', (width / 2))
 		.attr('y', margin.bottom / 2)
 		.text('Year');
 
-	svg.append('g').attr('class', 'axis axis--y').call(yAxis)
+	// add y axis
+	svg.append('g')
+		.attr('class', 'axis axis--y')
+		.call(yAxis)
 		.append('text')
 		.attr('text-anchor', 'middle')
 		.attr('transform', 'rotate(-90)')
@@ -66,28 +73,30 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	// Save last data point as lollipop, and remove it from data
 	const lolli_data = data.pop();
 
+	const display_bars = svg.append('g');
 
+	data.forEach(function (d) {
+		display_bars.append('rect')
+			.attr('class', 'bar')
+			.attr('x', function () {
+				return x(d.label);
+			})
+			.attr('y', function () {
+				return y(d.value);
+			})
+			.attr('width', x.bandwidth())
+			.attr('height', function () {
+				return height - y(d.value);
+			})
+			// tooltip event
+			.on('mousemove', function () {
+				mouseover(tooltip, d, d3.event)
+			})
+			.on('mouseout', function () {
+				mouseout(tooltip)
+			});
+	});
 
-	// Normal Bar value creation
-	svg.selectAll('bar').data(data).enter().append('rect')
-		.attr('class', 'bar')
-		.attr('x', function (d) {
-			return x(d.label);
-		})
-		.attr('y', function (d) {
-			return y(d.value);
-		})
-		.attr('width', x.bandwidth())
-		.attr('height', function (d) {
-			return height - y(d.value);
-		})
-		// tooltip event
-		.on('mousemove', function (d) {
-			mouseover(tooltip, d, d3.event)
-		})
-		.on('mouseout', function () {
-			mouseout(tooltip)
-		});
 
 	// create lollipop Stroke and Circle
 	const bars = Array.prototype.slice.call(d3.select('#peakflow_bar svg').selectAll('.bar')['_groups'][0]);
