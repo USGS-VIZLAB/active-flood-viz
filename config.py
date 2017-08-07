@@ -54,6 +54,9 @@ MAP_CONFIG = {
     'scale': None,
 }
 
+# Google Analytics
+GA_ID = ""
+
 deployed_url_base = os.environ.get('DEPLOYED_BASE_URL')
 if deployed_url_base:
     FREEZER_BASE_URL = deployed_url_base

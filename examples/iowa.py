@@ -22,3 +22,7 @@ PEAK_META = {
     'height': '4',
     'width': '7.5'
 }
+
+# Google Analytics
+GA_ID = 'UA-103831764-1'
+

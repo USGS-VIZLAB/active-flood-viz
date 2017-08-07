@@ -131,6 +131,17 @@ var hydromodule = function (options) {
 			't': -(margin.top + margin.bottom)
 		};
 
+		// Watermark
+		var watermark = svg.append('g')
+			.attr('id', 'usgs-watermark')
+			.attr('transform', 'translate(' + 1/4 * width + ',' +1/4 * height +')scale(0.45)'); // watermark position
+		watermark.append('path')
+			.attr('d', options.watermark_path_1)
+			.attr('class', 'watermark');
+		watermark.append('path')
+			.attr('d', options.watermark_path_2)
+			.attr('class', 'watermark');
+
 		var graph_data = sub_data.map(function (d) {
 			return {
 				'date': d.date,
