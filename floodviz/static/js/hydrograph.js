@@ -151,7 +151,7 @@ var hydromodule = function (options) {
 
 		// Data containing NaN values for graphing
 		var graph_data = sub_data.map(function (d) {
-			var dp = {
+			return {
 				'date': d.date,
 				'key': d.key,
 				'name': d.name,
@@ -160,20 +160,18 @@ var hydromodule = function (options) {
 				'timezone': d.timezone,
 				'value': Number(d.value)
 			};
-			return dp;
 		});
 		// Data without NaN values to render Voronoi
 		var voronoi_data = sub_data_voronoi.map(function (d) {
-				var dp = {
-					'date': d.date,
-					'key': d.key,
-					'name': d.name,
-					'time': d.time,
-					'time_mili': d.time_mili,
-					'timezone': d.timezone,
-					'value': Number(d.value)
-				};
-			return dp
+			return {
+				'date': d.date,
+				'key': d.key,
+				'name': d.name,
+				'time': d.time,
+				'time_mili': d.time_mili,
+				'timezone': d.timezone,
+				'value': Number(d.value)
+			};
 		});
 
 		// Scale the range of the data
