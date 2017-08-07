@@ -35,18 +35,11 @@ var hydromodule = function (options) {
 	// Define the voronoi
 	var voronoi = d3.voronoi()
 		.x(function (d) {
-			//if (isNaN(d.value)) {
-				//console.log('Hello');
-			//} else {
-				return scaleX(d.time_mili);
-			//}
+			return scaleX(d.time_mili);
+
 		})
 		.y(function (d) {
-			//if (isNaN(d.value)) {
-			//	return scaleY(Math.random() - 0.5);
-			//} else {
-				return scaleY(d.value);
-			//}
+			return scaleY(d.value);
 		})
 		.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]]);
 	// Define the line
