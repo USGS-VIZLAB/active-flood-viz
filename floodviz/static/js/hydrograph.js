@@ -300,6 +300,8 @@ var hydromodule = function (options) {
 		hydrotip.attr('transform', 'translate(' + scaleX(d.data.time_mili) + ',' + scaleY(d.data.value) + ')')
 			.attr('class', 'hydrotip-show');
 		const arrowheight = 17;
+		// sin 60 = sqrt(3)/2 =~ 0.866. Ie, an equilateral triangle of height sqrt(3) will have sides of length 2.
+		// So an equilateral triangle with height x will have sides of length x / 0.866
 		const sidelength = arrowheight / 0.866;
 		const points = [[0, 0], [-(sidelength / 2), -arrowheight], [(sidelength / 2), -arrowheight], [0, 0]];
 
