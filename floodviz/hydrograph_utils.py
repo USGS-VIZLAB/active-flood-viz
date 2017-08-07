@@ -6,8 +6,9 @@ def parse_hydrodata(jdata):
     
     """ 
     Parses json Hydrodata from NWIS webservice
-    and formats for D3 charting library. Upon failure, this will
-    return empty data list.
+    and formats for D3 charting library. This method handles
+    data that may be missing from the request with dummy data
+    points. Upon failure, this will return empty data list.
 
     ARGS: 
         jdata (list of one dictonary) - json object in a list which contains 
@@ -19,7 +20,8 @@ def parse_hydrodata(jdata):
 
     """
     all_series_data = []
-    # gages collect and send data every 15 minutes
+    # gages can collect and send data every 15 minutes
+    # TODO: gages can collect at even faster increments. Looking for a way to handle this.
     smallest_increment_ms = 900000
 
     if jdata is not None:
@@ -28,8 +30,6 @@ def parse_hydrodata(jdata):
             site_id = site['sourceInfo']['siteCode'][0]['value']
             timezone = site['sourceInfo']['timeZoneInfo']['defaultTimeZone']['zoneAbbreviation']
             prev_date_ms = None
-
-            check_collinear = {}
 
             # Fill data for this series
             for obj in site['values'][0]['value']:
