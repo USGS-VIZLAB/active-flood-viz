@@ -53,9 +53,7 @@
 			//Create SVG element
 			var svg = null;
 			// Tooltip
-			var maptip = d3.select('body')
-				.append('div')
-				.attr('id', 'maptip');
+			var maptip = null;
 			// Google Analytics Boolean Trackers
 			var map_moused_over_gage = {};
 
@@ -76,8 +74,11 @@
 					.enter()
 					.append('circle')
 					.attr('r', radius)
-					.attr('transform', function (d) {
-						return 'translate(' + projection(d.geometry.coordinates) + ')';
+					.attr('cx', function (d) {
+						return projection(d.geometry.coordinates)[0]
+					})
+					.attr('cy', function (d) {
+						return projection(d.geometry.coordinates)[1]
 					})
 					.attr('id', function (d) {
 						if (property_for_id && d.properties[property_for_id]) {
@@ -164,7 +165,7 @@
 						height: parseInt(box.attr('height'))
 					};
 
-					for(var i=0; i<point.length; i++){
+					for (var i = 0; i < point.length; i++) {
 						point[i] = Math.round(point[i]);
 					}
 
@@ -265,6 +266,13 @@
 					.attr("preserveAspectRatio", "xMinYMin meet")
 					.attr("viewBox", "0 0 " + width + " " + height);
 
+				state.edges = {
+					l: 0,
+					r: width,
+					t: 0
+				};
+
+
 				// Define the drag behavior to be used for the selection box
 				var drag = d3.drag()
 					.on('start', function () {
@@ -309,7 +317,7 @@
 					.on('mouseover', function (d) {
 						self.site_tooltip_show(d.properties.name, d.properties.id);
 						self.linked_interactions.hover_in(d.properties.id);
-;						// Only log first hover of gage point per session
+						// Only log first hover of gage point per session
 						if (map_moused_over_gage[d.properties.id] === undefined) {
 							FV.ga_send_event('Map', 'hover_gage', d.properties.id);
 							map_moused_over_gage[d.properties.id] = true;
@@ -337,24 +345,117 @@
 				if (FV.config.debug) {
 					add_circles(options.bounds, 'debug-point', 3)
 				}
+
+				// Add maptip skeleton
+				maptip = svg.append('g')
+					.attr('class', 'maptip-hide')
+					.attr('id', 'maptip');
+				// I'm abbreviating 'maptip' to 'mt' in these IDs to clarify that they are children of the maptip group
+				maptip.append('rect')
+					.attr('id', 'mt-text-background');
+				maptip.append('polyline')
+					.attr('id', 'mt-arrow');
+				maptip.append('text')
+					.attr('id', 'mt-text');
 			};
 
 			/**
 			 * Shows sitename tooltip on map figure at correct location.
 			 */
 			self.site_tooltip_show = function (sitename, sitekey) {
-				var gage_point_cords = document.getElementById('map' + sitekey).getBoundingClientRect();
-				maptip.transition().duration(500);
-				maptip.style('display', 'inline-block')
-					.style('left', (gage_point_cords.left) + 7 + 'px')
-					.style('top', (gage_point_cords.top - 30) + 'px')
-					.html((sitename));
+				const padding = 4;
+				const arrowheight = 17;
+
+				const sidelength = arrowheight / 0.866;
+
+
+				const gage = d3.select('#map' + sitekey);
+				const gagelocation = {
+					x: parseFloat(gage.attr('cx')),
+					y: parseFloat(gage.attr('cy'))
+				};
+
+
+				maptip.attr('transform', 'translate(' + gagelocation.x + ', ' + gagelocation.y + ')')
+					.attr('class', 'maptip-show');
+				const tiptext = maptip.select('#mt-text');
+
+				// I have to set the text before I can check if it collides with the edges,
+				// but I can check if it collides with the top without bumping it up; I only use its height.
+				tiptext.html(sitename);
+
+				const textbg = maptip.select('#mt-text-background');
+				const textbound = tiptext._groups[0][0].getBBox();
+
+				const tipedges = {
+					l: gagelocation.x - textbound.width / 2,
+					r: gagelocation.x + textbound.width / 2,
+					t: gagelocation.y - textbound.height - arrowheight
+				};
+
+				/*
+				* EXPLANATION OF `t`.
+				* t for Top. This is set to -1 to draw the tooltip under the gage rather than above it.
+				* In many places I was negating positive values (eg -x) before use to yield and upward offset.
+				* In those places I now use (-t * x) to achieve an upward offset when t = 1
+				* and a downward offset when t = -1.
+				*/
+				var adjust = {
+					'l': 0,
+					'r': 0,
+					't': 1
+				};
+
+				if (tipedges.l < state.edges.l) {
+					// this will be positive so it will be a shift to the right
+					adjust.l = state.edges.l - tipedges.l
+				}
+				else if (tipedges.r > state.edges.r) {
+					// this will be negative, so a shift to the left
+					adjust.r = state.edges.r - tipedges.r
+				}
+				if (tipedges.t < state.edges.t) {
+					// set t to -1 so that the tooltip will bw drawn under the gage.
+					adjust.t = -1
+				}
+
+				const points = [[0, 0], [-(sidelength / 2), -adjust.t * arrowheight], [(sidelength / 2), -adjust.t * arrowheight], [0, 0]];
+
+				// turn points array into string
+				var arrowpoints = '';
+				points.forEach(function (p) {
+					arrowpoints += p[0] + ' ' + p[1] + ',';
+				});
+				arrowpoints = arrowpoints.substring(0, arrowpoints.length - 1);
+
+				const arrow = maptip.select('#mt-arrow');
+				arrow.attr('points', arrowpoints);
+
+				tiptext.attr('y', (-adjust.t * (arrowheight + padding * 2)));
+				/*
+				 * The y on the text points to the upper edge, so it requires a bit of adjustment when showing
+				 * the tooltip below the gage.
+				 * I think this is better than adding some byzantine math to the initial setting.
+				 */
+				if(adjust.t === -1){
+					var scootdist = parseFloat(tiptext.attr('y'));
+					scootdist += textbound.height / 2;
+					tiptext.attr('y', scootdist);
+				}
+
+				tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)');
+				// One of adjust.l or adjust.r should always be 0.
+				textbg.attr('x', textbound.x - padding + adjust.l + adjust.r)
+					.attr('y', tiptext.attr('y') - textbound.height + (adjust.t * 0.5))
+					.attr('width', textbound.width + padding * 2)
+					.attr('height', textbound.height + padding * 2);
+
 			};
 			/**
 			 * Removes tooltip style from map site.
 			 */
 			self.site_tooltip_remove = function () {
-				maptip.style('display', 'none');
+				maptip.attr('class', 'maptip-hide');
 			};
 
 			/**

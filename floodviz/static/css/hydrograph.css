@@ -41,7 +41,6 @@
 .hydrotip-show #ht-arrow {
 	stroke: none;
 	fill: rgba(71, 181, 176, 0.8);
-	/*fill: red;*/
 }
 
 .hydrotip-show #ht-point {
