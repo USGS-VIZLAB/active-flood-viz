@@ -35,10 +35,18 @@ var hydromodule = function (options) {
 	// Define the voronoi
 	var voronoi = d3.voronoi()
 		.x(function (d) {
-			return scaleX(d.time_mili);
+			//if (isNaN(d.value)) {
+				//console.log('Hello');
+			//} else {
+				return scaleX(d.time_mili);
+			//}
 		})
 		.y(function (d) {
-			return scaleY(d.value);
+			//if (isNaN(d.value)) {
+			//	return scaleY(Math.random() - 0.5);
+			//} else {
+				return scaleY(d.value);
+			//}
 		})
 		.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]]);
 	// Define the line
@@ -63,12 +71,16 @@ var hydromodule = function (options) {
 	 */
 	var subset_data = function (full_data) {
 		var toKeep = [];
+		var toKeep_voronoi = [];
 		full_data.forEach(function (d) {
 			if (options.display_ids.indexOf(d.key) !== -1) {
 				toKeep.push(d);
+				if (!isNaN(d.value)) {
+					toKeep_voronoi.push(d);
+				}
 			}
 		});
-		return toKeep;
+		return [toKeep, toKeep_voronoi];
 	};
 
 	/**
@@ -111,7 +123,9 @@ var hydromodule = function (options) {
 	 */
 	var update = function () {
 		// Cut the data down to sites we want to display
-		var sub_data = subset_data(data_global);
+		var data = subset_data(data_global);
+		var sub_data_voronoi = data[1];
+		var sub_data = data[0];
 		// Remove the current version of the graph if one exists
 		var current_svg = d3.select(options.div_id + ' svg');
 		if (current_svg) {
@@ -143,7 +157,21 @@ var hydromodule = function (options) {
 			.attr('d', options.watermark_path_2)
 			.attr('class', 'watermark');
 
+		// Data containing NaN values for graphing
 		var graph_data = sub_data.map(function (d) {
+			var dp = {
+				'date': d.date,
+				'key': d.key,
+				'name': d.name,
+				'time': d.time,
+				'time_mili': d.time_mili,
+				'timezone': d.timezone,
+				'value': Number(d.value)
+			};
+			return dp;
+		});
+		// Data without NaN values to render Voronoi
+		var voronoi_data = sub_data_voronoi.map(function (d) {
 				var dp = {
 					'date': d.date,
 					'key': d.key,
@@ -153,7 +181,6 @@ var hydromodule = function (options) {
 					'timezone': d.timezone,
 					'value': Number(d.value)
 				};
-			//}
 			return dp
 		});
 
@@ -172,6 +199,13 @@ var hydromodule = function (options) {
 				return d.key;
 			})
 			.entries(graph_data);
+
+		var dataNest_voronoi = d3.nest()
+			.key(function (d) {
+				return d.key;
+			})
+			.entries(voronoi_data);
+
 		// Loop through each symbol / key
 		dataNest.forEach(function (d) {
 			svg.append('g')
@@ -216,7 +250,8 @@ var hydromodule = function (options) {
 		voronoi_group = svg.append('g')
 			.attr('class', 'voronoi');
 		voronoi_group.selectAll('path')
-			.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
+			.data(voronoi.polygons(d3.merge(dataNest_voronoi.map(function (d) {
+				//console.log(d.values);
 				return d.values
 			}))))
 			.enter().append('path')
@@ -239,7 +274,6 @@ var hydromodule = function (options) {
 				self.series_tooltip_remove(d.data.key);
 			})
 			.on('click', function (d) {
-				console.log(d3.mouse(this));
 				if (dblclick_armed) {
 					clearTimeout(timer);
 					reset_hydrograph();

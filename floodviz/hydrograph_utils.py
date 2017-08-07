@@ -28,6 +28,9 @@ def parse_hydrodata(jdata):
             site_id = site['sourceInfo']['siteCode'][0]['value']
             timezone = site['sourceInfo']['timeZoneInfo']['defaultTimeZone']['zoneAbbreviation']
             prev_date_ms = None
+
+            check_collinear = {}
+
             # Fill data for this series
             for obj in site['values'][0]['value']:
                 value = obj['value']
@@ -42,16 +45,11 @@ def parse_hydrodata(jdata):
                 if prev_date_ms:
                     increment = dt_ms - prev_date_ms
                     if increment > smallest_increment_ms:
-                        num_dummy_points = increment/smallest_increment_ms
+                        num_dummy_points = increment/smallest_increment_ms - 1
                         added = 0
-                        check_collinear = {}
                         while added < num_dummy_points:
-                            new_dt_ms = ((added + 1) * (smallest_increment_ms)) + dt_ms
-                            if check_collinear.get(new_dt_ms) is None:
-                                check_collinear[new_dt_ms] = 'added'
-                            else:
-                                print('DUPLICATE!')
-                            all_series_data.append({'key': site_id, 'name': site_name, 'date': date, "time": t,
+                            new_dt_ms = prev_date_ms + (smallest_increment_ms * (added + 1))
+                            all_series_data.append({'key': site_id, 'name': 'no_data', 'date': date, "time": t,
                                         'timezone': timezone, "time_mili": new_dt_ms, 'value': 'NA'})
                             added += 1
                 # append regular (not missing) data
