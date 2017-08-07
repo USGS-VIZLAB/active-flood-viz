@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 
 	const x = d3.scaleBand().rangeRound([0, width]).padding(.5);
+
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const xAxis = d3.axisBottom().scale(x);
@@ -78,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	data.forEach(function (d) {
 		display_bars.append('rect')
 			.attr('class', 'bar')
+			.attr('id', 'peak' + d.label)
 			.attr('x', function () {
 				return x(d.label);
 			})
@@ -87,16 +89,28 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			.attr('width', x.bandwidth())
 			.attr('height', function () {
 				return height - y(d.value);
+			});
+	});
+
+	const hidden_bars = svg.append('g');
+
+	data.forEach(function (d) {
+		hidden_bars.append('rect')
+			.attr('class', 'secret-bar')
+			.attr('x', function () {
+				return x(d.label);
 			})
+			.attr('y', 0)
+			.attr('width', x.padding(0).bandwidth())
+			.attr('height', height)
 			// tooltip event
 			.on('mousemove', function () {
 				mouseover(tooltip, d, d3.event)
 			})
 			.on('mouseout', function () {
-				mouseout(tooltip)
+				mouseout(tooltip, d)
 			});
 	});
-
 
 	// create lollipop Stroke and Circle
 	const bars = Array.prototype.slice.call(d3.select('#peakflow_bar svg').selectAll('.bar')['_groups'][0]);
@@ -134,6 +148,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		});
 
 	function mouseover(tooltip, d, event) {
+		const bar = d3.select('#peak' + d.label);
+		bar.attr('class', 'bar-active');
 		tooltip.transition().duration(500).style('opacity', .9);
 		tooltip.style('display', 'inline-block')
 			.style('left', (event.pageX) + 10 + 'px')
@@ -147,7 +163,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	}
 
-	function mouseout(tooltip) {
+	function mouseout(tooltip, d) {
+		const bar = d3.select('#peak' + d.label);
+		bar.attr('class', 'bar');
 		tooltip.style('display', 'none');
 	}
 });

@@ -26,6 +26,11 @@
 	fill: steelblue;
 }
 
-.bar:hover {
+.bar-active {
 	fill: #b47846
+}
+
+.secret-bar{
+	fill: red;
+	fill-opacity: 0;
 }
