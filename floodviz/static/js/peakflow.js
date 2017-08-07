@@ -128,36 +128,37 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	const lolli_pos_x = ((last_bars[1] + padding + ((1 / 2) * scaleX.bandwidth())).toString());
 	const lolli_pos_y = (scaleY(lolli_data['value'])).toString();
 	const path_string = 'M ' + lolli_pos_x + ',' + height + ' ' + lolli_pos_x + ',' + lolli_pos_y;
-	graph.append('path')
-		.attr('id', 'peak-lollipop-stem')
-		.attr('class', 'lollipop-stem')
+
+	const lollipop = graph.append('g')
+		.attr('id', 'peak' + lolli_data.label)
+		.attr('class', 'lollipop');
+
+	lollipop.append('path')
+		.attr('id', 'lollipop-stem')
 		.attr('stroke-width', 2)
 		.attr('d', path_string);
 
 
-	graph.append('circle')
-		.attr('class', 'lollipop-circle')
-		.attr('id', 'peak-lollipop-circle')
+	lollipop.append('circle')
+		.attr('id', 'lollipop-top')
 		.attr('r', 4.5)
 		.attr('cx', lolli_pos_x)
 		.attr('cy', lolli_pos_y);
 
 	function mouseover(tooltip, d, event) {
 		const bar = d3.select('#peak' + d.label);
-		if (bar._groups[0][0] === null) {
-			d3.select('#peak-lollipop-circle')
-				.attr('class', 'lollipop-circle-active');
-			d3.select('#peak-lollipop-stem')
-				.attr('class', 'lollipop-stem-active');
+		if(bar.attr('class').startsWith('lollipop')) {
+			bar.attr('class', 'lollipop-active');
 		}
-		else {
+		else{
 			bar.attr('class', 'bar-active');
-			tooltip.transition().duration(500).style('opacity', .9);
-			tooltip.style('display', 'inline-block')
-				.style('left', (event.pageX) + 10 + 'px')
-				.style('top', (event.pageY - 70) + 'px')
-				.html((d.label) + '<br>' + (d.value) + ' cfs');
 		}
+		tooltip.transition().duration(500).style('opacity', .9);
+		tooltip.style('display', 'inline-block')
+			.style('left', (event.pageX) + 10 + 'px')
+			.style('top', (event.pageY - 70) + 'px')
+			.html((d.label) + '<br>' + (d.value) + ' cfs');
+
 		// Only log one hover per bar per session
 		if (peak_moused_over_bar[d.label] === undefined) {
 			FV.ga_send_event('Peakflow', 'hover_bar', d.label + '_' + d.value);
@@ -167,16 +168,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	function mouseout(tooltip, d) {
 		const bar = d3.select('#peak' + d.label);
-		if (bar._groups[0][0] === null) {
-			d3.select('#peak-lollipop-circle')
-				.attr('class', 'lollipop-circle');
-			d3.select('#peak-lollipop-stem')
-				.attr('class', 'lollipop-stem');
+		if(bar.attr('class').startsWith('lollipop')) {
+			bar.attr('class', 'lollipop');
 		}
-		else {
-			bar.attr('class', 'bar');
-			tooltip.style('display', 'none');
+		else{
+			bar.attr('class', 'bar')
 		}
+		tooltip.style('display', 'none');
 
 	}
 });

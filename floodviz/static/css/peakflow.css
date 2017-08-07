@@ -6,19 +6,20 @@
 	display: block;
 }
 
-.lollipop-stem {
+.lollipop #lollipop-stem {
 	width: .3%;
 	stroke: steelblue;
 }
-.lollipop-stem-active {
+
+.lollipop-active #lollipop-stem {
 	stroke: #b47846;
 }
 
-.lollipop-circle {
+.lollipop #lollipop-top {
 	fill: steelblue;
 }
 
-.lollipop-circle-active{
+.lollipop-active #lollipop-top{
 	fill: #b47846;
 }
 
