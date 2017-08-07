@@ -8,11 +8,18 @@
 
 #lollipop {
 	width: .3%;
-	stroke: #7fff00;
+	stroke: steelblue;
+}
+#lollipop:hover {
+	stroke: #b47846;
 }
 
 .cir {
-	fill: #7FFF00;
+	fill: steelblue;
+}
+
+.cir:hover{
+	fill: #b47846;
 }
 
 .bar {
@@ -20,5 +27,5 @@
 }
 
 .bar:hover {
-	fill: #7FFF00;
+	fill: #b47846
 }
