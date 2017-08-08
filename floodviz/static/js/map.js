@@ -378,7 +378,7 @@
 				};
 				const textstring = sitename;
 				const visible_class = 'maptip-show';
-				options.show_tooltip(tooltip_elements, textstring, state.edges, gagelocation, visible_class);
+				FV.show_tooltip(tooltip_elements, textstring, state.edges, gagelocation, visible_class);
 
 			};
 			/**

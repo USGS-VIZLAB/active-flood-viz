@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	};
 
 	const tooltip = tooltip_module(tooltip_options);
+	FV.show_tooltip = tooltip.show_tooltip;
+
 	// Map options
 	var map_options = {
 		'height': FV.mapinfo.height,
@@ -18,8 +20,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		'rivers_data': FV.mapinfo.rivers_data,
 		'ref_data': FV.mapinfo.ref_data,
 		'site_data': FV.mapinfo.site_data,
-		'div_id': '#map',
-		'show_tooltip': tooltip.show_tooltip
+		'div_id': '#map'
 	};
 
 	// Hydrograph options
@@ -28,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		'width': FV.hydrograph_dimensions.width,
 		'display_ids': FV.hydrograph_display_ids,
 		'div_id': '#hydrograph',
-		'show_tooltip': tooltip.show_tooltip,
 		'watermark_path_1': 'm234.95 15.44v85.037c0 17.938-10.132 36.871-40.691 36.871-27.569 0-40.859-14.281-40.859-' +
 				'36.871v-85.04h25.08v83.377c0 14.783 6.311 20.593 15.447 20.593 10.959 0 15.943-7.307 15.943-' +
 				'20.593v-83.377h25.08m40.79 121.91c-31.058 0-36.871-18.27-35.542-39.03h25.078c0 11.462 0.5 ' +

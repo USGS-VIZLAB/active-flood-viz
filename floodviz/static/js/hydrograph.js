@@ -310,7 +310,7 @@ var hydromodule = function (options) {
 		const visible_class = 'hydrotip-show';
 		const textstring = d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone;
 
-		options.show_tooltip(tooltip_elements, textstring, state.edges, scaled, visible_class);
+		FV.show_tooltip(tooltip_elements, textstring, state.edges, scaled, visible_class);
 
 	};
 
