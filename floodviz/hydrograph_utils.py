@@ -22,7 +22,8 @@ def parse_hydrodata(jdata):
     all_series_data = []
     # gages can collect and send data every 15 minutes
     # TODO: gages can collect at even faster increments. Looking for a way to handle this.
-    smallest_increment_ms = 900000
+    gap_threshold = 1800000   # 30 minutes
+    increment_ms = 900000     # 15 minutes
 
     if jdata is not None:
         for site in jdata:
@@ -43,12 +44,14 @@ def parse_hydrodata(jdata):
                 dt_ms = time.mktime(dt.timetuple()) * 1000
                 # handle missing data
                 if prev_date_ms:
-                    increment = dt_ms - prev_date_ms
-                    if increment > smallest_increment_ms:
-                        num_dummy_points = increment/smallest_increment_ms - 1
+                    # Size of potential gap in data
+                    gap = dt_ms - prev_date_ms
+                    if gap > gap_threshold:
+                        num_dummy_points = gap/increment_ms - 1
                         added = 0
                         while added < num_dummy_points:
-                            new_dt_ms = prev_date_ms + (smallest_increment_ms * (added + 1))
+                            # correct time for this dummy point
+                            new_dt_ms = prev_date_ms + (increment_ms * (added + 1))
                             all_series_data.append({'key': site_id, 'name': 'no_data', 'date': date, "time": t,
                                         'timezone': timezone, "time_mili": new_dt_ms, 'value': 'NA'})
                             added += 1

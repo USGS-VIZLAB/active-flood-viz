@@ -241,7 +241,6 @@ var hydromodule = function (options) {
 			.attr('class', 'voronoi');
 		voronoi_group.selectAll('path')
 			.data(voronoi.polygons(d3.merge(dataNest_voronoi.map(function (d) {
-				//console.log(d.values);
 				return d.values
 			}))))
 			.enter().append('path')
