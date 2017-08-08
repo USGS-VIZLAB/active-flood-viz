@@ -120,13 +120,15 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	});
 
 
-	// create lollipop Stroke and Circle
+	// This line grabs the list of all the bars, then coerces it into an array
 	const bars = Array.prototype.slice.call(d3.select('#peakflow_bar svg').selectAll('.bar')['_groups'][0]);
+	// after this, last_bars will contain the x values from the final 2 bars in the array
 	const last_bars = bars.slice(bars.length - 2).map(function (bar) {
 		return bar.x.baseVal.value;
 	});
 	const padding = last_bars[1] - last_bars[0];
 
+	// create lollipop Stroke and Circle
 	const lolli_pos_x = ((last_bars[1] + padding + ((1 / 2) * scaleX.bandwidth())).toString());
 	const lolli_pos_y = (scaleY(lolli_data['value'])).toString();
 	const path_string = 'M ' + lolli_pos_x + ',' + height + ' ' + lolli_pos_x + ',' + lolli_pos_y;
