@@ -14,7 +14,7 @@
 		 *    @prop 'ref_data' v(javascript object) - reference data
 		 *    @prop 'site_data' v(javascript object) - site data
 		 *    @prop 'div_id' v(string) - id for the container for this graph
-		 *    @prop 'disableInteractions' v(boolean) - disables interactions when graphic is embeddable
+		 *    @prop 'disableInteractions' v(boolean) - disables interactions between hydrograph and map
 		 *
 		 * mapmodule is a module for creating maps using d3. Pass it a javascript object
 		 * specifying config options for the map. Call init() to create the map. Linked
