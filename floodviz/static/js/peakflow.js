@@ -50,15 +50,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		return d.value;
 	})]);
 
-	svg.append('g').attr('class', 'axis axis--x').attr('transform', 'translate(0,' + height + ')').call(xAxis)
-
-	svg.append('g').attr('class', 'axis axis--y').call(yAxis)
-
-	svg.append("text")
-        .attr("x", 0 - margin.left)
-        .attr("y", 0 - (margin.top / 2))
-        .style("font-size", "14px")
-        .text("Discharge (cubic feet per second)");
 	// Add x axis
 	graph.append('g')
 		.attr('class', 'axis-x')
@@ -82,6 +73,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('x', 0 - (height / 2))
 		.attr('y', 0 - (margin.left / 2))
 		.text('Discharge (cfps)');
+
+	graph.append("text")
+        .attr("x", 0 - margin.left)
+        .attr("y", 0 - (margin.top / 2))
+        .style("font-size", "14px")
+        .text("Discharge (cubic feet per second)");
 
 
 	const display_bars = graph.append('g');
