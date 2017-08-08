@@ -33,7 +33,7 @@
 			var self = {};
 
 			//governs whether map=hydrograph interactions will be turned on
-			var embed = FV.embed
+			var disableInteractions = options.disableInteractions;
 
 			// Stores SVG coordinates of gages and the size and location of the selection box
 			var state = {};
@@ -121,15 +121,21 @@
 				if (being_displayed === true) {
 					self.site_remove_accent(sitekey);
 					new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
-					self.linked_interactions.hover_out(sitekey);
+					if (!disableInteractions) {
+						self.linked_interactions.hover_out(sitekey);
+					}
 				}
 				else {
 					self.site_add_accent(sitekey);
 					new_display_ids.push(sitekey);
+					if (!disableInteractions) {
+						self.linked_interactions.hover_in(sitekey);
+					}
+				}
+				if (!disableInteractions) {
+					self.linked_interactions.click(new_display_ids);
 					self.linked_interactions.hover_in(sitekey);
 				}
-				self.linked_interactions.click(new_display_ids);
-				self.linked_interactions.hover_in(sitekey);
 			};
 
 			/**
@@ -239,7 +245,9 @@
 							self.site_add_accent(key);
 						}
 					});
-					self.linked_interactions.click(selected);
+					if (!disableInteractions) {
+						self.linked_interactions.click(selected);
+					}
 					FV.ga_send_event('Map', 'drag_select', selected.join(','));
 				}
 				state.box = {};
@@ -258,7 +266,9 @@
 			 */
 			self.init = function (linked_interactions) {
 
-				self.linked_interactions = linked_interactions;
+				if (!disableInteractions) {
+					self.linked_interactions = linked_interactions;
+				}
 
 				if (svg !== null) {
 					d3.select(options.div_id).select('svg').remove();
@@ -269,7 +279,7 @@
 					.attr("viewBox", "0 0 " + width + " " + height);
 
 				// Define the drag behavior to be used for the selection box
-				if (embed !== true) {
+				if (!disableInteractions) {
 					var drag = d3.drag()
 						.on('start', function () {
 							var p = d3.mouse(this);
@@ -313,7 +323,9 @@
 				sites.selectAll('circle')
 					.on('mouseover', function (d) {
 						self.site_tooltip_show(d.properties.name, d.properties.id);
-						self.linked_interactions.hover_in(d.properties.id);
+						if (!disableInteractions) {
+							self.linked_interactions.hover_in(d.properties.id);
+						}
 ;						// Only log first hover of gage point per session
 						if (map_moused_over_gage[d.properties.id] === undefined) {
 							FV.ga_send_event('Map', 'hover_gage', d.properties.id);
@@ -322,10 +334,12 @@
 					})
 					.on('mouseout', function (d) {
 						self.site_tooltip_remove();
-						self.linked_interactions.hover_out(d.properties.id);
+						if (!disableInteractions) {
+							self.linked_interactions.hover_out(d.properties.id);
+						}
 					})
 					.on('click', function (d) {
-						if (embed !== true) {
+						if (!disableInteractions) {
 							toggle_hydrograph_display(d.properties.id);
 							FV.ga_send_event('Map', 'gage_click_on', d.properties.id);
 						}
@@ -333,7 +347,7 @@
 					.on('mousedown', function () {
 						d3.event.stopPropagation();
 					});
-				if (embed !== true) {
+				if (!disableInteractions) {
 					sites.selectAll('circle').each(function (d) {
 						if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
 							self.site_add_accent(d.properties.id);
