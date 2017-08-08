@@ -43,12 +43,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	var hydro_figure = hydromodule(hydro_options);
 
-	// Use frames to link interactions
-	var map_to_hydro = null;
-
 	//data for hydrograph
 	d3.json(FV.hydrograph_data_path, function (error, data) {
 		if (error) { console.error(error); }
-		hydro_figure.init(map_to_hydro, data);
+		hydro_figure.init(null, data);
 	});
 });

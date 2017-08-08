@@ -6,6 +6,7 @@
  *        @prop 'width' v(int) - width of the graph
  *        @prop 'div_id' v(string) - id for the container for this graph
  *        @prop 'display_ids' v(list) - default series to show on hydrograph
+ *        @prop 'disableInteractions' v(boolean) - disables interactions when graphic is embeddable
  *
  * hydromodule is a module for creating hydrographs using d3. Pass it a javascript object
  * specifying config options for the graph. Call init() to create the graph. Linked

@@ -27,17 +27,14 @@ def root():
 
 @app.route('/hydrograph/')
 def hydrograph():
-    peakinfo = _peakflow_helper()
-    mapinfo = _map_helper()
     display_sites = ref['display_sites']
-    return render_template('hydrograph.html', mapinfo=mapinfo, peakinfo=peakinfo, display_sites=display_sites)
+    return render_template('hydrograph.html', display_sites=display_sites)
 
 
 @app.route('/map/')
 def sitemap():
     mapinfo = _map_helper()
-    display_sites = ref['display_sites']
-    return render_template('map.html', mapinfo=mapinfo, display_sites=display_sites)
+    return render_template('map.html', mapinfo=mapinfo)
 
 @app.route('/peakflow/')
 def peakflow():

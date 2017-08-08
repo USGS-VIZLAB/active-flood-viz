@@ -18,8 +18,5 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	var map_figure = FV.mapmodule(map_options);
 
-	// Use frames to link interactions
-	var hydro_to_map = null;
-
-	map_figure.init(hydro_to_map);
+	map_figure.init();
 });
