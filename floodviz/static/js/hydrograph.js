@@ -51,7 +51,7 @@ var hydromodule = function (options) {
 		});
 	// Set the ranges
 	var scaleX = d3.scaleTime().range([0, width]);
-	var scaleY = d3.scaleLog().range([height, 0]);
+	var scaleY = d3.scaleLinear().range([height, 0]);
 
 	// Google Analytics Boolean Trackers
 	var hydro_moused_over = false;
@@ -193,12 +193,12 @@ var hydromodule = function (options) {
 		svg.append('g')
 			.attr('class', 'axis')
 			.attr('transform', 'translate(0,' + height + ')')
-			.call(d3.axisBottom(scaleX).tickFormat(d3.timeFormat('%B %e')));
+			.call(d3.axisBottom(scaleX).tickFormat(d3.timeFormat('%B %e')).tickSizeOuter(0));
 
 		// Add the Y Axis
 		svg.append('g')
 			.attr('class', 'axis')
-			.call(d3.axisLeft(scaleY).ticks(10, '.0f'));
+			.call(d3.axisLeft(scaleY).ticks(10, '.0f').tickSizeOuter(0));
 
 		// Tooltip
 		hydrotip = svg.append('g')
