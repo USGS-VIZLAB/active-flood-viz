@@ -20,8 +20,7 @@ def parse_hydrodata(jdata):
 
     """
     all_series_data = []
-    # gages can collect and send data every 15 minutes
-    # TODO: gages can collect at even faster increments. Looking for a way to handle this.
+
     gap_threshold = 1800000   # 30 minutes
     increment_ms = 900000     # 15 minutes
 
@@ -46,6 +45,10 @@ def parse_hydrodata(jdata):
                 if prev_date_ms:
                     # Size of potential gap in data
                     gap = dt_ms - prev_date_ms
+                    """
+                      We only consider data to be missing if the gap between adjacent data points 
+                      is greater than 30 minutes. All dummy data points will be added in 15 minute increments.
+                    """
                     if gap > gap_threshold:
                         num_dummy_points = gap/increment_ms - 1
                         added = 0
