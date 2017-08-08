@@ -1,7 +1,12 @@
 document.addEventListener('DOMContentLoaded', function (event) {
 	'use strict';
 
-	const tooltip = tooltip_module(null);
+	const tooltip_options = {
+		padding: 4,
+		arrowheight: 17
+	};
+
+	const tooltip = tooltip_module(tooltip_options);
 	// Map options
 	var map_options = {
 		'height': FV.mapinfo.height,

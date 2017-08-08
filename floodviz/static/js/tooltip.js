@@ -5,16 +5,15 @@ const tooltip_module = function (options) {
 	/**
 	 * Takes arrow height and the calculated adjustment (to tell whether or not to invert the arrow)
 	 * and returns the points-string for the arrow.
-	 * @param height
 	 * @param adjust
 	 * @returns a string of points to make up the arrow
 	 */
-	const make_arrow = function(height, adjust){
+	const make_arrow = function(adjust){
 		// sin 60 = sqrt(3)/2 =~ 0.866. Ie, an equilateral triangle of height sqrt(3) will have sides of length 2.
 		// So an equilateral triangle with height x will have sides of length x / 0.866
-		const sidelength = height / 0.866;
+		const sidelength = options.arrowheight / 0.866;
 
-		const points = [[0, 0], [-(sidelength / 2), -adjust.t * height], [(sidelength / 2), -adjust.t * height], [0, 0]];
+		const points = [[0, 0], [-(sidelength / 2), -adjust.t * options.arrowheight], [(sidelength / 2), -adjust.t * options.arrowheight], [0, 0]];
 
 		// turn points array into string
 		var arrowpoints = '';
@@ -31,17 +30,16 @@ const tooltip_module = function (options) {
 	 * @param textbound {object} The bounding box around the text
 	 * @param center {object} The location of the thing on which the tooltip is centered
 	 * @param edges {object} The locations of the edges of the figure, with which the tooltip should not collide
-	 * @param arrowheight {int} The height of the arrow under the tooltip
 	 *
 	 * @returns {{l: number, r: number, t: number}} The left and right adjustment required, and whether or not to draw
 	 * the tooltip inverted. See 'EXPLANATION OF `t`' below for more.
 	 */
-	const calculate_adjust = function(textbound, center, edges, arrowheight){
+	const calculate_adjust = function(textbound, center, edges){
 		// remember that (0, 0) is in the upper left corner
 		const tipedges = {
 			l: center.x - textbound.width / 2,
 			r: center.x + textbound.width / 2,
-			t: center.y - textbound.height - arrowheight
+			t: center.y - textbound.height - options.arrowheight
 		};
 
 		/*
@@ -87,8 +85,7 @@ const tooltip_module = function (options) {
 	 * @param visible_class {string} the name of the class to which the tooltip is set to make it visible
 	 */
 	self.show_tooltip = function (elements, textstring, edges, center, visible_class) {
-		const padding = 4;
-		const arrowheight = 17;
+
 
 		elements.group.attr('transform', 'translate(' + center.x + ', ' + center.y + ')')
 			.attr('class', visible_class);
@@ -100,29 +97,29 @@ const tooltip_module = function (options) {
 
 		const textbound = elements.text._groups[0][0].getBBox();
 
-		const adjust = calculate_adjust(textbound, center, edges, arrowheight);
+		const adjust = calculate_adjust(textbound, center, edges);
 
-		const arrowpoints = make_arrow(arrowheight, adjust);
+		const arrowpoints = make_arrow(adjust);
 		elements.arrow.attr('points', arrowpoints);
 
-		elements.text.attr('y', (-adjust.t * (arrowheight + padding * 2)));
+		elements.text.attr('y', (-adjust.t * (options.arrowheight + options.padding * 2)));
 		/*
 		 * The y on the text points to the upper edge, so it requires a bit of adjustment when showing
 		 * the tooltip below the gage.
 		 * I think this is better than adding some byzantine math to the initial setting.
 		 */
 		if (adjust.t === -1) {
-			var scootdist = parseFloat(tiptext.attr('y'));
+			var scootdist = parseFloat(elements.text.attr('y'));
 			scootdist += textbound.height / 2;
 			elements.text.attr('y', scootdist);
 		}
 
 		elements.text.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)');
 		// One of adjust.l or adjust.r should always be 0.
-		elements.backdrop.attr('x', textbound.x - padding + adjust.l + adjust.r)
+		elements.backdrop.attr('x', textbound.x - options.padding + adjust.l + adjust.r)
 			.attr('y', elements.text.attr('y') - textbound.height + (adjust.t * 0.5))
-			.attr('width', textbound.width + padding * 2)
-			.attr('height', textbound.height + padding * 2);
+			.attr('width', textbound.width + options.padding * 2)
+			.attr('height', textbound.height + options.padding * 2);
 	};
 	return self;
 };
