@@ -131,7 +131,7 @@ var hydromodule = function (options) {
 
 		// Save the locations of the edges of the visible svg
 		state.edges = {
-			'l': - (margin.left + margin.right),
+			'l': -(margin.left + margin.right),
 			'r': width + margin.right,
 			't': -(margin.top + margin.bottom)
 		};
@@ -207,12 +207,18 @@ var hydromodule = function (options) {
 
 		// Tooltip
 		hydrotip = svg.append('g')
-			.attr('class', 'hydrotip-hide');
-		hydrotip.append('rect');
+			.attr('class', 'hydrotip-hide')
+			.attr('id', 'hydrotip');
+		// I'm abbreviating 'hydrotip' to 'ht' in these IDs to help clarify that these are in the group 'hydrotip'
+		hydrotip.append('rect')
+			.attr('id', 'ht-text-background');
 		hydrotip.append('circle')
-			.attr('r', 3.5);
+			.attr('r', 2)
+			.attr('id', 'ht-point');
+		hydrotip.append('polyline')
+			.attr('id', 'ht-arrow');
 		hydrotip.append('text')
-			.attr('y', -10);
+			.attr('id', 'ht-text');
 
 		// Voronoi Layer
 		voronoi_group = svg.append('g')
@@ -245,7 +251,6 @@ var hydromodule = function (options) {
 				self.series_tooltip_remove(d.data.key);
 			})
 			.on('click', function (d) {
-				console.log(d3.mouse(this));
 				if (dblclick_armed) {
 					clearTimeout(timer);
 					reset_hydrograph();
@@ -299,7 +304,7 @@ var hydromodule = function (options) {
 	 * corresponding map site tooltip.
 	 */
 	self.series_tooltip_show = function (d) {
-		const padding = 3;
+		const padding = 4;
 		const scaled = {
 			x: scaleX(d.data.time_mili),
 			y: scaleY(d.data.value)
@@ -307,16 +312,34 @@ var hydromodule = function (options) {
 
 		hydrotip.attr('transform', 'translate(' + scaleX(d.data.time_mili) + ',' + scaleY(d.data.value) + ')')
 			.attr('class', 'hydrotip-show');
-		const tiptext = hydrotip.select('text');
-		tiptext.html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone);
-		const textbg = hydrotip.select('rect');
+		const arrowheight = 17;
+		// sin 60 = sqrt(3)/2 =~ 0.866. Ie, an equilateral triangle of height sqrt(3) will have sides of length 2.
+		// So an equilateral triangle with height x will have sides of length x / 0.866
+		const sidelength = arrowheight / 0.866;
+		const points = [[0, 0], [-(sidelength / 2), -arrowheight], [(sidelength / 2), -arrowheight], [0, 0]];
+
+		// turn points array into string
+		var arrowpoints = '';
+		points.forEach(function (p) {
+			arrowpoints += p[0] + ' ' + p[1] + ',';
+		});
+		arrowpoints = arrowpoints.substring(0, arrowpoints.length - 1);
+
+		const arrow = hydrotip.select('#ht-arrow');
+		arrow.attr('points', arrowpoints);
+
+		const tiptext = hydrotip.select('#ht-text');
+		tiptext.html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone)
+			.attr('y', -(arrowheight + padding * 2));
+
+		const textbg = hydrotip.select('#ht-text-background');
 		const bound = tiptext._groups[0][0].getBBox();
 
 		// Find the edges of the tooltip (left, right, and top)
 		const tipedges = {
 			'l': scaled.x - bound.width / 2,
 			'r': scaled.x + bound.width / 2,
-			't': scaled.y - bound.height
+			't': scaled.y - bound.height - arrowheight
 		};
 
 		// store how much the tooltip has to be adjusted by to stay entirely visible
@@ -326,23 +349,23 @@ var hydromodule = function (options) {
 			't': 0
 		};
 
-		if(tipedges.l < state.edges.l){
+		if (tipedges.l < state.edges.l) {
 			// this will be positive so it will be a shift to the right
 			adjust.l = state.edges.l - tipedges.l
 		}
-		else if(tipedges.r > state.edges.r){
+		else if (tipedges.r > state.edges.r) {
 			// this will be negative, so a shift to the left
 			adjust.r = state.edges.r - tipedges.r
 		}
-		if(tipedges.t < state.edges.t){
+		if (tipedges.t < state.edges.t) {
 			// I haven't had this happen yet, so I'm leaving it for later.
 			console.log('top');
 		}
 
-		tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)' );
+		tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)');
 		// One of adjust.l or adjust.r should always be 0.
 		textbg.attr('x', bound.x - padding + adjust.l + adjust.r)
-			.attr('y', bound.y - padding)
+			.attr('y', tiptext.attr('y') - bound.height + 0.5)
 			.attr('width', bound.width + padding * 2)
 			.attr('height', bound.height + padding * 2);
 	};

@@ -24,7 +24,7 @@
 /* Voronoi Stuff */
 
 
-.hydrotip-show text {
+.hydrotip-show #ht-text {
 	text-anchor: middle;
 	stroke: black;
 	opacity: 1;
@@ -33,9 +33,20 @@
 	font-family: "Times", serif;
 }
 
-.hydrotip-show rect {
+.hydrotip-show #ht-text-background {
 	stroke: none;
 	fill: rgba(71, 181, 176, 0.8);
+}
+
+.hydrotip-show #ht-arrow {
+	stroke: none;
+	fill: rgba(71, 181, 176, 0.8);
+}
+
+.hydrotip-show #ht-point {
+	fill-opacity: unset;
+	fill: rgba(71, 181, 176, 1);
+	stroke: none;
 }
 
 .hydrotip-hide{
