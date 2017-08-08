@@ -1,5 +1,6 @@
 #peakflow_bar {
 	margin: 0 auto;
+	user-select: none;
 }
 
 #peakflow_bar svg {
