@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	'use strict';
 
-	var margin = {bottom: 40, right: 40, left: 40, top: 50};
+	var margin = {bottom: 40, right: 40, left: 45, top: 50};
 	var width = parseInt(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
 	var height = parseInt(400);
 	var data = FV.peakinfo;
