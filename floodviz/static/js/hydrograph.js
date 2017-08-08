@@ -200,6 +200,13 @@ var hydromodule = function (options) {
 			.attr('class', 'axis')
 			.call(d3.axisLeft(scaleY).ticks(10, '.0f'));
 
+		// Label the Y axis
+		svg.append("text")
+			.attr("x", 0 - margin.left)
+			.attr("y", 0 - (margin.top / 2))
+			.style("font-size", "14px")
+			.text("Discharge (cubic feet per second)");
+
 		// Tooltip
 		hydrotip = svg.append('g')
 			.attr('class', 'hydrotip-hide')

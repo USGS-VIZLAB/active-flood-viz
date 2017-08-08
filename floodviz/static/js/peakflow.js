@@ -57,6 +57,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('x', 0 - (height / 2))
 		.attr('y', 0 - (margin.left / 2))
 		.text('Discharge (cfps)');
+	svg.append("text")
+        .attr("x", 0 - margin.left)
+        .attr("y", 0 - (margin.top / 2))
+        .style("font-size", "14px")
+        .text("Discharge (cubic feet per second)");
 
 	// Save last data point as lollipop
 	var lolli_data = data[data.length - 1];
