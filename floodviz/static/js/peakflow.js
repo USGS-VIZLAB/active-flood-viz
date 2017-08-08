@@ -2,33 +2,35 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	'use strict';
 
-	var margin = {bottom: 40, right: 40, left: 40, top: 50};
-	var width = parseInt(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
-	var height = parseInt(400);
+	const margin = {bottom: 40, right: 40, left: 40, top: 50};
+	const width = parseInt(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
+	const height = 400;
 	var data = FV.peakinfo;
 
 	// Collect and set peakflow bar chart aspect ratio data
 	var peakflow_bar = document.getElementById('peakflow_bar');
 	peakflow_bar.style.height = height;
-	peakflow_bar.style.width =  width;
+	peakflow_bar.style.width = width;
 
 
-	var x = d3.scaleBand().rangeRound([0, width]).padding(.5);
-	var y = d3.scaleLinear().range([height, 0]);
+	const scaleX = d3.scaleBand().range([0, width]).padding(.5);
+	const scaleY = d3.scaleLinear().range([height, 0]);
 
-	var xAxis = d3.axisBottom().scale(x);
-	var yAxis = d3.axisLeft().scale(y).ticks(8);
+	const xAxis = d3.axisBottom().scale(scaleX);
+	const yAxis = d3.axisLeft().scale(scaleY).ticks(8);
 
 	var peak_moused_over_bar = {};
 
-	var svg = d3.select('#peakflow_bar').append('svg')
+	const svg = d3.select('#peakflow_bar').append('svg')
 		.attr("preserveAspectRatio", "xMinYMin meet")
-		.attr("viewBox", "0 0 " + (width + margin.right) + " " + (height+ margin.top + margin.bottom))
-		.append('g')
-		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-		.attr('class', 'group');
+		.attr("viewBox", "0 0 " + (width + margin.right) + " " + (height + margin.top + margin.bottom));
 
-	var tooltip = d3.select('body')
+	// All the things added to the graph should be added to this group
+	const graph = svg.append('g')
+		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+		.attr('id', 'graph');
+
+	const tooltip = d3.select('body')
 		.append('div')
 		.attr('class', 'toolTip');
 
@@ -41,16 +43,30 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	});
 	xAxis.tickValues(ticks);
 
-	x.domain(data.map(function (d) {return d.label; }));
-	y.domain([0, d3.max(data, function (d) {return d.value; })]);
+	scaleX.domain(data.map(function (d) {
+		return d.label;
+	}));
+	scaleY.domain([0, d3.max(data, function (d) {
+		return d.value;
+	})]);
 
-	svg.append('g').attr('class', 'axis axis--x').attr('transform', 'translate(0,' + height + ')').call(xAxis)
+	// Add x axis
+	graph.append('g')
+		.attr('class', 'axis-x')
+		.attr('id', 'peak-axis-x')
+		.attr('transform', 'translate(0,' + height + ')')
+		.call(xAxis)
 		.append('text')
 		.attr('text-anchor', 'middle')
 		.attr('x', (width / 2))
-		.attr('y', 0 + (margin.bottom / 2))
+		.attr('y', margin.bottom / 2)
 		.text('Year');
-	svg.append('g').attr('class', 'axis axis--y').call(yAxis)
+
+	// add y axis
+	graph.append('g')
+		.attr('class', 'axis-y')
+		.attr('id', 'peak-axis-y')
+		.call(yAxis)
 		.append('text')
 		.attr('text-anchor', 'middle')
 		.attr('transform', 'rotate(-90)')
@@ -58,63 +74,109 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('y', 0 - (margin.left / 2))
 		.text('Discharge (cfps)');
 
-	// Save last data point as lollipop
-	var lolli_data = data[data.length - 1];
-	// remove last data point for creating bars
-	data = data.slice(0, data.length - 1);
+
+	const display_bars = graph.append('g');
+	const lollipop = graph.append('g')
+		.attr('class', 'lollipop');
+	const hidden_bars = graph.append('g');
+
+	data.forEach(function (d) {
+		hidden_bars.append('rect')
+			.attr('class', 'secret-bar')
+			.attr('x', function () {
+				return (scaleX(d.label) - (scaleX.bandwidth() * (scaleX.padding())));
+			})
+			.attr('y', 0)
+			.attr('width', scaleX.copy().padding(0).bandwidth())
+			.attr('height', height)
+			// tooltip event
+			.on('mouseover', function () {
+				mouseover(tooltip, d, d3.event)
+			})
+			.on('mouseout', function () {
+				mouseout(tooltip, d)
+			});
+	});
+
+	// Save last data point as lollipop, and remove it from data
+	const lolli_data = data.pop();
+
+	lollipop.attr('id', 'peak' + lolli_data.label);
+
+	data.forEach(function (d) {
+		display_bars.append('rect')
+			.attr('class', 'bar')
+			.attr('id', 'peak' + d.label)
+			.attr('x', function () {
+				return scaleX(d.label);
+			})
+			.attr('y', function () {
+				return scaleY(d.value);
+			})
+			.attr('width', scaleX.bandwidth())
+			.attr('height', function () {
+				return height - scaleY(d.value);
+			});
+	});
 
 
-	// Normal Bar value creation
-	svg.selectAll('bar').data(data).enter().append('rect')
-		.attr('class', 'bar')
-		.attr('x', function (d) {return x(d.label); })
-		.attr('y', function (d) {return y(d.value); })
-		.attr('width', x.bandwidth())
-		.attr('height', function (d) {return height - y(d.value); })
-		// tooltip event
-		.on('mousemove', function(d) {mouseover(tooltip, d, d3.event)})
-		.on('mouseout', function() {mouseout(tooltip)});
+	// This line grabs the list of all the bars, then coerces it into an array
+	const bars = Array.prototype.slice.call(d3.select('#peakflow_bar svg').selectAll('.bar')['_groups'][0]);
+	// after this, last_bars will contain the x values from the final 2 bars in the array
+	const last_bars = bars.slice(bars.length - 2).map(function (bar) {
+		return bar.x.baseVal.value;
+	});
+	const padding = last_bars[1] - last_bars[0];
 
 	// create lollipop Stroke and Circle
-	var bars = d3.select('#peakflow_bar svg').selectAll('.bar')['_groups'][0];
-	var last_bar = bars[bars.length - 1];
-	var penultimant_bar = bars[bars.length - 2];
-	var lb_x = last_bar.x.baseVal.value;
-	var slb_x = penultimant_bar.x.baseVal.value;
-	var padding = lb_x - slb_x;
-	var lolli_pos_x = ((lb_x + padding + ((1 / 2) * x.bandwidth())).toString())
-	var lolli_pos_y = (y(lolli_data['value'])).toString()
-	var path_string = 'M ' + lolli_pos_x + ',' + height + ' ' + lolli_pos_x + ',' + lolli_pos_y;
-	svg.append('path')
-		.attr('id', 'lollipop')
-		.attr('stroke-width', 2)
-		.attr('d', path_string)
-		// tooltip event
-		.on('mousemove', function () {mouseover(tooltip, lolli_data, d3.event)})
-		.on('mouseout', function () {mouseout(tooltip)});
+	const lolli_pos_x = ((last_bars[1] + padding + ((1 / 2) * scaleX.bandwidth())).toString());
+	const lolli_pos_y = (scaleY(lolli_data['value'])).toString();
+	const path_string = 'M ' + lolli_pos_x + ',' + height + ' ' + lolli_pos_x + ',' + lolli_pos_y;
 
-	var group = d3.select('#peakflow_bar svg .group');
-	group.append('circle')
-		.attr('class', 'cir')
-		.attr('r', '4.5')
+
+
+	lollipop.append('path')
+		.attr('id', 'lollipop-stem')
+		.attr('stroke-width', 2)
+		.attr('d', path_string);
+
+
+	lollipop.append('circle')
+		.attr('id', 'lollipop-top')
+		.attr('r', 4.5)
 		.attr('cx', lolli_pos_x)
-		.attr('cy', lolli_pos_y)
-		.on('mousemove', function () {mouseover(tooltip, lolli_data, d3.event)})
-		.on('mouseout', function () {mouseout(tooltip)});
+		.attr('cy', lolli_pos_y);
 
 	function mouseover(tooltip, d, event) {
+		const bar = d3.select('#peak' + d.label);
+		if (bar.attr('class').startsWith('lollipop')) {
+			bar.attr('class', 'lollipop-active');
+		}
+		else {
+			bar.attr('class', 'bar-active');
+		}
 		tooltip.transition().duration(500).style('opacity', .9);
 		tooltip.style('display', 'inline-block')
 			.style('left', (event.pageX) + 10 + 'px')
 			.style('top', (event.pageY - 70) + 'px')
 			.html((d.label) + '<br>' + (d.value) + ' cfs');
+
 		// Only log one hover per bar per session
 		if (peak_moused_over_bar[d.label] === undefined) {
 			FV.ga_send_event('Peakflow', 'hover_bar', d.label + '_' + d.value);
 			peak_moused_over_bar[d.label] = true;
 		}
-
 	}
 
-	function mouseout(tooltip) {tooltip.style('display', 'none');}
+	function mouseout(tooltip, d) {
+		const bar = d3.select('#peak' + d.label);
+		if (bar.attr('class').startsWith('lollipop')) {
+			bar.attr('class', 'lollipop');
+		}
+		else {
+			bar.attr('class', 'bar')
+		}
+		tooltip.style('display', 'none');
+
+	}
 });
