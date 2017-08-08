@@ -6,19 +6,34 @@
 	display: block;
 }
 
-#lollipop {
+.lollipop #lollipop-stem {
 	width: .3%;
-	stroke: #7fff00;
+	stroke: steelblue;
 }
 
-.cir {
-	fill: #7FFF00;
+.lollipop-active #lollipop-stem {
+	stroke: #b47846;
+}
+
+.lollipop #lollipop-top {
+	fill: steelblue;
+}
+
+.lollipop-active #lollipop-top{
+	fill: #b47846;
 }
 
 .bar {
 	fill: steelblue;
 }
 
-.bar:hover {
-	fill: #7FFF00;
+.bar-active {
+	fill: #b47846
+}
+
+.secret-bar{
+	fill: red;
+	fill-opacity: 0;
+	stroke: blue;
+	stroke-opacity: 0;
 }
