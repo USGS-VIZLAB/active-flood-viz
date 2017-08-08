@@ -47,7 +47,7 @@ def req_peak_dv_data(site, date, url_prefix):
     url_prefix += 'dv/'
     params = {
         'format': 'rdb',
-        'site_status': 'all',
+        'siteStatus': 'all',
         'sites': site,
         'startDT': date,
         'endDT': date
