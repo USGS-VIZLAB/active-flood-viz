@@ -169,7 +169,7 @@ class TestReqPeakDVData(PeakflowBaseTest):
         self.date = '2008-07-05'
         self.site = '05481950'
         # http://example.com/dv/?format=rdb&sites=05481950&startDT=2008-07-05&endDT=2008-07-05&siteStatus=all
-        self.mock_url = self.prefix + 'dv/' '?format=rdb&sites=' + self.site + '&startDT=' + self.date + '&endDT=' + self.date + '&site_status=all'
+        self.mock_url = self.prefix + 'dv/' '?format=rdb&sites=' + self.site + '&startDT=' + self.date + '&endDT=' + self.date + '&siteStatus=all'
 
     def test_bad_status_code(self):
         with requests_mock.Mocker() as m:

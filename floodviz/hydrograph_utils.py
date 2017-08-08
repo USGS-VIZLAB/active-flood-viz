@@ -37,7 +37,7 @@ def parse_hydrodata(jdata):
                 dt = datetime.strptime(date + ' ' + t, '%Y-%m-%d %H:%M:%S')
                 # Convert to milliseconds for use with d3 x axis format
                 dt_ms = time.mktime(dt.timetuple()) * 1000
-                all_series_data.append({'key': site_id, 'name': site_name, 'date': date, "time": t,
+                all_series_data.append({'key':   site_id, 'name': site_name, 'date': date, "time": t,
                                         'timezone': timezone, "time_mili": dt_ms, 'value': value})
 
     return all_series_data
