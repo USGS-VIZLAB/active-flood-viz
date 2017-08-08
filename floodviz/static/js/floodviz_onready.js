@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function (event) {
 	'use strict';
 
+	const tooltip = tooltip_module(null);
 	// Map options
 	var map_options = {
 		'height': FV.mapinfo.height,
@@ -12,8 +13,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		'rivers_data': FV.mapinfo.rivers_data,
 		'ref_data': FV.mapinfo.ref_data,
 		'site_data': FV.mapinfo.site_data,
-		'div_id': '#map'
+		'div_id': '#map',
+		'show_tooltip': tooltip.show_tooltip
 	};
+
 	// Hydrograph options
 	var hydro_options = {
 		'height': FV.hydrograph_dimensions.height,
