@@ -155,8 +155,8 @@ class TestParseHydroData(unittest.TestCase):
                 "value": "446"
             }]
 
-        # Contains 3 missing "dummy" points for times
-        # between 1211261400000.0 and 1211265000000.0 (incrementing by 900000)
+        #  Contains 3 missing "dummy" points for times between
+        #  1211261400000.0 and 1211265000000.0 (incrementing by 900000).
         self.mock_parsed_data_missing = [
             {'key': '05463500', 'name': 'Black Hawk Creek at Hudson, IA', 'date': '2008-05-20', 'time': '00:00:00',
              'timezone': 'CST', 'time_mili': 1211259600000.0, 'value': '446'},
