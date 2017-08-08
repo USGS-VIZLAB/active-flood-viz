@@ -45,18 +45,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	y.domain([0, d3.max(data, function (d) {return d.value; })]);
 
 	svg.append('g').attr('class', 'axis axis--x').attr('transform', 'translate(0,' + height + ')').call(xAxis)
-		.append('text')
-		.attr('text-anchor', 'middle')
-		.attr('x', (width / 2))
-		.attr('y', 0 + (margin.bottom / 2))
-		.text('Year');
+
 	svg.append('g').attr('class', 'axis axis--y').call(yAxis)
-		.append('text')
-		.attr('text-anchor', 'middle')
-		.attr('transform', 'rotate(-90)')
-		.attr('x', 0 - (height / 2))
-		.attr('y', 0 - (margin.left / 2))
-		.text('Discharge (cfps)');
+
 	svg.append("text")
         .attr("x", 0 - margin.left)
         .attr("y", 0 - (margin.top / 2))
