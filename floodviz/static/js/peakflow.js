@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('id', 'lollipop-top')
 		.attr('cx', lolli_pos_x)
 		.attr('cy', lolli_pos_y);
+	top.attr('r', top.style('r'));
 
 
 	function mouseover(tooltip, d, event) {
