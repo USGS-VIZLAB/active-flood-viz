@@ -72,12 +72,9 @@ class TestReqHydroData(unittest.TestCase):
         self.H_START_DT = '2008-05-20'
         self.H_END_DT = '2008-07-05'
         self.sites = ['05463500', '05471050', '05420680', '05479000', '05484000', '05481000', '05486000', '05421000',
-                      '05485500',
-                      '05455100', '05470500', '05451500', '05458000', '05471000', '05462000', '05457700', '05458500',
-                      '05470000',
-                      '05484500', '05481300', '05464220', '05458900', '05485605', '05463000', '05471200', '05476750',
-                      '05411850',
-                      '05454220', '05481950', '05416900', '05464500', '05487470']
+                      '05485500', '05455100', '05470500', '05451500', '05458000', '05471000', '05462000', '05457700',
+                      '05458500', '05470000', '05484500', '05481300', '05464220', '05458900', '05485605', '05463000',
+                      '05471200', '05476750', '05411850', '05454220', '05481950', '05416900', '05464500', '05487470']
 
     def test_bad_status_code(self):
         with requests_mock.Mocker() as m:
@@ -190,6 +187,13 @@ class TestParseHydroData(unittest.TestCase):
         self.assertAlmostEqual(ret["time_mili"], self.mock_parsed_data[0]["time_mili"], delta=100000000)
         self.assertEqual(ret["value"], self.mock_parsed_data[0]["value"])
 
-    def test_valid_data_missing(self):
+    def test_valid_data_missing_count(self):
         ret = parse_hydrodata(self.mock_data_missing_points)
-        self.assertEqual(ret, self.mock_parsed_data_missing)
+        self.assertEqual(len(ret), len(self.mock_parsed_data_missing))
+
+    def test_valid_data_missing_value(self):
+        ret = parse_hydrodata(self.mock_data_missing_points)
+        for dp in ret:
+            if dp.get('name') is 'no_data':
+                self.assertEqual(dp.get('value'), 'NA')
+                break
