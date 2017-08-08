@@ -139,12 +139,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('d', path_string);
 
 
-	const top = lollipop.append('circle')
+	lollipop.append('circle')
 		.attr('id', 'lollipop-top')
+		.attr('r', 4.5)
 		.attr('cx', lolli_pos_x)
 		.attr('cy', lolli_pos_y);
-	top.attr('r', top.style('r'));
-
 
 	function mouseover(tooltip, d, event) {
 		const bar = d3.select('#peak' + d.label);
