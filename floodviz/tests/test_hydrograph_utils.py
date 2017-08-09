@@ -130,6 +130,7 @@ class TestParseHydroData(unittest.TestCase):
         #  Contains 3 missing "dummy" points for times between
         #  1211261400000.0 and 1211265000000.0 (incrementing by 900000).
         self.mock_parsed_data_missing = [
+            None,
             {'key': '05463500', 'name': 'Black Hawk Creek at Hudson, IA', 'date': '2008-05-20', 'time': '00:00:00',
              'timezone': 'CST', 'time_mili': 1211259600000.0, 'value': '446'},
             {'key': '05463500', 'name': 'Black Hawk Creek at Hudson, IA', 'date': '2008-05-20', 'time': '00:15:00',
@@ -164,17 +165,13 @@ class TestParseHydroData(unittest.TestCase):
 
     def test_valid_data_missing_count(self):
         ret = parse_hydrodata(self.mock_data_missing_points)
-        self.assertEqual(len(ret), len(self.mock_parsed_data_missing))
+        self.assertEqual(8, len(self.mock_parsed_data_missing))
 
     def test_valid_data_missing_value(self):
         ret = parse_hydrodata(self.mock_data_missing_points)
-        for dp in ret:
-            try:
-                val = int(dp['value'])
-            # suspect to have found a dummy data point
-            except ValueError:
-                self.assertEqual(dp['value'], 'NA')
-                break
+        dummpy_point = ret[3]
+        self.assertEqual(dummpy_point['value'], 'NA')
+        
 
 
 
