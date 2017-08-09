@@ -177,17 +177,6 @@ var hydromodule = function (options) {
 				.attr('id', 'hydro' + d.key)
 				.attr('d', line(d.values));
 		});
-		// Make transparent background for lines
-		svg.append('g')
-			.attr('id', 'hydro-background')
-			.append('rect')
-			.attr('x', 0)
-			.attr('y', 0)
-			.attr('height', height)
-			.attr('width', width)
-			.on('dblclick', function () {
-				reset_hydrograph();
-			});
 
 		// Add the X Axis
 		svg.append('g')
@@ -374,6 +363,9 @@ var hydromodule = function (options) {
 		var keep_ids = options.display_ids;
 		keep_ids.splice(options.display_ids.indexOf(sitekey), 1);
 		self.change_lines(keep_ids);
+		if (keep_ids.length === 0) {
+			reset_hydrograph();
+		}
 	};
 	/**
 	 * Update the value of display_ids and call update to redraw the graph to match.
