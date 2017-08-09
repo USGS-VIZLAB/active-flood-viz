@@ -55,7 +55,7 @@ def parse_hydrodata(jdata):
                         while added < num_dummy_points:
                             # correct time for this dummy point
                             new_dt_ms = prev_date_ms + (increment_ms * (added + 1))
-                            all_series_data.append({'key': site_id, 'name': 'no_data', 'date': date, "time": t,
+                            all_series_data.append({'key': site_id, 'name': site_name, 'date': date, "time": t,
                                         'timezone': timezone, "time_mili": new_dt_ms, 'value': 'NA'})
                             added += 1
                 # append regular (not missing) data

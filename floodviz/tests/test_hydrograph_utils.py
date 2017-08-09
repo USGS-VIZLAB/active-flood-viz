@@ -8,64 +8,39 @@ class TestReqHydroData(unittest.TestCase):
         self.mock_response = {
             "value": {"timeSeries": {"sourceInfo": {"siteName": "Black Hawk Creek at Hudson, IA", "siteCode":
                 [{"value": "05463500", "network": "NWIS", "agencyCode": "USGS"}], "timeZoneInfo": {"defaultTimeZone":
-                {
-                    "zoneOffset": "-06:00",
-                    "zoneAbbreviation": "CST"},
-                "daylightSavingsTimeZone": {
-                    "zoneOffset": "-05:00",
-                    "zoneAbbreviation": "CDT"},
-                "siteUsesDaylightSavingsTime": True},
-                                                    "geoLocation": {
-                                                        "geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639,
-                                                                         "longitude": -92.4632451},
-                                                        "localSiteXY": []}, "note": [], "siteType": [],
-                                                    "siteProperty": [{"value": "ST", "name": "siteTypeCd"},
-                                                                     {"value": "07080205", "name": "hucCd"},
-                                                                     {"value": "19", "name": "stateCd"},
-                                                                     {"value": "19013", "name": "countyCd"}]},
-                                     "variable": {"variableCode": [{"value": "00060", "network": "NWIS",
-                                                                    "vocabulary": "NWIS:UnitValues",
-                                                                    "variableID": 45807197, "default": True}],
-                                                  "variableName": "Streamflow, ft&#179;/s", "variableDescription":
-                                                      "Discharge, cubic feet per second", "valueType": "Derived Value",
-                                                  "unit": {"unitCode": "ft3/s"}, "options": {"option":
-                                                                                                 [{"name": "Statistic",
-                                                                                                   "optionCode": "00000"}]},
-                                                  "note": [], "noDataValue": -999999.0, "variableProperty": [],
-                                                  "oid": "45807197"}, "values":
-                                         [{"value": [{"value": "446", "qualifiers": ["A"],
-                                                      "dateTime": "2008-05-20T00:00:00.000-05:00"}]}]}}}
+                {"zoneOffset": "-06:00","zoneAbbreviation": "CST"},"daylightSavingsTimeZone": {"zoneOffset": "-05:00",
+                "zoneAbbreviation": "CDT"}, "siteUsesDaylightSavingsTime": True},
+                "geoLocation": { "geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639,"longitude": -92.4632451},
+                "localSiteXY": []}, "note": [], "siteType": [], "siteProperty": [{"value": "ST", "name": "siteTypeCd"},
+                {"value": "07080205", "name": "hucCd"}, {"value": "19", "name": "stateCd"},
+                {"value": "19013", "name": "countyCd"}]},
+                "variable": {"variableCode": [{"value": "00060", "network": "NWIS",
+                "vocabulary": "NWIS:UnitValues", "variableID": 45807197, "default": True}],
+                "variableName": "Streamflow, ft&#179;/s", "variableDescription":
+                "Discharge, cubic feet per second", "valueType": "Derived Value",
+                "unit": {"unitCode": "ft3/s"}, "options": {"option": [{"name": "Statistic", "optionCode": "00000"}]},
+                "note": [], "noDataValue": -999999.0, "variableProperty": [], "oid": "45807197"}, "values":
+                [{"value": [{"value": "446", "qualifiers": ["A"],
+                "dateTime": "2008-05-20T00:00:00.000-05:00"}]}]}}}
 
         # Returned value is different than the mocked request response because req_hydrodata accessess two extra
         # levels of the dict before returning.
         self.valid_return = {"sourceInfo": {"siteName": "Black Hawk Creek at Hudson, IA", "siteCode":
             [{"value": "05463500", "network": "NWIS", "agencyCode": "USGS"}], "timeZoneInfo": {"defaultTimeZone":
-            {
-                "zoneOffset": "-06:00",
-                "zoneAbbreviation": "CST"},
-            "daylightSavingsTimeZone": {
-                "zoneOffset": "-05:00",
-                "zoneAbbreviation": "CDT"},
-            "siteUsesDaylightSavingsTime": True},
-                                            "geoLocation": {"geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639,
-                                                                             "longitude": -92.4632451},
-                                                            "localSiteXY": []}, "note": [], "siteType": [],
-                                            "siteProperty": [{"value": "ST", "name": "siteTypeCd"},
-                                                             {"value": "07080205", "name": "hucCd"},
-                                                             {"value": "19", "name": "stateCd"},
-                                                             {"value": "19013", "name": "countyCd"}]},
-                             "variable": {"variableCode": [{"value": "00060", "network": "NWIS",
-                                                            "vocabulary": "NWIS:UnitValues", "variableID": 45807197,
-                                                            "default": True}], "variableName": "Streamflow, ft&#179;/s",
-                                          "variableDescription":
-                                              "Discharge, cubic feet per second", "valueType": "Derived Value",
-                                          "unit": {"unitCode": "ft3/s"}, "options": {"option":
-                                                                                         [{"name": "Statistic",
-                                                                                           "optionCode": "00000"}]},
-                                          "note": [], "noDataValue": -999999.0, "variableProperty": [],
-                                          "oid": "45807197"}, "values":
-                                 [{"value": [{"value": "446", "qualifiers": ["A"],
-                                              "dateTime": "2008-05-20T00:00:00.000-05:00"}]}]}
+            {"zoneOffset": "-06:00", "zoneAbbreviation": "CST"}, "daylightSavingsTimeZone": { "zoneOffset": "-05:00",
+            "zoneAbbreviation": "CDT"}, "siteUsesDaylightSavingsTime": True},
+            "geoLocation": {"geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639,
+            "longitude": -92.4632451}, "localSiteXY": []}, "note": [], "siteType": [],
+            "siteProperty": [{"value": "ST", "name": "siteTypeCd"}, {"value": "07080205", "name": "hucCd"},
+            {"value": "19", "name": "stateCd"}, {"value": "19013", "name": "countyCd"}]},
+            "variable": {"variableCode": [{"value": "00060", "network": "NWIS",
+            "vocabulary": "NWIS:UnitValues", "variableID": 45807197,
+            "default": True}], "variableName": "Streamflow, ft&#179;/s",
+            "variableDescription": "Discharge, cubic feet per second", "valueType": "Derived Value",
+            "unit": {"unitCode": "ft3/s"}, "options": {"option": [{"name": "Statistic",
+            "optionCode": "00000"}]}, "note": [], "noDataValue": -999999.0, "variableProperty": [],
+            "oid": "45807197"}, "values": [{"value": [{"value": "446", "qualifiers": ["A"],
+            "dateTime": "2008-05-20T00:00:00.000-05:00"}]}]}
 
         self.mock_url = 'http://somethingfake.notadomain/iv/?site=05463500&startDT=2008-05-20&endDT=2008-07-05&parameterCD=00060&format=json'
         self.prefix = 'http://somethingfake.notadomain/'
@@ -161,12 +136,12 @@ class TestParseHydroData(unittest.TestCase):
              'timezone': 'CST', 'time_mili': 1211260500000.0, 'value': '446'},
             {'key': '05463500', 'name': 'Black Hawk Creek at Hudson, IA', 'date': '2008-05-20', 'time': '00:30:00',
              'timezone': 'CST', 'time_mili': 1211261400000.0, 'value': '446'},
-            {'key': '05463500', 'name': 'no_data', 'date': '2008-05-20', 'time': '01:30:00', 'timezone': 'CST',
-             'time_mili': 1211262300000.0, 'value': 'NA'},
-            {'key': '05463500', 'name': 'no_data', 'date': '2008-05-20', 'time': '01:30:00', 'timezone': 'CST',
-             'time_mili': 1211263200000.0, 'value': 'NA'},
-            {'key': '05463500', 'name': 'no_data', 'date': '2008-05-20', 'time': '01:30:00', 'timezone': 'CST',
-             'time_mili': 1211264100000.0, 'value': 'NA'},
+            {'key': '05463500', 'name': 'Black Hawk Creek at Hudson, IA', 'date': '2008-05-20', 'time': '01:30:00',
+             'timezone': 'CST', 'time_mili': 1211262300000.0, 'value': 'NA'},
+            {'key': '05463500', 'name': 'Black Hawk Creek at Hudson, IA', 'date': '2008-05-20', 'time': '01:30:00',
+             'timezone': 'CST', 'time_mili': 1211263200000.0, 'value': 'NA'},
+            {'key': '05463500', 'name': 'Black Hawk Creek at Hudson, IA', 'date': '2008-05-20', 'time': '01:30:00',
+             'timezone': 'CST', 'time_mili': 1211264100000.0, 'value': 'NA'},
             {'key': '05463500', 'name': 'Black Hawk Creek at Hudson, IA', 'date': '2008-05-20', 'time': '01:30:00',
              'timezone': 'CST', 'time_mili': 1211265000000.0, 'value': '834'}]
 
@@ -194,6 +169,12 @@ class TestParseHydroData(unittest.TestCase):
     def test_valid_data_missing_value(self):
         ret = parse_hydrodata(self.mock_data_missing_points)
         for dp in ret:
-            if dp.get('name') is 'no_data':
-                self.assertEqual(dp.get('value'), 'NA')
+            try:
+                val = int(dp['value'])
+            # suspect to have found a dummy data point
+            except ValueError:
+                self.assertEqual(dp['value'], 'NA')
                 break
+
+
+
