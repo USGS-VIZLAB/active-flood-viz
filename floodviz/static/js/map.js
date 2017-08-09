@@ -363,11 +363,6 @@
 			 * Shows sitename tooltip on map figure at correct location.
 			 */
 			self.site_tooltip_show = function (sitename, sitekey) {
-				const padding = 4;
-				const arrowheight = 17;
-
-				const sidelength = arrowheight / 0.866;
-
 
 				const gage = d3.select('#map' + sitekey);
 				const gagelocation = {
@@ -375,80 +370,15 @@
 					y: parseFloat(gage.attr('cy'))
 				};
 
-
-				maptip.attr('transform', 'translate(' + gagelocation.x + ', ' + gagelocation.y + ')')
-					.attr('class', 'maptip-show');
-				const tiptext = maptip.select('#mt-text');
-
-				// I have to set the text before I can check if it collides with the edges,
-				// but I can check if it collides with the top without bumping it up; I only use its height.
-				tiptext.html(sitename);
-
-				const textbg = maptip.select('#mt-text-background');
-				const textbound = tiptext._groups[0][0].getBBox();
-
-				const tipedges = {
-					l: gagelocation.x - textbound.width / 2,
-					r: gagelocation.x + textbound.width / 2,
-					t: gagelocation.y - textbound.height - arrowheight
+				const tooltip_elements = {
+					group: maptip,
+					text: maptip.select('#mt-text'),
+					backdrop: maptip.select('#mt-text-background'),
+					arrow: maptip.select('#mt-arrow')
 				};
-
-				/*
-				* EXPLANATION OF `t`.
-				* t for Top. This is set to -1 to draw the tooltip under the gage rather than above it.
-				* In many places I was negating positive values (eg -x) before use to yield and upward offset.
-				* In those places I now use (-t * x) to achieve an upward offset when t = 1
-				* and a downward offset when t = -1.
-				*/
-				var adjust = {
-					'l': 0,
-					'r': 0,
-					't': 1
-				};
-
-				if (tipedges.l < state.edges.l) {
-					// this will be positive so it will be a shift to the right
-					adjust.l = state.edges.l - tipedges.l
-				}
-				else if (tipedges.r > state.edges.r) {
-					// this will be negative, so a shift to the left
-					adjust.r = state.edges.r - tipedges.r
-				}
-				if (tipedges.t < state.edges.t) {
-					// set t to -1 so that the tooltip will bw drawn under the gage.
-					adjust.t = -1
-				}
-
-				const points = [[0, 0], [-(sidelength / 2), -adjust.t * arrowheight], [(sidelength / 2), -adjust.t * arrowheight], [0, 0]];
-
-				// turn points array into string
-				var arrowpoints = '';
-				points.forEach(function (p) {
-					arrowpoints += p[0] + ' ' + p[1] + ',';
-				});
-				arrowpoints = arrowpoints.substring(0, arrowpoints.length - 1);
-
-				const arrow = maptip.select('#mt-arrow');
-				arrow.attr('points', arrowpoints);
-
-				tiptext.attr('y', (-adjust.t * (arrowheight + padding * 2)));
-				/*
-				 * The y on the text points to the upper edge, so it requires a bit of adjustment when showing
-				 * the tooltip below the gage.
-				 * I think this is better than adding some byzantine math to the initial setting.
-				 */
-				if(adjust.t === -1){
-					var scootdist = parseFloat(tiptext.attr('y'));
-					scootdist += textbound.height / 2;
-					tiptext.attr('y', scootdist);
-				}
-
-				tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)');
-				// One of adjust.l or adjust.r should always be 0.
-				textbg.attr('x', textbound.x - padding + adjust.l + adjust.r)
-					.attr('y', tiptext.attr('y') - textbound.height + (adjust.t * 0.5))
-					.attr('width', textbound.width + padding * 2)
-					.attr('height', textbound.height + padding * 2);
+				const textstring = sitename;
+				const visible_class = 'maptip-show';
+				FV.show_tooltip(tooltip_elements, textstring, state.edges, gagelocation, visible_class);
 
 			};
 			/**
