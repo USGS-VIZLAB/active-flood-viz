@@ -6,6 +6,7 @@
  *        @prop 'width' v(int) - width of the graph
  *        @prop 'div_id' v(string) - id for the container for this graph
  *        @prop 'display_ids' v(list) - default series to show on hydrograph
+ *        @prop 'disableInteractions' v(boolean) - disables interactions between hydrograph and map
  *
  * hydromodule is a module for creating hydrographs using d3. Pass it a javascript object
  * specifying config options for the graph. Call init() to create the graph. Linked
@@ -15,6 +16,7 @@
 var hydromodule = function (options) {
 	var self = {};
 	var data_global = null;
+	var disableInteractions = options.disableInteractions;
 
 	var state = {};
 
@@ -91,11 +93,15 @@ var hydromodule = function (options) {
 	var reset_hydrograph = function () {
 		options.display_ids.forEach(function (id) {
 			if (default_display_ids.indexOf(id) === -1) {
-				self.linked_interactions.click(id);
+				if (!disableInteractions) {
+					self.linked_interactions.click(id);
+				}
 			}
 		});
 		default_display_ids.forEach(function (id) {
-			self.linked_interactions.accent_on_map(id);
+			if (!disableInteractions) {
+				self.linked_interactions.accent_on_map(id);
+			}
 		});
 		// use array.slice() with no parameters to deep copy
 		self.change_lines(default_display_ids.slice());
@@ -227,7 +233,9 @@ var hydromodule = function (options) {
 				return d ? 'M' + d.join('L') + 'Z' : null;
 			})
 			.on('mouseover', function (d) {
-				self.linked_interactions.hover_in(d.data.name, d.data.key);
+				if (!disableInteractions) {
+					self.linked_interactions.hover_in(d.data.name, d.data.key);
+				}
 				self.activate_line(d.data.key);
 				self.series_tooltip_show(d);
 				// Only log first hover of hydrograph per session
@@ -237,7 +245,9 @@ var hydromodule = function (options) {
 				}
 			})
 			.on('mouseout', function (d) {
-				self.linked_interactions.hover_out();
+				if (!disableInteractions) {
+					self.linked_interactions.hover_out();
+				}
 				self.deactivate_line(d.data.key);
 				self.series_tooltip_remove(d.data.key);
 			})
@@ -250,8 +260,10 @@ var hydromodule = function (options) {
 				else {
 					dblclick_armed = true;
 					timer = setTimeout(function () {
-						self.linked_interactions.click(d.data.key);
-						self.linked_interactions.hover_out(d.data.key);
+						if (!disableInteractions) {
+							self.linked_interactions.click(d.data.key);
+							self.linked_interactions.hover_out(d.data.key);
+						}
 						self.remove_series(d.data.key);
 						dblclick_armed = false;
 					}, 200);
@@ -277,7 +289,9 @@ var hydromodule = function (options) {
 		data_global = data;
 		// use array.slice() to deep copy
 		default_display_ids = options.display_ids.slice();
-		self.linked_interactions = linked_interactions;
+		if (!disableInteractions) {
+			self.linked_interactions = linked_interactions;
+		}
 		update();
 	};
 	/**
@@ -291,70 +305,27 @@ var hydromodule = function (options) {
 	 * corresponding map site tooltip.
 	 */
 	self.series_tooltip_show = function (d) {
-		const padding = 4;
 		const scaled = {
 			x: scaleX(d.data.time_mili),
 			y: scaleY(d.data.value)
 		};
 
-		hydrotip.attr('transform', 'translate(' + scaleX(d.data.time_mili) + ',' + scaleY(d.data.value) + ')')
-			.attr('class', 'hydrotip-show');
-		const arrowheight = 17;
-		// sin 60 = sqrt(3)/2 =~ 0.866. Ie, an equilateral triangle of height sqrt(3) will have sides of length 2.
-		// So an equilateral triangle with height x will have sides of length x / 0.866
-		const sidelength = arrowheight / 0.866;
-		const points = [[0, 0], [-(sidelength / 2), -arrowheight], [(sidelength / 2), -arrowheight], [0, 0]];
-
-		// turn points array into string
-		var arrowpoints = '';
-		points.forEach(function (p) {
-			arrowpoints += p[0] + ' ' + p[1] + ',';
-		});
-		arrowpoints = arrowpoints.substring(0, arrowpoints.length - 1);
-
 		const arrow = hydrotip.select('#ht-arrow');
-		arrow.attr('points', arrowpoints);
-
 		const tiptext = hydrotip.select('#ht-text');
-		tiptext.html(d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone)
-			.attr('y', -(arrowheight + padding * 2));
-
 		const textbg = hydrotip.select('#ht-text-background');
-		const bound = tiptext._groups[0][0].getBBox();
 
-		// Find the edges of the tooltip (left, right, and top)
-		const tipedges = {
-			'l': scaled.x - bound.width / 2,
-			'r': scaled.x + bound.width / 2,
-			't': scaled.y - bound.height - arrowheight
+		const tooltip_elements = {
+			group: hydrotip,
+			text: tiptext,
+			backdrop: textbg,
+			arrow: arrow
 		};
 
-		// store how much the tooltip has to be adjusted by to stay entirely visible
-		var adjust = {
-			'l': 0,
-			'r': 0,
-			't': 0
-		};
+		const visible_class = 'hydrotip-show';
+		const textstring = d.data.key + ': ' + d.data.value + ' cfs ' + ' ' + d.data.time + ' ' + d.data.timezone;
 
-		if (tipedges.l < state.edges.l) {
-			// this will be positive so it will be a shift to the right
-			adjust.l = state.edges.l - tipedges.l
-		}
-		else if (tipedges.r > state.edges.r) {
-			// this will be negative, so a shift to the left
-			adjust.r = state.edges.r - tipedges.r
-		}
-		if (tipedges.t < state.edges.t) {
-			// I haven't had this happen yet, so I'm leaving it for later.
-			console.log('top');
-		}
+		FV.show_tooltip(tooltip_elements, textstring, state.edges, scaled, visible_class);
 
-		tiptext.attr('transform', 'translate(' + (adjust.l + adjust.r) + ', 0)');
-		// One of adjust.l or adjust.r should always be 0.
-		textbg.attr('x', bound.x - padding + adjust.l + adjust.r)
-			.attr('y', tiptext.attr('y') - bound.height + 0.5)
-			.attr('width', bound.width + padding * 2)
-			.attr('height', bound.height + padding * 2);
 	};
 
 	/**

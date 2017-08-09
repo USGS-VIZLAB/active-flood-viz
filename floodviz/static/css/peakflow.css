@@ -32,6 +32,16 @@
 	fill: #b47846
 }
 
+.toolTip {
+	position: absolute;
+	display: none;
+	min-width: 80px;
+	height: auto;
+	background: none repeat scroll 0 0 #ffffff;
+	border: 1px solid #7FFF00;
+	padding: 14px;
+	text-align: center;
+}
 .secret-bar{
 	fill: red;
 	fill-opacity: 0;

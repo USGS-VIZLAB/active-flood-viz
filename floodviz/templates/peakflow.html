@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" type="text/css"
+		  href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.css') }}"/>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}"/>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/peakflow.css') }}" />
+	<title>Peakflow</title>
+
+	{%  include 'google_analytics.html' %}
+
+</head>
+
+<body>
+
+	<div class="main-content container">
+		<div id="peakflow_bar"></div>
+	</div>
+
+	<script type="text/javascript">
+		// Global Namespace for project - FV
+		var FV = FV || {};
+		FV.config ={
+			debug: {{ config.DEBUG | tojson | safe }}
+		};
+
+		FV.peakmeta = {{ config.PEAK_META | safe }};
+		FV.peakinfo = {{ peakinfo | tojson | safe }};
+
+	</script>
+
+	<script type="text/javascript"
+			src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+	<script type="text/javascript"
+			src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/d3/d3.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/peakflow.js') }}"></script>
+</body>
+</html>
