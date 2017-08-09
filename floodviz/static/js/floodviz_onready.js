@@ -73,7 +73,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		'hover_in': map_figure.site_tooltip_show,
 		'hover_out': map_figure.site_tooltip_remove,
 		'click': map_figure.site_remove_accent,
-		'accent_on_map': map_figure.site_add_accent
+		'accent_on_map': map_figure.site_add_accent,
+		'update_map_display_ids': map_figure.update_hydrograph_display_ids
 	};
 	var hydro_to_map = {
 		'hover_in': hydro_figure.activate_line,

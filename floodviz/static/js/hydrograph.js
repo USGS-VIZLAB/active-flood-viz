@@ -352,6 +352,9 @@ var hydromodule = function (options) {
 	 */
 	self.change_lines = function (new_display_ids) {
 		options.display_ids = new_display_ids;
+		if (!disableInteractions){
+			self.linked_interactions.update_map_display_ids(new_display_ids);
+		}
 		update();
 	};
 	/**

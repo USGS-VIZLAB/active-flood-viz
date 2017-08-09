@@ -424,6 +424,15 @@
 				state.gages[sitekey].accent = true;
 				d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
 			};
+
+			/**
+			 * Update the map's copy of which sites are displayed on the hydrograph
+			 * @param new_display_ids {Array} The new list of sites being displayed on the hydrograph
+			 */
+			self.update_hydrograph_display_ids = function(new_display_ids){
+				state.hydrograph_display_ids = new_display_ids;
+			};
+
 			return self;
 		};
 	}()
