@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	'use strict';
 
-	const margin = {bottom: 40, right: 40, left: 40, top: 50};
-	const width = parseInt(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
-	const height = 400;
+	var margin = {bottom: 40, right: 40, left: 45, top: 50};
+	var width = parseInt(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
+	var height = parseInt(400);
 	var data = FV.peakinfo;
 
 	// Collect and set peakflow bar chart aspect ratio data
@@ -29,6 +29,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	const graph = svg.append('g')
 		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 		.attr('id', 'graph');
+
+	const edges = {
+			'l': -(margin.left + margin.right),
+			'r': width + margin.right,
+			't': -(margin.top + margin.bottom)
+		};
 
 	const tooltip = d3.select('body')
 		.append('div')
@@ -74,11 +80,28 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('y', 0 - (margin.left / 2))
 		.text('Discharge (cfps)');
 
+	graph.append("text")
+        .attr("x", 0 - margin.left)
+        .attr("y", 0 - (margin.top / 2))
+        .style("font-size", "14px")
+        .text("Discharge (cubic feet per second)");
+
 
 	const display_bars = graph.append('g');
 	const lollipop = graph.append('g')
 		.attr('class', 'lollipop');
 	const hidden_bars = graph.append('g');
+
+	const peaktip = graph.append('g')
+		.attr('id', 'peaktip')
+		.attr('class', 'peaktip-hide');
+	// I'm abbreviating 'peaktip' to 'pt' in these IDs to clarify that these are in the 'peaktip' group
+	peaktip.append('rect')
+		.attr('id', 'pt-text-background');
+	peaktip.append('polyline')
+		.attr('id', 'pt-arrow');
+	peaktip.append('text')
+		.attr('id', 'pt-text');
 
 	data.forEach(function (d) {
 		hidden_bars.append('rect')
@@ -91,7 +114,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			.attr('height', height)
 			// tooltip event
 			.on('mouseover', function () {
-				mouseover(tooltip, d, d3.event)
+				const point = d3.mouse(this);
+				mouseover(tooltip, d, point)
 			})
 			.on('mouseout', function () {
 				mouseout(tooltip, d)
@@ -147,7 +171,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('cx', lolli_pos_x)
 		.attr('cy', lolli_pos_y);
 
-	function mouseover(tooltip, d, event) {
+	function mouseover(tooltip, d, point) {
+		// Find and highlight the bar
 		const bar = d3.select('#peak' + d.label);
 		if (bar.attr('class').startsWith('lollipop')) {
 			bar.attr('class', 'lollipop-active');
@@ -155,11 +180,27 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		else {
 			bar.attr('class', 'bar-active');
 		}
-		tooltip.transition().duration(500).style('opacity', .9);
-		tooltip.style('display', 'inline-block')
-			.style('left', (event.pageX) + 10 + 'px')
-			.style('top', (event.pageY - 70) + 'px')
-			.html((d.label) + '<br>' + (d.value) + ' cfs');
+
+		// Assemble elements for tooltip
+		const tiptext = peaktip.select('#pt-text');
+		const textbg = peaktip.select('#pt-text-background');
+		const arrow = peaktip.select('#pt-arrow');
+		const tooltip_elements = {
+			group: peaktip,
+			text: tiptext,
+			backdrop: textbg,
+			arrow: arrow
+		};
+
+		const visible_class = 'peaktip-show';
+		const textstring = d.label + ' - ' + d.value + ' cfs';
+
+		const center = {
+			x: point[0],
+			y: point[1]
+		};
+
+		FV.show_tooltip(tooltip_elements, textstring, edges, center, visible_class);
 
 		// Only log one hover per bar per session
 		if (peak_moused_over_bar[d.label] === undefined) {
@@ -176,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		else {
 			bar.attr('class', 'bar')
 		}
-		tooltip.style('display', 'none');
+		peaktip.attr('class', 'peaktip-hide');
 
 	}
 });
