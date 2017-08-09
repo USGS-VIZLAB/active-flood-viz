@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		else {
 			bar.attr('class', 'bar')
 		}
-		tooltip.style('display', 'none');
+		peaktip.attr('class', 'peaktip-hide');
 
 	}
 });
