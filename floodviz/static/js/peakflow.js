@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	'use strict';
 
-	const margin = {bottom: 40, right: 40, left: 40, top: 50};
-	const width = parseInt(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
-	const height = 400;
+	var margin = {bottom: 40, right: 40, left: 45, top: 50};
+	var width = parseInt(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
+	var height = parseInt(400);
 	var data = FV.peakinfo;
 
 	// Collect and set peakflow bar chart aspect ratio data
@@ -79,6 +79,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('x', 0 - (height / 2))
 		.attr('y', 0 - (margin.left / 2))
 		.text('Discharge (cfps)');
+
+	graph.append("text")
+        .attr("x", 0 - margin.left)
+        .attr("y", 0 - (margin.top / 2))
+        .style("font-size", "14px")
+        .text("Discharge (cubic feet per second)");
 
 
 	const display_bars = graph.append('g');
