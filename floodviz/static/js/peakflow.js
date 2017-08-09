@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	const scaleX = d3.scaleBand().range([0, width]).padding(.5);
 	const scaleY = d3.scaleLinear().range([height, 0]);
 
-	const xAxis = d3.axisBottom().scale(scaleX);
-	const yAxis = d3.axisLeft().scale(scaleY).ticks(8);
+	const xAxis = d3.axisBottom().scale(scaleX).tickSizeOuter(0);
+	const yAxis = d3.axisLeft().scale(scaleY).ticks(8).tickSizeOuter(0);
 
 	var peak_moused_over_bar = {};
 
