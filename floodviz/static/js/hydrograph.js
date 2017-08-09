@@ -6,6 +6,7 @@
  *        @prop 'width' v(int) - width of the graph
  *        @prop 'div_id' v(string) - id for the container for this graph
  *        @prop 'display_ids' v(list) - default series to show on hydrograph
+ *        @prop 'disableInteractions' v(boolean) - disables interactions between hydrograph and map
  *
  * hydromodule is a module for creating hydrographs using d3. Pass it a javascript object
  * specifying config options for the graph. Call init() to create the graph. Linked
@@ -15,6 +16,7 @@
 var hydromodule = function (options) {
 	var self = {};
 	var data_global = null;
+	var disableInteractions = options.disableInteractions;
 
 	var state = {};
 
@@ -91,11 +93,15 @@ var hydromodule = function (options) {
 	var reset_hydrograph = function () {
 		options.display_ids.forEach(function (id) {
 			if (default_display_ids.indexOf(id) === -1) {
-				self.linked_interactions.click(id);
+				if (!disableInteractions) {
+					self.linked_interactions.click(id);
+				}
 			}
 		});
 		default_display_ids.forEach(function (id) {
-			self.linked_interactions.accent_on_map(id);
+			if (!disableInteractions) {
+				self.linked_interactions.accent_on_map(id);
+			}
 		});
 		// use array.slice() with no parameters to deep copy
 		self.change_lines(default_display_ids.slice());
@@ -227,7 +233,9 @@ var hydromodule = function (options) {
 				return d ? 'M' + d.join('L') + 'Z' : null;
 			})
 			.on('mouseover', function (d) {
-				self.linked_interactions.hover_in(d.data.name, d.data.key);
+				if (!disableInteractions) {
+					self.linked_interactions.hover_in(d.data.name, d.data.key);
+				}
 				self.activate_line(d.data.key);
 				self.series_tooltip_show(d);
 				// Only log first hover of hydrograph per session
@@ -237,7 +245,9 @@ var hydromodule = function (options) {
 				}
 			})
 			.on('mouseout', function (d) {
-				self.linked_interactions.hover_out();
+				if (!disableInteractions) {
+					self.linked_interactions.hover_out();
+				}
 				self.deactivate_line(d.data.key);
 				self.series_tooltip_remove(d.data.key);
 			})
@@ -250,8 +260,10 @@ var hydromodule = function (options) {
 				else {
 					dblclick_armed = true;
 					timer = setTimeout(function () {
-						self.linked_interactions.click(d.data.key);
-						self.linked_interactions.hover_out(d.data.key);
+						if (!disableInteractions) {
+							self.linked_interactions.click(d.data.key);
+							self.linked_interactions.hover_out(d.data.key);
+						}
 						self.remove_series(d.data.key);
 						dblclick_armed = false;
 					}, 200);
@@ -277,7 +289,9 @@ var hydromodule = function (options) {
 		data_global = data;
 		// use array.slice() to deep copy
 		default_display_ids = options.display_ids.slice();
-		self.linked_interactions = linked_interactions;
+		if (!disableInteractions) {
+			self.linked_interactions = linked_interactions;
+		}
 		update();
 	};
 	/**

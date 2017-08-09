@@ -14,6 +14,7 @@
 		 *    @prop 'ref_data' v(javascript object) - reference data
 		 *    @prop 'site_data' v(javascript object) - site data
 		 *    @prop 'div_id' v(string) - id for the container for this graph
+		 *    @prop 'disableInteractions' v(boolean) - disables interactions between hydrograph and map
 		 *
 		 * mapmodule is a module for creating maps using d3. Pass it a javascript object
 		 * specifying config options for the map. Call init() to create the map. Linked
@@ -31,6 +32,9 @@
 		FV.mapmodule = function (options) {
 
 			var self = {};
+
+			//governs whether map=hydrograph interactions will be turned on
+			var disableInteractions = options.disableInteractions;
 
 			// Stores SVG coordinates of gages and the size and location of the selection box
 			var state = {};
@@ -119,15 +123,21 @@
 				if (being_displayed === true) {
 					self.site_remove_accent(sitekey);
 					new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
-					self.linked_interactions.hover_out(sitekey);
+					if (!disableInteractions) {
+						self.linked_interactions.hover_out(sitekey);
+					}
 				}
 				else {
 					self.site_add_accent(sitekey);
 					new_display_ids.push(sitekey);
+					if (!disableInteractions) {
+						self.linked_interactions.hover_in(sitekey);
+					}
+				}
+				if (!disableInteractions) {
+					self.linked_interactions.click(new_display_ids);
 					self.linked_interactions.hover_in(sitekey);
 				}
-				self.linked_interactions.click(new_display_ids);
-				self.linked_interactions.hover_in(sitekey);
 			};
 
 			/**
@@ -237,7 +247,9 @@
 							self.site_add_accent(key);
 						}
 					});
-					self.linked_interactions.click(selected);
+					if (!disableInteractions) {
+						self.linked_interactions.click(selected);
+					}
 					FV.ga_send_event('Map', 'drag_select', selected.join(','));
 				}
 				state.box = {};
@@ -256,7 +268,9 @@
 			 */
 			self.init = function (linked_interactions) {
 
-				self.linked_interactions = linked_interactions;
+				if (!disableInteractions) {
+					self.linked_interactions = linked_interactions;
+				}
 
 				if (svg !== null) {
 					d3.select(options.div_id).select('svg').remove();
@@ -274,20 +288,22 @@
 
 
 				// Define the drag behavior to be used for the selection box
-				var drag = d3.drag()
-					.on('start', function () {
-						var p = d3.mouse(this);
-						select_box_start(p);
-					})
-					.on('drag', function () {
-						var p = d3.mouse(this);
-						select_box_drag(p);
-					})
-					.on('end', function () {
-						select_box_end();
-					});
+				if (!disableInteractions) {
+					var drag = d3.drag()
+						.on('start', function () {
+							var p = d3.mouse(this);
+							select_box_start(p);
+						})
+						.on('drag', function () {
+							var p = d3.mouse(this);
+							select_box_drag(p);
+						})
+						.on('end', function () {
+							select_box_end();
+						});
 
-				svg.call(drag);
+					svg.call(drag);
+				}
 
 				// set bounding box to values provided
 				var b = path.bounds(options.bounds);
@@ -316,8 +332,10 @@
 				sites.selectAll('circle')
 					.on('mouseover', function (d) {
 						self.site_tooltip_show(d.properties.name, d.properties.id);
-						self.linked_interactions.hover_in(d.properties.id);
-						// Only log first hover of gage point per session
+						if (!disableInteractions) {
+							self.linked_interactions.hover_in(d.properties.id);
+						}
+;						// Only log first hover of gage point per session
 						if (map_moused_over_gage[d.properties.id] === undefined) {
 							FV.ga_send_event('Map', 'hover_gage', d.properties.id);
 							map_moused_over_gage[d.properties.id] = true;
@@ -325,21 +343,26 @@
 					})
 					.on('mouseout', function (d) {
 						self.site_tooltip_remove();
-						self.linked_interactions.hover_out(d.properties.id);
+						if (!disableInteractions) {
+							self.linked_interactions.hover_out(d.properties.id);
+						}
 					})
 					.on('click', function (d) {
-						toggle_hydrograph_display(d.properties.id);
-						FV.ga_send_event('Map', 'gage_click_on', d.properties.id);
+						if (!disableInteractions) {
+							toggle_hydrograph_display(d.properties.id);
+							FV.ga_send_event('Map', 'gage_click_on', d.properties.id);
+						}
 					})
 					.on('mousedown', function () {
 						d3.event.stopPropagation();
 					});
-
-				sites.selectAll('circle').each(function (d) {
-					if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
-						self.site_add_accent(d.properties.id);
-					}
-				});
+				if (!disableInteractions) {
+					sites.selectAll('circle').each(function (d) {
+						if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
+							self.site_add_accent(d.properties.id);
+						}
+					});
+				}
 
 				// Debug points
 				if (FV.config.debug) {
