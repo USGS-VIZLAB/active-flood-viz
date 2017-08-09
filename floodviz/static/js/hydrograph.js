@@ -164,9 +164,8 @@ var hydromodule = function (options) {
 		scaleX.domain(d3.extent(graph_data, function (d) {
 			return d.time_mili;
 		}));
-		scaleY.domain([d3.min(graph_data, function (d) {
-			return d.value;
-		}), d3.max(graph_data, function (d) {
+		scaleY.domain([0,
+			d3.max(graph_data, function (d) {
 			return d.value;
 		})]);
 		// Nest the entries by site number
