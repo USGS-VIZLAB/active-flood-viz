@@ -34,6 +34,7 @@
 
 			// Stores SVG coordinates of gages and the size and location of the selection box
 			var state = {};
+			state.hydrograph_display_ids = options.hydrograph_display_ids;
 
 			var height = 350;
 			var width = 550 * options.width / options.height;
@@ -114,8 +115,8 @@
 			 * @param sitekey THe ID of the gage in question
 			 */
 			var toggle_hydrograph_display = function (sitekey) {
-				var new_display_ids = FV.hydrograph_display_ids;
-				var being_displayed = new_display_ids.indexOf(sitekey) !== -1;
+				var new_display_ids = state.hydrograph_display_ids;
+				const being_displayed = new_display_ids.indexOf(sitekey) !== -1;
 				if (being_displayed === true) {
 					self.site_remove_accent(sitekey);
 					new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
@@ -222,7 +223,7 @@
 						x: NW.x + state.box.width,
 						y: NW.y + state.box.height
 					};
-					var selected = FV.hydrograph_display_ids;
+					var selected = state.hydrograph_display_ids;
 
 					const keys = Object.keys(state.gages);
 
@@ -336,7 +337,7 @@
 					});
 
 				sites.selectAll('circle').each(function (d) {
-					if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
+					if (state.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
 						self.site_add_accent(d.properties.id);
 					}
 				});
@@ -470,7 +471,6 @@
 				state.gages[sitekey].accent = true;
 				d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
 			};
-
 			return self;
 		};
 	}()

@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		'rivers_data': FV.mapinfo.rivers_data,
 		'ref_data': FV.mapinfo.ref_data,
 		'site_data': FV.mapinfo.site_data,
-		'div_id': '#map'
+		'div_id': '#map',
+		'hydrograph_display_ids': FV.hydrograph_display_ids
 	};
 	// Hydrograph options
 	var hydro_options = {
