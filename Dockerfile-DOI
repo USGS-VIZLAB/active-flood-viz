@@ -1,5 +1,4 @@
 FROM debian:stretch
-MAINTAINER James McFeeters "jmcfeeters@usgs.gov"
 
 ARG config
 ARG ref
