@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		'ref_data': FV.mapinfo.ref_data,
 		'site_data': FV.mapinfo.site_data,
 		'div_id': '#map',
-		'hydrograph_display_ids': FV.hydrograph_display_ids
+		'site_display_ids': FV.hydrograph_display_ids
 	};
 
 	// Hydrograph options

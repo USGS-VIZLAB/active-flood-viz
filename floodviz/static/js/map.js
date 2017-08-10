@@ -38,7 +38,7 @@
 
 			// Stores SVG coordinates of gages and the size and location of the selection box
 			var state = {};
-			state.hydrograph_display_ids = options.hydrograph_display_ids;
+			state.hydrograph_display_ids = options.site_display_ids;
 
 			var height = 350;
 			var width = 550 * options.width / options.height;
@@ -336,7 +336,7 @@
 						if (!disableInteractions) {
 							self.linked_interactions.hover_in(d.properties.id);
 						}
-;						// Only log first hover of gage point per session
+						// Only log first hover of gage point per session
 						if (map_moused_over_gage[d.properties.id] === undefined) {
 							FV.ga_send_event('Map', 'hover_gage', d.properties.id);
 							map_moused_over_gage[d.properties.id] = true;
