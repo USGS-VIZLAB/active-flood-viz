@@ -102,3 +102,8 @@
     stroke-linejoin: round;
     stroke-miterlimit: 10.00;
 }
+
+.btn {
+	position: absolute;
+
+}

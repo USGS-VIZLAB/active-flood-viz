@@ -107,6 +107,10 @@ var hydromodule = function (options) {
 		self.change_lines(default_display_ids.slice());
 	};
 
+	var button = d3.select(".btn");
+	button.on('click', function() {reset_hydrograph();});
+
+
 	/**
 	 *
 	 * Draws the svg, scales the range of the data, and draws the line for each site
@@ -194,6 +198,15 @@ var hydromodule = function (options) {
 		svg.append('g')
 			.attr('class', 'axis')
 			.call(d3.axisLeft(scaleY).ticks(10, '.0f').tickSizeOuter(0));
+
+
+		// svg.append("rect")
+		// 	.attr("x", margin.right-100)
+		// 	.attr("y", 0 - (margin.top / 2))
+		// 	.attr("type", "button")
+		// 	.attr("name", "reset")
+		// 	.attr("value", "reset")
+		// 	.on("click", function() {reset_hydrograph();});
 
 		// Tooltip
 		hydrotip = svg.append('g')
