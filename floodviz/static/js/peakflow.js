@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	'use strict';
 
 	var margin = {bottom: 40, right: 40, left: 45, top: 50};
-	var width = parseInt(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
-	var height = parseInt(400);
+	var width = Math.round(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
+	var height = 400;
 	var data = FV.peakinfo;
 
 	// Collect and set peakflow bar chart aspect ratio data
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		}
 	}
 
-	function mouseout(tooltip, d) {
+	function mouseout(d) {
 		const bar = d3.select('#peak' + d.label);
 		if (bar.attr('class').startsWith('lollipop')) {
 			bar.attr('class', 'lollipop');
