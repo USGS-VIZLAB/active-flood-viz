@@ -335,7 +335,7 @@
 						if (!disableInteractions) {
 							self.linked_interactions.hover_in(d.properties.id);
 						}
-;						// Only log first hover of gage point per session
+						// Only log first hover of gage point per session
 						if (map_moused_over_gage[d.properties.id] === undefined) {
 							FV.ga_send_event('Map', 'hover_gage', d.properties.id);
 							map_moused_over_gage[d.properties.id] = true;
