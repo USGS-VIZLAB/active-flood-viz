@@ -22,7 +22,6 @@ var hydromodule = function (options) {
 
 	var default_display_ids = null;
 	var timer = null;
-	var dblclick_armed = false;
 
 	var margin = {top: 60, right: 0, bottom: 30, left: 40};
 	var width = 500 - margin.left - margin.right;
@@ -287,25 +286,13 @@ var hydromodule = function (options) {
 				self.series_tooltip_remove(d.data.key);
 			})
 			.on('click', function (d) {
-				if (dblclick_armed) {
-					clearTimeout(timer);
-					reset_hydrograph();
-					dblclick_armed = false;
-				}
-				else {
-					dblclick_armed = true;
-					timer = setTimeout(function () {
 						if (!disableInteractions) {
 							self.linked_interactions.click(d.data.key);
 							self.linked_interactions.hover_out(d.data.key);
 						}
 						self.remove_series(d.data.key);
-						dblclick_armed = false;
-					}, 200);
 					FV.ga_send_event('Hydrograph', 'series_click_off', d.data.key);
-				}
 			});
-
 	};
 	/**
 	 * Initialize the Hydrograph.
