@@ -32,19 +32,38 @@
 	fill: #b47846
 }
 
-.toolTip {
-	position: absolute;
-	display: none;
-	min-width: 80px;
-	height: auto;
-	background: none repeat scroll 0 0 #ffffff;
-	border: 1px solid #7FFF00;
-	padding: 14px;
-	text-align: center;
-}
 .secret-bar{
 	fill: red;
 	fill-opacity: 0;
 	stroke: blue;
 	stroke-opacity: 0;
+}
+
+.peaktip-show #pt-text {
+	text-anchor: middle;
+	stroke: black;
+	opacity: 1;
+	stroke-width: 0;
+	font-weight: normal;
+	font-family: "Times", serif;
+}
+
+.peaktip-show #pt-text-background {
+	stroke: none;
+	fill: rgba(71, 181, 176, 0.8);
+}
+
+.peaktip-show #pt-arrow {
+	stroke: none;
+	fill: rgba(71, 181, 176, 0.8);
+}
+
+.peaktip-show #pt-point {
+	fill-opacity: unset;
+	fill: rgba(71, 181, 176, 1);
+	stroke: none;
+}
+
+.peaktip-hide{
+	display: none;
 }
