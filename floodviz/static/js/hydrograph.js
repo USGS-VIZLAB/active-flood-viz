@@ -21,7 +21,6 @@ var hydromodule = function (options) {
 	var state = {};
 
 	var default_display_ids = null;
-	var timer = null;
 
 	var margin = {top: 60, right: 0, bottom: 30, left: 40};
 	var width = 500 - margin.left - margin.right;
@@ -234,10 +233,10 @@ var hydromodule = function (options) {
 		button.on('click', function() {reset_hydrograph();});
 
 		if (default_display_ids.toString() === options.display_ids.toString()) {
-			document.getElementById("button").style.display='none';
+			document.getElementById("reset-button").style.display='none';
 		}
 		else {
-			document.getElementById("button").style.display='inline';
+			document.getElementById("reset-button").style.display='inline';
 		}
 
 		// Tooltip

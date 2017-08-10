@@ -103,7 +103,7 @@
     stroke-miterlimit: 10.00;
 }
 
-.btn {
+#reset-button {
 	position: absolute;
 	display: none;
 	top: 115px;
