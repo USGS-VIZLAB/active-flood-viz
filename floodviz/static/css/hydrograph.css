@@ -105,5 +105,7 @@
 
 .btn {
 	position: absolute;
-
+	display: none;
+	top: 115px;
+	right: 15px;
 }

@@ -112,8 +112,7 @@ var hydromodule = function (options) {
 		self.change_lines(default_display_ids.slice());
 	};
 
-	var button = d3.select(".btn");
-	button.on('click', function() {reset_hydrograph();});
+
 
 
 	/**
@@ -231,6 +230,16 @@ var hydromodule = function (options) {
 			.attr("y", 0 - (margin.top / 2))
 			.style("font-size", "14px")
 			.text("Discharge (cubic feet per second)");
+
+		var button = d3.select(".btn");
+		button.on('click', function() {reset_hydrograph();});
+
+		if (default_display_ids.toString() === options.display_ids.toString()) {
+			document.getElementById("button").style.display='none';
+		}
+		else {
+			document.getElementById("button").style.display='inline';
+		}
 
 		// Tooltip
 		hydrotip = svg.append('g')
