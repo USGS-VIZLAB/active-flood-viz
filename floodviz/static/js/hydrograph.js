@@ -45,6 +45,7 @@ var hydromodule = function (options) {
 		.extent([[-margin.left, -margin.top], [width + margin.right, height + margin.bottom]]);
 	// Define the line
 	var line = d3.line()
+		.defined(function (d) {return !isNaN(d.value);})
 		.x(function (d) {
 			return scaleX(d.time_mili);
 		})
@@ -64,12 +65,16 @@ var hydromodule = function (options) {
 	 */
 	var subset_data = function (full_data) {
 		var toKeep = [];
+		var toKeep_voronoi = [];
 		full_data.forEach(function (d) {
 			if (options.display_ids.indexOf(d.key) !== -1) {
 				toKeep.push(d);
+				if (!isNaN(d.value)) {
+					toKeep_voronoi.push(d);
+				}
 			}
 		});
-		return toKeep;
+		return [toKeep, toKeep_voronoi];
 	};
 
 	/**
@@ -116,7 +121,9 @@ var hydromodule = function (options) {
 	 */
 	var update = function () {
 		// Cut the data down to sites we want to display
-		var sub_data = subset_data(data_global);
+		var data = subset_data(data_global);
+		var sub_data_voronoi = data[1];
+		var sub_data = data[0];
 		// Remove the current version of the graph if one exists
 		var current_svg = d3.select(options.div_id + ' svg');
 		if (current_svg) {
@@ -148,7 +155,20 @@ var hydromodule = function (options) {
 			.attr('d', options.watermark_path_2)
 			.attr('class', 'watermark');
 
+		// Data containing NaN values for graphing
 		var graph_data = sub_data.map(function (d) {
+			return {
+				'date': d.date,
+				'key': d.key,
+				'name': d.name,
+				'time': d.time,
+				'time_mili': d.time_mili,
+				'timezone': d.timezone,
+				'value': Number(d.value)
+			};
+		});
+		// Data without NaN values to render Voronoi
+		var voronoi_data = sub_data_voronoi.map(function (d) {
 			return {
 				'date': d.date,
 				'key': d.key,
@@ -164,9 +184,8 @@ var hydromodule = function (options) {
 		scaleX.domain(d3.extent(graph_data, function (d) {
 			return d.time_mili;
 		}));
-		scaleY.domain([d3.min(graph_data, function (d) {
-			return d.value;
-		}), d3.max(graph_data, function (d) {
+		scaleY.domain([0,
+			d3.max(graph_data, function (d) {
 			return d.value;
 		})]);
 		// Nest the entries by site number
@@ -175,6 +194,13 @@ var hydromodule = function (options) {
 				return d.key;
 			})
 			.entries(graph_data);
+
+		var dataNest_voronoi = d3.nest()
+			.key(function (d) {
+				return d.key;
+			})
+			.entries(voronoi_data);
+
 		// Loop through each symbol / key
 		dataNest.forEach(function (d) {
 			svg.append('g')
@@ -221,7 +247,7 @@ var hydromodule = function (options) {
 		voronoi_group = svg.append('g')
 			.attr('class', 'voronoi');
 		voronoi_group.selectAll('path')
-			.data(voronoi.polygons(d3.merge(dataNest.map(function (d) {
+			.data(voronoi.polygons(d3.merge(dataNest_voronoi.map(function (d) {
 				return d.values
 			}))))
 			.enter().append('path')
