@@ -26,3 +26,6 @@ PEAK_META = {
 # Google Analytics
 GA_ID = 'UA-103831764-1'
 
+# URL of homepage
+PAGE_URL = ''
+
