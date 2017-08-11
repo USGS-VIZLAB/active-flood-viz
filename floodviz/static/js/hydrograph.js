@@ -302,6 +302,8 @@ var hydromodule = function (options) {
 	 *        @prop 'hover_in' - linked interaction function for hover_in events on this figure.
 	 *        @prop 'hover_out' - linked interaction function for hover_out events on this figure.
 	 *        @prop 'click' - linked interaction function for click events on this figure.
+	 *        @prop 'accent_on_map' - linked interaction function to accent sites on the map.
+	 *        @prop 'update_map_display_ids' - linked interaction to update the map's copy of which sites are being shown
 	 *
 	 *@param {array} data - times series data for the hydrograph. Each element is an object representing a data point.
 	 *
@@ -377,6 +379,9 @@ var hydromodule = function (options) {
 	 */
 	self.change_lines = function (new_display_ids) {
 		options.display_ids = new_display_ids;
+		if (!disableInteractions){
+			self.linked_interactions.update_map_display_ids(new_display_ids);
+		}
 		update();
 	};
 	/**
