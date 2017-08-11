@@ -22,7 +22,7 @@ def parse_hydrodata(jdata):
     all_series_data = []
 
     gap_threshold = 1800000  # 30 minutes
-    increment_ms = 900000  # 15 minutes
+    increment_ms = 900000    # 15 minutes
 
     if jdata is not None:
         for site in jdata:
@@ -58,7 +58,6 @@ def parse_hydrodata(jdata):
                             new_dt = str(datetime.fromtimestamp(new_dt_ms / 1000.0))
                             new_d = new_dt.split()[0]
                             new_t = new_dt.split()[1]
-                            # covert new_dt_ms to date time here!
                             all_series_data.append({'key': site_id, 'name': site_name, 'date': new_d, "time": new_t,
                                                     'timezone': timezone, "time_mili": new_dt_ms, 'value': 'NA'})
                             added += 1
