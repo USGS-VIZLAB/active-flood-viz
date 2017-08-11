@@ -3,15 +3,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	'use strict';
 
 	var margin = {bottom: 40, right: 40, left: 45, top: 50};
-	var width = parseInt(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
-	var height = parseInt(400);
+	var width = Math.round(400 * FV.peakmeta['width'] / FV.peakmeta['height']);
+	var height = 400;
 	var data = FV.peakinfo;
-
-	// Collect and set peakflow bar chart aspect ratio data
-	var peakflow_bar = document.getElementById('peakflow_bar');
-	peakflow_bar.style.height = height;
-	peakflow_bar.style.width = width;
-
 
 	const scaleX = d3.scaleBand().range([0, width]).padding(.5);
 	const scaleY = d3.scaleLinear().range([height, 0]);
@@ -31,14 +25,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('id', 'graph');
 
 	const edges = {
-			'l': -(margin.left + margin.right),
-			'r': width + margin.right,
+			'l': - margin.left,
+			'r': (width + margin.right) - margin.left,
 			't': -(margin.top + margin.bottom)
 		};
 
-	const tooltip = d3.select('body')
-		.append('div')
-		.attr('class', 'toolTip');
 
 	// For custom X axis ticks
 	var ticks = [];
@@ -114,11 +105,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			.attr('height', height)
 			// tooltip event
 			.on('mouseover', function () {
-				const point = d3.mouse(this);
-				mouseover(tooltip, d, point)
+				mouseover(d)
 			})
 			.on('mouseout', function () {
-				mouseout(tooltip, d)
+				mouseout(d)
 			});
 	});
 
@@ -171,14 +161,31 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('cx', lolli_pos_x)
 		.attr('cy', lolli_pos_y);
 
-	function mouseover(tooltip, d, point) {
+	function mouseover(d) {
+		var center = {
+			x: null,
+			y: null
+		};
 		// Find and highlight the bar
 		const bar = d3.select('#peak' + d.label);
 		if (bar.attr('class').startsWith('lollipop')) {
 			bar.attr('class', 'lollipop-active');
+			const circle = bar.select('#lollipop-top');
+			center = {
+				x: parseInt(circle.attr('cx')),
+				y: parseInt(circle.attr('cy'))
+			}
+
+
 		}
 		else {
 			bar.attr('class', 'bar-active');
+			const x = parseInt(bar.attr('x'));
+			const w = scaleX.bandwidth();
+			center = {
+				x: x + (w / 2),
+				y: parseInt(bar.attr('y'))
+			}
 		}
 
 		// Assemble elements for tooltip
@@ -193,12 +200,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		};
 
 		const visible_class = 'peaktip-show';
-		const textstring = d.label + ' - ' + d.value + ' cfs';
-
-		const center = {
-			x: point[0],
-			y: point[1]
-		};
+		const textstring = d.label + ' | ' + d.value + ' cfs';
 
 		FV.show_tooltip(tooltip_elements, textstring, edges, center, visible_class);
 
@@ -209,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		}
 	}
 
-	function mouseout(tooltip, d) {
+	function mouseout(d) {
 		const bar = d3.select('#peak' + d.label);
 		if (bar.attr('class').startsWith('lollipop')) {
 			bar.attr('class', 'lollipop');

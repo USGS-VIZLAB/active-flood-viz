@@ -37,8 +37,8 @@ const tooltip_module = function (options) {
 	const calculate_adjust = function(textbound, center, edges){
 		// remember that (0, 0) is in the upper left corner
 		const tipedges = {
-			l: center.x - textbound.width / 2,
-			r: center.x + textbound.width / 2,
+			l: (center.x - textbound.width / 2) - options.padding,
+			r: (center.x + textbound.width / 2) + options.padding,
 			t: center.y - textbound.height - options.arrowheight
 		};
 

@@ -21,8 +21,6 @@ var hydromodule = function (options) {
 	var state = {};
 
 	var default_display_ids = null;
-	var timer = null;
-	var dblclick_armed = false;
 
 	var margin = {top: 60, right: 0, bottom: 30, left: 40};
 	var width = 500 - margin.left - margin.right;
@@ -112,6 +110,9 @@ var hydromodule = function (options) {
 		self.change_lines(default_display_ids.slice());
 	};
 
+
+
+
 	/**
 	 *
 	 * Draws the svg, scales the range of the data, and draws the line for each site
@@ -147,7 +148,7 @@ var hydromodule = function (options) {
 		// Watermark
 		var watermark = svg.append('g')
 			.attr('id', 'usgs-watermark')
-			.attr('transform', 'translate(' + 1/4 * width + ',' +1/4 * height +')scale(0.45)'); // watermark position
+			.attr('transform', 'translate(' + 1 / 4 * width + ',' + 1 / 4 * height + ')scale(0.45)'); // watermark position
 		watermark.append('path')
 			.attr('d', options.watermark_path_1)
 			.attr('class', 'watermark');
@@ -186,8 +187,8 @@ var hydromodule = function (options) {
 		}));
 		scaleY.domain([0,
 			d3.max(graph_data, function (d) {
-			return d.value;
-		})]);
+				return d.value;
+			})]);
 		// Nest the entries by site number
 		var dataNest = d3.nest()
 			.key(function (d) {
@@ -227,6 +228,22 @@ var hydromodule = function (options) {
 			.attr("y", 0 - (margin.top / 2))
 			.style("font-size", "14px")
 			.text("Discharge (cubic feet per second)");
+
+		// Reset Button
+		var button = d3.select(".btn");
+		button.on('click', function () {
+			reset_hydrograph();
+		});
+
+		// Display button if chart has been changed; hide otherwise
+		if (document.getElementById("reset-button") !== null) {
+			if (default_display_ids.toString() === options.display_ids.toString()) {
+				document.getElementById("reset-button").style.display = 'none';
+			}
+			else {
+				document.getElementById("reset-button").style.display = 'inline';
+			}
+		}
 
 		// Tooltip
 		hydrotip = svg.append('g')
@@ -274,25 +291,13 @@ var hydromodule = function (options) {
 				self.series_tooltip_remove(d.data.key);
 			})
 			.on('click', function (d) {
-				if (dblclick_armed) {
-					clearTimeout(timer);
-					reset_hydrograph();
-					dblclick_armed = false;
-				}
-				else {
-					dblclick_armed = true;
-					timer = setTimeout(function () {
 						if (!disableInteractions) {
 							self.linked_interactions.click(d.data.key);
 							self.linked_interactions.hover_out(d.data.key);
 						}
 						self.remove_series(d.data.key);
-						dblclick_armed = false;
-					}, 200);
 					FV.ga_send_event('Hydrograph', 'series_click_off', d.data.key);
-				}
 			});
-
 	};
 	/**
 	 * Initialize the Hydrograph.
@@ -302,6 +307,8 @@ var hydromodule = function (options) {
 	 *        @prop 'hover_in' - linked interaction function for hover_in events on this figure.
 	 *        @prop 'hover_out' - linked interaction function for hover_out events on this figure.
 	 *        @prop 'click' - linked interaction function for click events on this figure.
+	 *        @prop 'accent_on_map' - linked interaction function to accent sites on the map.
+	 *        @prop 'update_map_display_ids' - linked interaction to update the map's copy of which sites are being shown
 	 *
 	 *@param {array} data - times series data for the hydrograph. Each element is an object representing a data point.
 	 *
@@ -377,6 +384,9 @@ var hydromodule = function (options) {
 	 */
 	self.change_lines = function (new_display_ids) {
 		options.display_ids = new_display_ids;
+		if (!disableInteractions){
+			self.linked_interactions.update_map_display_ids(new_display_ids);
+		}
 		update();
 	};
 	/**

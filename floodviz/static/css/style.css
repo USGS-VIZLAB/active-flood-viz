@@ -76,3 +76,11 @@ html, body, .main-content {
 	opacity: 1.0;
 }
 
+@media (max-width: 736px) {
+	.icon-div {
+		width: 100px;
+		margin-top: 0;
+		position: absolute;
+	}
+}
+
