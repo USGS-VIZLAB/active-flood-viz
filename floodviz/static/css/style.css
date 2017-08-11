@@ -78,7 +78,7 @@ html, body, .main-content {
 
 @media (max-width: 736px) {
 	.icon-div {
-		width: 100px;
+		width: 125px;
 		margin-top: 0;
 		position: absolute;
 	}
