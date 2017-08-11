@@ -38,6 +38,7 @@
 
 			// Stores SVG coordinates of gages and the size and location of the selection box
 			var state = {};
+			state.hydrograph_display_ids = options.site_display_ids;
 
 			var height = 350;
 			var width = 550 * options.width / options.height;
@@ -118,8 +119,8 @@
 			 * @param sitekey THe ID of the gage in question
 			 */
 			var toggle_hydrograph_display = function (sitekey) {
-				var new_display_ids = FV.hydrograph_display_ids;
-				var being_displayed = new_display_ids.indexOf(sitekey) !== -1;
+				var new_display_ids = state.hydrograph_display_ids;
+				const being_displayed = new_display_ids.indexOf(sitekey) !== -1;
 				if (being_displayed === true) {
 					self.site_remove_accent(sitekey);
 					new_display_ids.splice(new_display_ids.indexOf(sitekey), 1);
@@ -232,7 +233,7 @@
 						x: NW.x + state.box.width,
 						y: NW.y + state.box.height
 					};
-					var selected = FV.hydrograph_display_ids;
+					var selected = state.hydrograph_display_ids;
 
 					const keys = Object.keys(state.gages);
 
@@ -335,7 +336,7 @@
 						if (!disableInteractions) {
 							self.linked_interactions.hover_in(d.properties.id);
 						}
-;						// Only log first hover of gage point per session
+						// Only log first hover of gage point per session
 						if (map_moused_over_gage[d.properties.id] === undefined) {
 							FV.ga_send_event('Map', 'hover_gage', d.properties.id);
 							map_moused_over_gage[d.properties.id] = true;
@@ -358,7 +359,7 @@
 					});
 				if (!disableInteractions) {
 					sites.selectAll('circle').each(function (d) {
-						if (FV.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
+						if (state.hydrograph_display_ids.indexOf(d.properties.id) !== -1) {
 							self.site_add_accent(d.properties.id);
 						}
 					});
@@ -422,6 +423,14 @@
 			self.site_add_accent = function (sitekey) {
 				state.gages[sitekey].accent = true;
 				d3.select('#map' + sitekey).attr('class', 'gage-point-accent');
+			};
+
+			/**
+			 * Update the map's copy of which sites are displayed on the hydrograph
+			 * @param new_display_ids {Array} The new list of sites being displayed on the hydrograph
+			 */
+			self.update_hydrograph_display_ids = function(new_display_ids){
+				state.hydrograph_display_ids = new_display_ids;
 			};
 
 			return self;
