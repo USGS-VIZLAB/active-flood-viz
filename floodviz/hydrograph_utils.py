@@ -2,9 +2,9 @@ from datetime import datetime
 import time
 import requests
 
+
 def parse_hydrodata(jdata):
-    
-    """ 
+    """
     Parses json Hydrodata from NWIS webservice
     and formats for D3 charting library. This method handles
     data that may be missing from the request with dummy data
@@ -21,8 +21,8 @@ def parse_hydrodata(jdata):
     """
     all_series_data = []
 
-    gap_threshold = 1800000   # 30 minutes
-    increment_ms = 900000     # 15 minutes
+    gap_threshold = 1800000  # 30 minutes
+    increment_ms = 900000    # 15 minutes
 
     if jdata is not None:
         for site in jdata:
@@ -50,7 +50,7 @@ def parse_hydrodata(jdata):
                       is greater than 30 minutes. All dummy data points will be added in 15 minute increments.
                     """
                     if gap > gap_threshold:
-                        num_dummy_points = gap/increment_ms - 1
+                        num_dummy_points = gap / increment_ms - 1
                         added = 0
                         while added < num_dummy_points:
                             # correct time for this dummy point
@@ -58,9 +58,8 @@ def parse_hydrodata(jdata):
                             new_dt = str(datetime.fromtimestamp(new_dt_ms / 1000.0))
                             new_d = new_dt.split()[0]
                             new_t = new_dt.split()[1]
-                            # covert new_dt_ms to date time here!
                             all_series_data.append({'key': site_id, 'name': site_name, 'date': new_d, "time": new_t,
-                                        'timezone': timezone, "time_mili": new_dt_ms, 'value': 'NA'})
+                                                    'timezone': timezone, "time_mili": new_dt_ms, 'value': 'NA'})
                             added += 1
                 # append regular (not missing) data
                 all_series_data.append({'key': site_id, 'name': site_name, 'date': date, "time": t,
@@ -71,8 +70,7 @@ def parse_hydrodata(jdata):
 
 
 def req_hydrodata(sites, start_date, end_date, url_top):
-
-    """ 
+    """
     Requests hydrodata from nwis web service based on passed in parameters.
     Upon request failure, this will return None. 
 
@@ -92,7 +90,7 @@ def req_hydrodata(sites, start_date, end_date, url_top):
         # Form URL
         sites = [str(site) for site in sites]
         sites_string = ','.join(sites)
-        url =  url_top +'iv/?site=' + sites_string + '&startDT=' + \
+        url = url_top + 'iv/?site=' + sites_string + '&startDT=' + \
               start_date + '&endDT=' + end_date + '&parameterCD=00060&format=json'
 
         try:
@@ -100,12 +98,14 @@ def req_hydrodata(sites, start_date, end_date, url_top):
             if r.status_code is 200:
                 ret = r.json()['value']['timeSeries']
             else:
-                print('\n - Bad Request -\n')
+                print(r.text)
+                print('\n - Bad Request: {} in hydrograph utils, req_hydrodata -\n'.format(r.status_code))
 
         except requests.exceptions.RequestException as e:
-            print('\n - Malformed URL - \n')
+            print(e)
+            print('\n - Malformed URL in hydrograph utils, req_hydrodata - \n')
 
     else:
-        print('\nConfig Varibles Empty\n')
-    
+        print('\nConfig Varibles Empty in hydrograph utils, req_hydrodata\n')
+
     return ret

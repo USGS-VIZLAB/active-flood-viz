@@ -10,10 +10,12 @@ class TestReferenceParser(unittest.TestCase):
     def setUp(self):
 
         self.mock_reference = json.dumps({"target_epsg": "EPSG:2794",
-                               "site_ids": ["05463500", "05471050", "05420680", "05479000", "05484000", "05481000", "05486000", "05421000",
-                                            "05485500", "05455100", "05470500", "05451500", "05458000", "05471000", "05462000", "05457700", "05458500",
-                                            "05470000", "05484500", "05481300", "05464220", "05458900", "05485605", "05463000", "05471200", "05476750",
-                                            "05411850", "05454220", "05481950", "05416900", "05464500", "05487470"],
+                               "site_ids": ["05463500", "05471050", "05420680", "05479000", "05484000", "05481000",
+                                            "05486000", "05421000", "05485500", "05455100", "05470500", "05451500",
+                                            "05458000", "05471000", "05462000", "05457700", "05458500", "05470000",
+                                            "05484500", "05481300", "05464220", "05458900", "05485605", "05463000",
+                                            "05471200", "05476750", "05411850", "05454220", "05481950", "05416900",
+                                            "05464500", "05487470"],
                                "display_sites": ["05471200", "05476750", "05411850", "05462000"],
                                "bbox": [-95.3, 39.8, -91, 43.6],
                                "startDate": "2008-06-05",
@@ -77,10 +79,12 @@ class TestReferenceParser(unittest.TestCase):
                                })
 
         self.reference_missing_data = json.dumps({
-                               "site_ids": ["05463500", "05471050", "05420680", "05479000", "05484000", "05481000", "05486000", "05421000",
-                                            "05485500", "05455100", "05470500", "05451500", "05458000", "05471000", "05462000", "05457700", "05458500",
-                                            "05470000", "05484500", "05481300", "05464220", "05458900", "05485605", "05463000", "05471200", "05476750",
-                                            "05411850", "05454220", "05481950", "05416900", "05464500", "05487470"],
+                               "site_ids": ["05463500", "05471050", "05420680", "05479000", "05484000", "05481000",
+                                            "05486000", "05421000", "05485500", "05455100", "05470500", "05451500",
+                                            "05458000", "05471000", "05462000", "05457700", "05458500", "05470000",
+                                            "05484500", "05481300", "05464220", "05458900", "05485605", "05463000",
+                                            "05471200", "05476750", "05411850", "05454220", "05481950", "05416900",
+                                            "05464500", "05487470"],
                                "display_sites": ["05471200", "05476750", "05411850", "05462000"],
                                "bbox": [-95.3, 39.8, -91, 43.6],
                                "startDate": "2008-06-05",
@@ -159,8 +163,13 @@ class TestReferenceParser(unittest.TestCase):
                                   {'type': 'Feature', 'geometry': {'type': 'Point', 'coordinates': []},
                                    'properties': {'name': 'Cedar Rapids IA', 'country.etc': 'IA', 'pop': '123243',
                                                   'capital': '0', 'reftype': 'city'}}]},
-                              'river_geojson_data': '{"type": "FeatureCollection", "features": [{"type": "Feature", "id": 0, "properties": {"gnis_id": " ", "gnis_name": " ", "reftype": "rivers"}, "geometry": {"type": "MultiLineString", "coordinates": []}}]}',
-                              'background_geojson_data': '{"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Polygon", "coordinates": []}, "properties": {"group": "12", "order": " 2951", "region": "illinois", "reftype": "politicalBoundaries"}}]}'}
+                              'river_geojson_data': '{"type": "FeatureCollection", "features": '
+                                    '[{"type": "Feature", "id": 0, "properties": {"gnis_id": " ", "gnis_name": " ", '
+                                    '"reftype": "rivers"}, "geometry": {"type": "MultiLineString", "coordinates":'
+                                    ' []}}]}', 'background_geojson_data': '{"type": "FeatureCollection", '
+                                    '"features": [{"type": "Feature", "geometry": {"type": "Polygon", '
+                                    '"coordinates": []}, "properties": {"group": "12", "order": " 2951", "region": '
+                                    '"illinois", "reftype": "politicalBoundaries"}}]}'}
 
         self.mock_path = "mock/path.json"
 

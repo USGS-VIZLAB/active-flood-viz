@@ -8,7 +8,6 @@ class TestRdbParse(unittest.TestCase):
     def setUp(self):
         self.mock_url = 'http://example.com/?format=rdb&sites=05420680,05463500&siteStatus=all'
         self.sites = ['05420680', '05463500']
-        # self.endpoint = 'https://waterservices.usgs.gov/nwis/site/'
         self.endpoint_mock = 'http://example.com/'
 
         self.test_dict = {

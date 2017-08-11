@@ -9,65 +9,44 @@ class TestReqHydroData(unittest.TestCase):
     def setUp(self):
         self.mock_response = {
             "value": {"timeSeries": {"sourceInfo": {"siteName": "Black Hawk Creek at Hudson, IA", "siteCode":
-                [{"value": "05463500", "network": "NWIS", "agencyCode": "USGS"}], "timeZoneInfo": {"defaultTimeZone":
-                                                                                                       {
-                                                                                                           "zoneOffset": "-06:00",
-                                                                                                           "zoneAbbreviation": "CST"},
-                                                                                                   "daylightSavingsTimeZone": {
-                                                                                                       "zoneOffset": "-05:00",
-                                                                                                       "zoneAbbreviation": "CDT"},
-                                                                                                   "siteUsesDaylightSavingsTime": True},
-                                                    "geoLocation": {
-                                                        "geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639,
-                                                                         "longitude": -92.4632451},
-                                                        "localSiteXY": []}, "note": [], "siteType": [],
-                                                    "siteProperty": [{"value": "ST", "name": "siteTypeCd"},
-                                                                     {"value": "07080205", "name": "hucCd"},
-                                                                     {"value": "19", "name": "stateCd"},
-                                                                     {"value": "19013", "name": "countyCd"}]},
-                                     "variable": {"variableCode": [{"value": "00060", "network": "NWIS",
-                                                                    "vocabulary": "NWIS:UnitValues",
-                                                                    "variableID": 45807197, "default": True}],
-                                                  "variableName": "Streamflow, ft&#179;/s", "variableDescription":
-                                                      "Discharge, cubic feet per second", "valueType": "Derived Value",
-                                                  "unit": {"unitCode": "ft3/s"},
-                                                  "options": {"option": [{"name": "Statistic", "optionCode": "00000"}]},
-                                                  "note": [], "noDataValue": -999999.0, "variableProperty": [],
-                                                  "oid": "45807197"}, "values":
-                                         [{"value": [{"value": "446", "qualifiers": ["A"],
-                                                      "dateTime": "2008-05-20T00:00:00.000-05:00"}]}]}}}
+            [{"value": "05463500", "network": "NWIS", "agencyCode": "USGS"}], "timeZoneInfo": {"defaultTimeZone":
+            {"zoneOffset": "-06:00","zoneAbbreviation": "CST"},"daylightSavingsTimeZone": {"zoneOffset": "-05:00",
+            "zoneAbbreviation": "CDT"}, "siteUsesDaylightSavingsTime": True},
+            "geoLocation": { "geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639,
+            "longitude": -92.4632451}, "localSiteXY": []}, "note": [], "siteType": [],
+            "siteProperty": [{"value": "ST", "name": "siteTypeCd"},
+            {"value": "07080205", "name": "hucCd"}, {"value": "19", "name": "stateCd"},
+            {"value": "19013", "name": "countyCd"}]},
+            "variable": {"variableCode": [{"value": "00060", "network": "NWIS", "vocabulary": "NWIS:UnitValues",
+            "variableID": 45807197, "default": True}],
+            "variableName": "Streamflow, ft&#179;/s", "variableDescription":
+            "Discharge, cubic feet per second", "valueType": "Derived Value", "unit": {"unitCode": "ft3/s"},
+            "options": {"option": [{"name": "Statistic", "optionCode": "00000"}]},
+            "note": [], "noDataValue": -999999.0, "variableProperty": [], "oid": "45807197"}, "values":
+            [{"value": [{"value": "446", "qualifiers": ["A"],
+            "dateTime": "2008-05-20T00:00:00.000-05:00"}]}]}}}
 
         # Returned value is different than the mocked request response because req_hydrodata accessess two extra
         # levels of the dict before returning.
         self.valid_return = {"sourceInfo": {"siteName": "Black Hawk Creek at Hudson, IA", "siteCode":
-            [{"value": "05463500", "network": "NWIS", "agencyCode": "USGS"}], "timeZoneInfo": {"defaultTimeZone":
-                                                                                                   {
-                                                                                                       "zoneOffset": "-06:00",
-                                                                                                       "zoneAbbreviation": "CST"},
-                                                                                               "daylightSavingsTimeZone": {
-                                                                                                   "zoneOffset": "-05:00",
-                                                                                                   "zoneAbbreviation": "CDT"},
-                                                                                               "siteUsesDaylightSavingsTime": True},
-                                            "geoLocation": {"geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639,
-                                                                             "longitude": -92.4632451},
-                                                            "localSiteXY": []}, "note": [], "siteType": [],
-                                            "siteProperty": [{"value": "ST", "name": "siteTypeCd"},
-                                                             {"value": "07080205", "name": "hucCd"},
-                                                             {"value": "19", "name": "stateCd"},
-                                                             {"value": "19013", "name": "countyCd"}]},
-                             "variable": {"variableCode": [{"value": "00060", "network": "NWIS",
-                                                            "vocabulary": "NWIS:UnitValues", "variableID": 45807197,
-                                                            "default": True}], "variableName": "Streamflow, ft&#179;/s",
-                                          "variableDescription": "Discharge, cubic feet per second",
-                                          "valueType": "Derived Value",
-                                          "unit": {"unitCode": "ft3/s"}, "options": {"option": [{"name": "Statistic",
-                                                                                                 "optionCode": "00000"}]},
-                                          "note": [], "noDataValue": -999999.0, "variableProperty": [],
-                                          "oid": "45807197"},
-                             "values": [{"value": [{"value": "446", "qualifiers": ["A"],
-                                                    "dateTime": "2008-05-20T00:00:00.000-05:00"}]}]}
+            [{"value": "05463500", "network": "NWIS", "agencyCode": "USGS"}], "timeZoneInfo": {"defaultTimeZone": {
+            "zoneOffset": "-06:00", "zoneAbbreviation": "CST"},
+            "daylightSavingsTimeZone": { "zoneOffset": "-05:00", "zoneAbbreviation": "CDT"},
+            "siteUsesDaylightSavingsTime": True}, "geoLocation": {"geogLocation":
+            {"srs": "EPSG:4326", "latitude": 42.4077639, "longitude": -92.4632451},
+            "localSiteXY": []}, "note": [], "siteType": [], "siteProperty": [{"value": "ST", "name": "siteTypeCd"},
+            {"value": "07080205", "name": "hucCd"}, {"value": "19", "name": "stateCd"},
+            {"value": "19013", "name": "countyCd"}]},"variable": {"variableCode": [{"value": "00060", "network": "NWIS",
+            "vocabulary": "NWIS:UnitValues", "variableID": 45807197,
+            "default": True}], "variableName": "Streamflow, ft&#179;/s",
+            "variableDescription": "Discharge, cubic feet per second", "valueType": "Derived Value",
+            "unit": {"unitCode": "ft3/s"}, "options": {"option": [{"name": "Statistic", "optionCode": "00000"}]},
+            "note": [], "noDataValue": -999999.0, "variableProperty": [], "oid": "45807197"},
+            "values": [{"value": [{"value": "446", "qualifiers": ["A"],
+            "dateTime": "2008-05-20T00:00:00.000-05:00"}]}]}
 
-        self.mock_url = 'http://somethingfake.notadomain/iv/?site=05463500&startDT=2008-05-20&endDT=2008-07-05&parameterCD=00060&format=json'
+        self.mock_url = 'http://somethingfake.notadomain/iv/?site=' \
+                        '05463500&startDT=2008-05-20&endDT=2008-07-05&parameterCD=00060&format=json'
         self.prefix = 'http://somethingfake.notadomain/'
         self.H_START_DT = '2008-05-20'
         self.H_END_DT = '2008-07-05'
@@ -99,36 +78,29 @@ class TestReqHydroData(unittest.TestCase):
 
 class TestParseHydroData(unittest.TestCase):
     def setUp(self):
-        self.mock_data = [{"sourceInfo": {
-            "siteName": "Black Hawk Creek at Hudson, IA",
+        self.mock_data = [{"sourceInfo": { "siteName": "Black Hawk Creek at Hudson, IA",
             "siteCode": [{"value": "05463500", "network": "NWIS", "agencyCode": "USGS"}],
             "timeZoneInfo": {"defaultTimeZone": {"zoneOffset": "-06:00", "zoneAbbreviation": "CST"},
-                             "daylightSavingsTimeZone": {
-                                 "zoneOffset": "-05:00", "zoneAbbreviation": "CDT"},
-                             "siteUsesDaylightSavingsTime": True}, "geoLocation": {
-                "geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639, "longitude": -92.4632451},
-                "localSiteXY": []},
-            "note": [], "siteType": [], }, "variable": {"variableCode": [], "variableName": "Streamflow, ft&#179;/s",
-                                                        "variableDescription": "Discharge, cubic feet per second",
-                                                        "valueType": "Derived Value", "unit": {"unitCode": "ft3/s"},
-                                                        "note": [], }, "values": [{"value": [{
+            "daylightSavingsTimeZone": { "zoneOffset": "-05:00", "zoneAbbreviation": "CDT"},
+            "siteUsesDaylightSavingsTime": True}, "geoLocation": {
+            "geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639, "longitude": -92.4632451},
+            "localSiteXY": []}, "note": [], "siteType": [], }, "variable": {"variableCode": [],
+            "variableName": "Streamflow, ft&#179;/s", "variableDescription": "Discharge, cubic feet per second",
+            "valueType": "Derived Value", "unit": {"unitCode": "ft3/s"}, "note": [], }, "values": [{"value": [{
             "value": "446", "qualifiers": ["A"], "dateTime": "2008-05-20T00:00:00.000-05:00"}, {
             "value": "446", "qualifiers": ["A"], "dateTime": "2008-05-20T00:15:00.000-05:00"}, {
             "value": "446", "qualifiers": ["A"], "dateTime": "2008-05-20T00:30:00.000-05:00"}]}]}]
 
-        self.mock_data_missing_points = self.mock_data = [{"sourceInfo": {
-            "siteName": "Black Hawk Creek at Hudson, IA",
+        self.mock_data_missing_points = self.mock_data = [{"sourceInfo": { "siteName": "Black Hawk Creek at Hudson, IA",
             "siteCode": [{"value": "05463500", "network": "NWIS", "agencyCode": "USGS"}],
             "timeZoneInfo": {"defaultTimeZone": {"zoneOffset": "-06:00", "zoneAbbreviation": "CST"},
-                             "daylightSavingsTimeZone": {
-                                 "zoneOffset": "-05:00", "zoneAbbreviation": "CDT"},
-                             "siteUsesDaylightSavingsTime": True}, "geoLocation": {
-                "geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639, "longitude": -92.4632451},
-                "localSiteXY": []},
-            "note": [], "siteType": [], }, "variable": {"variableCode": [], "variableName": "Streamflow, ft&#179;/s",
-                                                        "variableDescription": "Discharge, cubic feet per second",
-                                                        "valueType": "Derived Value", "unit": {"unitCode": "ft3/s"},
-                                                        "note": [], }, "values": [{"value": [{
+            "daylightSavingsTimeZone": { "zoneOffset": "-05:00", "zoneAbbreviation": "CDT"},
+            "siteUsesDaylightSavingsTime": True}, "geoLocation": {
+            "geogLocation": {"srs": "EPSG:4326", "latitude": 42.4077639, "longitude": -92.4632451},
+            "localSiteXY": []}, "note": [], "siteType": [], },
+            "variable": {"variableCode": [], "variableName": "Streamflow, ft&#179;/s",
+            "variableDescription": "Discharge, cubic feet per second",
+            "valueType": "Derived Value", "unit": {"unitCode": "ft3/s"}, "note": [], }, "values": [{"value": [{
             "value": "446", "qualifiers": ["A"], "dateTime": "2008-05-20T00:00:00.000-05:00"}, {
             "value": "446", "qualifiers": ["A"], "dateTime": "2008-05-20T00:15:00.000-05:00"}, {
             "value": "446", "qualifiers": ["A"], "dateTime": "2008-05-20T00:30:00.000-05:00"}, {
@@ -142,14 +114,14 @@ class TestParseHydroData(unittest.TestCase):
             "time_mili": 1211259600000.0,
             "value": "446"
         },
-            {
-                "key": "05463500",
-                "name": "Black Hawk Creek at Hudson, IA",
-                "date": "2008-05-20",
-                "time": "00:30:00",
-                "time_mili": 1211261400000.0,
-                "value": "446"
-            }]
+        {
+            "key": "05463500",
+            "name": "Black Hawk Creek at Hudson, IA",
+            "date": "2008-05-20",
+            "time": "00:30:00",
+            "time_mili": 1211261400000.0,
+            "value": "446"
+        }]
 
         #  Contains 3 missing "dummy" points for times between
         #  1211261400000.0 and 1211265000000.0 (incrementing by 900000).
