@@ -17,7 +17,6 @@
 <body>
 
 <div class="main-content container">
-
 	<div id="hydrograph">
 		<input class="btn btn-primary" id="reset-button" type="reset" value="Reset">
 	</div>
@@ -35,12 +34,12 @@
 	FV.hydrograph_display_ids = {{ display_sites | safe }};
 </script>
 
-	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='bower_components/d3/d3.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/hydrograph.js')}}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/hydrograph_onready.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/tooltip.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='bower_components/d3/d3.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/hydrograph.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/hydrograph_onready.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/tooltip.js') }}"></script>
 
 
 </body>

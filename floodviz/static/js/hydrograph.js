@@ -148,7 +148,7 @@ var hydromodule = function (options) {
 		// Watermark
 		var watermark = svg.append('g')
 			.attr('id', 'usgs-watermark')
-			.attr('transform', 'translate(' + 1/4 * width + ',' +1/4 * height +')scale(0.45)'); // watermark position
+			.attr('transform', 'translate(' + 1 / 4 * width + ',' + 1 / 4 * height + ')scale(0.45)'); // watermark position
 		watermark.append('path')
 			.attr('d', options.watermark_path_1)
 			.attr('class', 'watermark');
@@ -187,8 +187,8 @@ var hydromodule = function (options) {
 		}));
 		scaleY.domain([0,
 			d3.max(graph_data, function (d) {
-			return d.value;
-		})]);
+				return d.value;
+			})]);
 		// Nest the entries by site number
 		var dataNest = d3.nest()
 			.key(function (d) {
@@ -229,14 +229,20 @@ var hydromodule = function (options) {
 			.style("font-size", "14px")
 			.text("Discharge (cubic feet per second)");
 
+		// Reset Button
 		var button = d3.select(".btn");
-		button.on('click', function() {reset_hydrograph();});
+		button.on('click', function () {
+			reset_hydrograph();
+		});
 
-		if (default_display_ids.toString() === options.display_ids.toString()) {
-			document.getElementById("reset-button").style.display='none';
-		}
-		else {
-			document.getElementById("reset-button").style.display='inline';
+		// Display button if chart has been changed; hide otherwise
+		if (document.getElementById("reset-button") !== null) {
+			if (default_display_ids.toString() === options.display_ids.toString()) {
+				document.getElementById("reset-button").style.display = 'none';
+			}
+			else {
+				document.getElementById("reset-button").style.display = 'inline';
+			}
 		}
 
 		// Tooltip
