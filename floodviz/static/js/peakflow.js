@@ -105,8 +105,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			.attr('height', height)
 			// tooltip event
 			.on('mouseover', function () {
-				const point = d3.mouse(this);
-				mouseover(d, point)
+				mouseover(d)
 			})
 			.on('mouseout', function () {
 				mouseout(d)
@@ -162,14 +161,31 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		.attr('cx', lolli_pos_x)
 		.attr('cy', lolli_pos_y);
 
-	function mouseover(d, point) {
+	function mouseover(d) {
+		var center = {
+			x: null,
+			y: null
+		};
 		// Find and highlight the bar
 		const bar = d3.select('#peak' + d.label);
 		if (bar.attr('class').startsWith('lollipop')) {
 			bar.attr('class', 'lollipop-active');
+			const circle = bar.select('#lollipop-top');
+			center = {
+				x: parseInt(circle.attr('cx')),
+				y: parseInt(circle.attr('cy'))
+			}
+
+
 		}
 		else {
 			bar.attr('class', 'bar-active');
+			const x = parseInt(bar.attr('x'));
+			const w = scaleX.bandwidth();
+			center = {
+				x: x + (w / 2),
+				y: parseInt(bar.attr('y'))
+			}
 		}
 
 		// Assemble elements for tooltip
@@ -184,12 +200,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		};
 
 		const visible_class = 'peaktip-show';
-		const textstring = d.label + ' - ' + d.value + ' cfs';
-
-		const center = {
-			x: point[0],
-			y: point[1]
-		};
+		const textstring = d.label + ' | ' + d.value + ' cfs';
 
 		FV.show_tooltip(tooltip_elements, textstring, edges, center, visible_class);
 
