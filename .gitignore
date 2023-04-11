@@ -124,3 +124,4 @@ node_modules/
 # Thumbnail Files #
 *floodviz/thumbnail/*.json
 *floodviz/thumbnail/*.png
+.Rproj.user
